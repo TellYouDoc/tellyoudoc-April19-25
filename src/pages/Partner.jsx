@@ -270,14 +270,16 @@ const Partner = () => {
     setErrors(formErrors);
 
     if (Object.keys(formErrors).length === 0) {
-      const response = await axios.post(
+
+      try{
+        const response = await axios.post(
         "https://api.tellyoudoc.com/api/v1/beta-partner/register",
         formData
       );
 
       console.log(response);
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         // Reset the form
         setFormData({
           fullName: "",
@@ -292,6 +294,9 @@ const Partner = () => {
           reason: "",
         });
         alert("Thank you for your interest! We will contact you soon.");
+      }
+      } catch(e) {
+        console.error("Error submitting form:", error);
       }
     }
 
