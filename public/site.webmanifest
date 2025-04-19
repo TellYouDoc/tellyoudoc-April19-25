@@ -1,0 +1,19 @@
+{
+  "name": "tellYouDoc - Simplifying Healthcare Access",
+  "short_name": "tellYouDoc",
+  "icons": [
+    {
+      "src": "/favicon/favicon.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/favicon/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#2a7d73",
+  "background_color": "#ffffff",
+  "display": "standalone"
+} 
