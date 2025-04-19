@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import "../styles/Partner.css";
-import axios from "axios";
 
 const Partner = () => {
   const [formData, setFormData] = useState({
@@ -16,16 +15,9 @@ const Partner = () => {
     reason: "",
   });
 
-  // State to track form validation errors
+  // State for form validation
   const [errors, setErrors] = useState({});
-
-  // State to track form submission status
-  const [formStatus, setFormStatus] = useState({
-    isSubmitting: false,
-    isSubmitted: false,
-    isError: false,
-    isCredentialsExists: false,
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // State to track which inputs have focus
   const [focusedInput, setFocusedInput] = useState(null);
@@ -109,26 +101,27 @@ const Partner = () => {
     cursor: "pointer",
   };
 
-  // Update form input styles to include smooth transitions and error states
+  // Input style with error handling
   const inputStyle = (name) => ({
     ...interactiveStyle,
     width: "100%",
     padding: "15px 15px",
     fontSize: "16px",
-    border: "1px solid #ddd",
+    border: `1px solid ${
+      errors[name]
+        ? "#ff4d4f"
+        : focusedInput === name || formData[name]
+        ? "#4A90E2"
+        : "#ddd"
+    }`,
     borderRadius: "5px",
     backgroundColor: "white",
     outline: "none",
     height: "55px",
     boxSizing: "border-box",
-    borderColor: errors[name]
-      ? "#e74c3c"
-      : focusedInput === name || formData[name]
-      ? "#4A90E2"
-      : "#ddd",
   });
 
-  // Update textarea styles to include smooth transitions and error states
+  // Update textarea styles to include error handling
   const textareaStyle = (name) => ({
     ...inputStyle(name),
     height: "120px",
@@ -140,7 +133,7 @@ const Partner = () => {
     textAlign: "left",
   });
 
-  // Update select styles to include smooth transitions and error states
+  // Update select styles to include error handling
   const selectStyle = (name) => ({
     ...inputStyle(name),
     WebkitAppearance: "none",
@@ -153,7 +146,15 @@ const Partner = () => {
     backgroundSize: "20px",
   });
 
-  // Update label styles to include smooth transitions and error states
+  // Error message style
+  const errorStyle = {
+    color: "#ff4d4f",
+    fontSize: "12px",
+    marginTop: "5px",
+    fontWeight: "500",
+  };
+
+  // Update label styles to include error handling
   const labelStyle = (name) => ({
     ...interactiveStyle,
     position: "absolute",
@@ -165,7 +166,7 @@ const Partner = () => {
         : "translateY(-50%)",
     fontSize: formData[name] || focusedInput === name ? "12px" : "16px",
     color: errors[name]
-      ? "#e74c3c"
+      ? "#ff4d4f"
       : formData[name] || focusedInput === name
       ? "#4A90E2"
       : "#666",
@@ -176,12 +177,62 @@ const Partner = () => {
     zIndex: "1",
   });
 
-  // Style for error messages
-  const errorMessageStyle = {
-    color: "#e74c3c",
-    fontSize: "12px",
-    marginTop: "5px",
-    marginLeft: "5px",
+  // Form validation function
+  const validateForm = () => {
+    let formErrors = {};
+
+    // Name validation
+    if (!formData.fullName.trim()) {
+      formErrors.fullName = "Full name is required";
+    } else if (formData.fullName.trim().length < 3) {
+      formErrors.fullName = "Name must be at least 3 characters";
+    }
+
+    // Mobile validation
+    if (!formData.mobileNumber.trim()) {
+      formErrors.mobileNumber = "Mobile number is required";
+    } else if (!/^[0-9]{10}$/.test(formData.mobileNumber.trim())) {
+      formErrors.mobileNumber = "Enter a valid 10-digit mobile number";
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      formErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      formErrors.email = "Enter a valid email address";
+    }
+
+    // City validation
+    if (!formData.city.trim()) {
+      formErrors.city = "City is required";
+    }
+
+    // State validation
+    if (!formData.state) {
+      formErrors.state = "Please select a state";
+    }
+
+    // Specialization validation
+    if (!formData.specialization) {
+      formErrors.specialization = "Please select a specialization";
+    }
+
+    // Qualification validation
+    if (!formData.qualification.trim()) {
+      formErrors.qualification = "Qualification is required";
+    }
+
+    // Experience validation
+    if (formData.experience === "") {
+      formErrors.experience = "Experience is required";
+    } else if (
+      parseInt(formData.experience) < 0 ||
+      parseInt(formData.experience) > 50
+    ) {
+      formErrors.experience = "Experience must be between 0-50 years";
+    }
+
+    return formErrors;
   };
 
   const handleChange = (e) => {
@@ -191,7 +242,7 @@ const Partner = () => {
       [name]: value,
     });
 
-    // Clear error when user starts typing
+    // Clear error for this field when user types
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -208,98 +259,23 @@ const Partner = () => {
     setFocusedInput(null);
   };
 
-  // Validate form data
-  const validateForm = () => {
-    const newErrors = {};
-
-    // Full Name validation
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
-    }
-
-    // Mobile Number validation
-    if (!formData.mobileNumber.trim()) {
-      newErrors.mobileNumber = "Mobile number is required";
-    } else if (!/^[0-9]{10}$/.test(formData.mobileNumber.trim())) {
-      newErrors.mobileNumber = "Please enter a valid 10-digit mobile number";
-    }
-
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-      newErrors.email = "Please enter a valid email address";
-    }
-
-    // City validation
-    if (!formData.city.trim()) {
-      newErrors.city = "City is required";
-    }
-
-    // State validation
-    if (!formData.state) {
-      newErrors.state = "Please select your state";
-    }
-
-    // Specialization validation
-    if (!formData.specialization) {
-      newErrors.specialization = "Please select your specialization";
-    }
-
-    // Qualification validation
-    if (!formData.qualification.trim()) {
-      newErrors.qualification = "Qualification is required";
-    }
-
-    // Experience validation
-    if (formData.experience === "") {
-      newErrors.experience = "Years of experience is required";
-    } else if (
-      parseInt(formData.experience) < 0 ||
-      parseInt(formData.experience) > 50
-    ) {
-      newErrors.experience = "Experience must be between 0 and 50 years";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     // Validate form
-    if (!validateForm()) {
-      // Scroll to the first error
-      const firstErrorField = Object.keys(errors)[0];
-      if (firstErrorField) {
-        document
-          .getElementById(firstErrorField)
-          ?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      return;
-    }
+    const formErrors = validateForm();
+    setErrors(formErrors);
 
-    setFormStatus({
-      isSubmitting: true,
-      isSubmitted: false,
-      isError: false,
-    });
-
-    try {
+    if (Object.keys(formErrors).length === 0) {
       const response = await axios.post(
         "https://api.tellyoudoc.com/api/v1/beta-partner/register",
         formData
       );
 
-      if (response.status === 201) {
-        // Success
-        setFormStatus({
-          isSubmitting: false,
-          isSubmitted: true,
-          isError: false,
-        });
+      console.log(response);
 
+      if (response.status === 200) {
         // Reset the form
         setFormData({
           fullName: "",
@@ -313,27 +289,11 @@ const Partner = () => {
           experience: "",
           reason: "",
         });
-      }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      if (error.response.status === 400) {
-        setFormStatus({
-          isSubmitting: false,
-          isSubmitted: false,
-          isError: true,
-          isCredentialsExists: true,
-        });
-        alert("There was an error submitting your form. Please try again.");
-      } else {
-        if (error.response.status === 500) {
-          setFormStatus({
-            isSubmitting: false,
-            isSubmitted: false,
-            isError: true,
-          });
-        }
+        alert("Thank you for your interest! We will contact you soon.");
       }
     }
+
+    setIsSubmitting(false);
   };
 
   // Style for the floating label form groups
@@ -501,61 +461,289 @@ const Partner = () => {
             </p>
           </div>
 
-          {/* Form Submission Status */}
-          {formStatus.isSubmitted && !formStatus.isCredentialsExists && (
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              padding: "clamp(20px, 5vw, 40px)",
+              backgroundColor: "white",
+              borderRadius: "10px",
+              boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div style={formGroupStyle}>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                onFocus={() => handleFocus("fullName")}
+                onBlur={handleBlur}
+                style={inputStyle("fullName")}
+                required
+              />
+              <label htmlFor="fullName" style={labelStyle("fullName")}>
+                Full Name
+              </label>
+              {errors.fullName && (
+                <div style={errorStyle}>{errors.fullName}</div>
+              )}
+            </div>
+
+            <div style={formGroupStyle}>
+              <input
+                type="tel"
+                id="mobileNumber"
+                name="mobileNumber"
+                value={formData.mobileNumber}
+                onChange={handleChange}
+                onFocus={() => handleFocus("mobileNumber")}
+                onBlur={handleBlur}
+                style={inputStyle("mobileNumber")}
+                required
+                maxLength="10"
+              />
+              <label htmlFor="mobileNumber" style={labelStyle("mobileNumber")}>
+                Mobile Number
+              </label>
+              {errors.mobileNumber && (
+                <div style={errorStyle}>{errors.mobileNumber}</div>
+              )}
+            </div>
+
+            <div style={formGroupStyle}>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                onFocus={() => handleFocus("email")}
+                onBlur={handleBlur}
+                style={inputStyle("email")}
+                required
+              />
+              <label htmlFor="email" style={labelStyle("email")}>
+                Email Address
+              </label>
+              {errors.email && <div style={errorStyle}>{errors.email}</div>}
+            </div>
+
             <div
               style={{
-                padding: "clamp(20px, 5vw, 40px)",
-                backgroundColor: "#e7f4e4",
-                borderRadius: "10px",
-                boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
-                textAlign: "center",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: "20px",
               }}
             >
-              <div style={{ fontSize: "48px", marginBottom: "20px" }}>✅</div>
-              <h3
-                style={{
-                  fontSize: "24px",
-                  color: "#2c3e50",
-                  marginBottom: "10px",
-                }}
-              >
-                Thank You for Joining!
-              </h3>
-              <p style={{ color: "#5a6a7e", lineHeight: "1.6" }}>
-                We've received your application and will be in touch shortly.
-              </p>
-            </div>
-          )}
+              <div style={formGroupStyle}>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus("city")}
+                  onBlur={handleBlur}
+                  style={inputStyle("city")}
+                  required
+                />
+                <label htmlFor="city" style={labelStyle("city")}>
+                  City
+                </label>
+                {errors.city && <div style={errorStyle}>{errors.city}</div>}
+              </div>
 
-          {formStatus.isCredentialsExists && (
+              <div style={formGroupStyle}>
+                <select
+                  id="state"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus("state")}
+                  onBlur={handleBlur}
+                  style={selectStyle("state")}
+                  required
+                >
+                  <option value=""></option>
+                  <option value="Assam">Assam</option>
+                  <option value="West Bengal">West Bengal</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Karnataka">Karnataka</option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Other">Other</option>
+                </select>
+                <label htmlFor="state" style={labelStyle("state")}>
+                  State
+                </label>
+                {errors.state && <div style={errorStyle}>{errors.state}</div>}
+              </div>
+            </div>
+
             <div
               style={{
-                padding: "clamp(20px, 5vw, 40px)",
-                backgroundColor: "#f4e4e4",
-                borderRadius: "10px",
-                boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
-                textAlign: "center",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: "20px",
               }}
             >
-              <div style={{ fontSize: "48px", marginBottom: "20px" }}>❌</div>
-              <h3
+              <div style={formGroupStyle}>
+                <select
+                  id="specialization"
+                  name="specialization"
+                  value={formData.specialization}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus("specialization")}
+                  onBlur={handleBlur}
+                  style={selectStyle("specialization")}
+                  required
+                >
+                  <option value=""></option>
+                  <option value="Oncologist">Oncologist</option>
+                  <option value="General Physician">General Physician</option>
+                  <option value="Surgeon">Surgeon</option>
+                  <option value="Gynecologist">Gynecologist</option>
+                  <option value="Pediatrician">Pediatrician</option>
+                  <option value="Other">Other</option>
+                </select>
+                <label
+                  htmlFor="specialization"
+                  style={labelStyle("specialization")}
+                >
+                  Medical Specialization
+                </label>
+                {errors.specialization && (
+                  <div style={errorStyle}>{errors.specialization}</div>
+                )}
+              </div>
+              <div style={formGroupStyle}>
+                <input
+                  type="text"
+                  id="qualification"
+                  name="qualification"
+                  value={formData.qualification}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus("qualification")}
+                  onBlur={handleBlur}
+                  style={inputStyle("qualification")}
+                  required
+                />
+                <label
+                  htmlFor="qualification"
+                  style={labelStyle("qualification")}
+                >
+                  Medical Qualification
+                </label>
+                {errors.qualification && (
+                  <div style={errorStyle}>{errors.qualification}</div>
+                )}
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: "20px",
+              }}
+            >
+              <div style={formGroupStyle}>
+                <input
+                  type="text"
+                  id="hospitalName"
+                  name="hospitalName"
+                  value={formData.hospitalName}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus("hospitalName")}
+                  onBlur={handleBlur}
+                  style={inputStyle("hospitalName")}
+                />
+                <label
+                  htmlFor="hospitalName"
+                  style={labelStyle("hospitalName")}
+                >
+                  Hospital / Clinic Name
+                </label>
+              </div>
+
+              <div style={formGroupStyle}>
+                <input
+                  type="number"
+                  id="experience"
+                  name="experience"
+                  min="0"
+                  max="50"
+                  value={formData.experience}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus("experience")}
+                  onBlur={handleBlur}
+                  style={inputStyle("experience")}
+                  required
+                />
+                <label htmlFor="experience" style={labelStyle("experience")}>
+                  Years of Experience
+                </label>
+                {errors.experience && (
+                  <div style={errorStyle}>{errors.experience}</div>
+                )}
+              </div>
+            </div>
+
+            <div style={formGroupStyle}>
+              <textarea
+                id="reason"
+                name="reason"
+                maxLength="100"
+                value={formData.reason}
+                onChange={handleChange}
+                onFocus={() => handleFocus("reason")}
+                onBlur={handleBlur}
+                style={textareaStyle("reason")}
+              ></textarea>
+              <label htmlFor="reason" style={labelStyle("reason")}>
+                Reason to Join (optional)
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              style={{
+                width: "100%",
+                backgroundColor: isSubmitting ? "#87b7eb" : "#4A90E2",
+                color: "white",
+                padding: "15px 20px",
+                border: "none",
+                borderRadius: "5px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
+                transition: "background-color 0.3s ease, transform 0.3s ease",
+                marginTop: "10px",
+                boxShadow: "0 4px 10px rgba(74, 144, 226, 0.3)",
+                position: "relative",
+              }}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Processing..." : "Click to Join"}
+            </button>
+
+            {Object.keys(errors).length > 0 && (
+              <div
                 style={{
-                  fontSize: "24px",
-                  color: "#2c3e50",
-                  marginBottom: "10px",
+                  marginTop: "15px",
+                  padding: "10px",
+                  borderRadius: "5px",
+                  backgroundColor: "#fff2f0",
+                  borderLeft: "3px solid #ff4d4f",
+                  fontSize: "14px",
+                  color: "#5a6a7e",
                 }}
               >
-                Email and Mobile Number already exists
-              </h3>
-              <p style={{ color: "#5a6a7e", lineHeight: "1.6" }}>
-                Your email and mobile number are already registered with us.
-                Please use a different email or mobile number to register.
-              </p>
-            </div>
-          )}
-
-          {/* Credentials already exists */}
+                Please correct the errors above to submit the form.
+              </div>
+            )}
+          </form>
         </div>
       </section>
     </div>
