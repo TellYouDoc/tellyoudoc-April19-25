@@ -180,78 +180,9 @@ const Partner = () => {
   });
 
   // Form validation function
-  const validateForm = () => {
-    let formErrors = {};
+  const validateForm = () => {};
 
-    // Name validation
-    if (!formData.fullName.trim()) {
-      formErrors.fullName = "Full name is required";
-    } else if (formData.fullName.trim().length < 3) {
-      formErrors.fullName = "Name must be at least 3 characters";
-    }
-
-    // Mobile validation
-    if (!formData.mobileNumber.trim()) {
-      formErrors.mobileNumber = "Mobile number is required";
-    } else if (!/^[0-9]{10}$/.test(formData.mobileNumber.trim())) {
-      formErrors.mobileNumber = "Enter a valid 10-digit mobile number";
-    }
-
-    // Email validation
-    if (!formData.email.trim()) {
-      formErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      formErrors.email = "Enter a valid email address";
-    }
-
-    // City validation
-    if (!formData.city.trim()) {
-      formErrors.city = "City is required";
-    }
-
-    // State validation
-    if (!formData.state) {
-      formErrors.state = "Please select a state";
-    }
-
-    // Specialization validation
-    if (!formData.specialization) {
-      formErrors.specialization = "Please select a specialization";
-    }
-
-    // Qualification validation
-    if (!formData.qualification.trim()) {
-      formErrors.qualification = "Qualification is required";
-    }
-
-    // Experience validation
-    if (formData.experience === "") {
-      formErrors.experience = "Experience is required";
-    } else if (
-      parseInt(formData.experience) < 0 ||
-      parseInt(formData.experience) > 50
-    ) {
-      formErrors.experience = "Experience must be between 0-50 years";
-    }
-
-    return formErrors;
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // Clear error for this field when user types
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: null,
-      });
-    }
-  };
+  const handleChange = (e) => {};
 
   const handleFocus = (inputName) => {
     setFocusedInput(inputName);
@@ -270,32 +201,31 @@ const Partner = () => {
     setErrors(formErrors);
 
     if (Object.keys(formErrors).length === 0) {
-
-      try{
+      try {
         const response = await axios.post(
-        "https://api.tellyoudoc.com/api/v1/beta-partner/register",
-        formData
-      );
+          "https://api.tellyoudoc.com/api/v1/beta-partner/register",
+          formData
+        );
 
-      console.log(response);
+        console.log(response);
 
-      if (response.status === 200 || response.status === 201) {
-        // Reset the form
-        setFormData({
-          fullName: "",
-          mobileNumber: "",
-          email: "",
-          city: "",
-          state: "",
-          specialization: "",
-          hospitalName: "",
-          qualification: "",
-          experience: "",
-          reason: "",
-        });
-        alert("Thank you for your interest! We will contact you soon.");
-      }
-      } catch(e) {
+        if (response.status === 200 || response.status === 201) {
+          // Reset the form
+          setFormData({
+            fullName: "",
+            mobileNumber: "",
+            email: "",
+            city: "",
+            state: "",
+            specialization: "",
+            hospitalName: "",
+            qualification: "",
+            experience: "",
+            reason: "",
+          });
+          alert("Thank you for your interest! We will contact you soon.");
+        }
+      } catch (e) {
         console.error("Error submitting form:", error);
       }
     }
