@@ -20,6 +20,7 @@ const Partner = () => {
   // State for form validation
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState({ type: "", message: "" });
 
   // State to track which inputs have focus
   const [focusedInput, setFocusedInput] = useState(null);
@@ -42,6 +43,17 @@ const Partner = () => {
     // Clean up
     return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
+
+  // Auto-hide feedback after 6 seconds
+  useEffect(() => {
+    if (feedback.message) {
+      const timer = setTimeout(() => {
+        setFeedback({ type: "", message: "" });
+      }, 6000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [feedback]);
 
   // Responsive styles object for reuse
   const responsive = {
@@ -167,11 +179,11 @@ const Partner = () => {
         ? "translateY(0)"
         : "translateY(-50%)",
     fontSize: formData[name] || focusedInput === name ? "12px" : "16px",
-    color: errors[name]
-      ? "#ff4d4f"
-      : formData[name] || focusedInput === name
-      ? "#4A90E2"
-      : "#666",
+    color: errors[name] 
+      ? "#ff4d4f" 
+      : formData[name] || focusedInput === name 
+        ? "#4A90E2" 
+        : "#666",
     pointerEvents: "none",
     backgroundColor:
       formData[name] || focusedInput === name ? "white" : "transparent",
@@ -179,10 +191,107 @@ const Partner = () => {
     zIndex: "1",
   });
 
-  // Form validation function
-  const validateForm = () => {};
+  // Feedback message styles
+  const feedbackStyle = {
+    success: {
+      backgroundColor: "#f6ffed",
+      border: "1px solid #b7eb8f",
+      borderLeft: "4px solid #52c41a",
+      color: "#52c41a",
+    },
+    error: {
+      backgroundColor: "#fff2f0",
+      border: "1px solid #ffccc7",
+      borderLeft: "4px solid #ff4d4f",
+      color: "#ff4d4f",
+    },
+    base: {
+      padding: "16px",
+      borderRadius: "4px",
+      marginBottom: "20px",
+      fontSize: "16px",
+      lineHeight: "1.5",
+      position: "relative",
+      animation: "slideDown 0.3s ease",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    }
+  };
 
-  const handleChange = (e) => {};
+  // Form validation function
+  const validateForm = () => {
+    let formErrors = {};
+    
+    // Name validation
+    if (!formData.fullName.trim()) {
+      formErrors.fullName = "Full name is required";
+    } else if (formData.fullName.trim().length < 3) {
+      formErrors.fullName = "Name must be at least 3 characters";
+    }
+    
+    // Mobile validation
+    if (!formData.mobileNumber.trim()) {
+      formErrors.mobileNumber = "Mobile number is required";
+    } else if (!/^[0-9]{10}$/.test(formData.mobileNumber.trim())) {
+      formErrors.mobileNumber = "Enter a valid 10-digit mobile number";
+    }
+    
+    // Email validation
+    if (!formData.email.trim()) {
+      formErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      formErrors.email = "Enter a valid email address";
+    }
+    
+    // City validation
+    if (!formData.city.trim()) {
+      formErrors.city = "City is required";
+    }
+    
+    // State validation
+    if (!formData.state) {
+      formErrors.state = "Please select a state";
+    }
+    
+    // Specialization validation
+    if (!formData.specialization) {
+      formErrors.specialization = "Please select a specialization";
+    }
+    
+    // Qualification validation
+    if (!formData.qualification.trim()) {
+      formErrors.qualification = "Qualification is required";
+    }
+    
+    // Experience validation
+    if (formData.experience === "") {
+      formErrors.experience = "Experience is required";
+    } else if (parseInt(formData.experience) < 0 || parseInt(formData.experience) > 50) {
+      formErrors.experience = "Experience must be between 0-50 years";
+    }
+    
+    return formErrors;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    
+    // Clear error for this field when user types
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: null,
+      });
+    }
+    
+    // Clear feedback when user makes changes
+    if (feedback.message) {
+      setFeedback({ type: "", message: "" });
+    }
+  };
 
   const handleFocus = (inputName) => {
     setFocusedInput(inputName);
@@ -195,11 +304,14 @@ const Partner = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+    
+    // Clear any existing feedback
+    setFeedback({ type: "", message: "" });
+    
     // Validate form
     const formErrors = validateForm();
     setErrors(formErrors);
-
+    
     if (Object.keys(formErrors).length === 0) {
       try {
         const response = await axios.post(
@@ -223,13 +335,47 @@ const Partner = () => {
             experience: "",
             reason: "",
           });
-          alert("Thank you for your interest! We will contact you soon.");
+          
+          // Set success feedback
+          setFeedback({
+            type: "success",
+            message: "Thank you for your interest! We have received your application and our team will get back to you soon."
+          });
+          
+          // Scroll to top of form section
+          document.getElementById("partner-form").scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }
-      } catch (e) {
+      } catch (error) {
         console.error("Error submitting form:", error);
+        
+        // Handle 400 errors (usually validation errors from the backend)
+        if (error.response && error.response.status === 400) {
+          if (error.response.data && error.response.data.message) {
+            // Set specific error message from the API
+            setFeedback({
+              type: "error",
+              message: error.response.data.message
+            });
+          } else {
+            // Generic message for email/phone already exists
+            setFeedback({
+              type: "error",
+              message: "This email or phone number is already registered with us. Please use different contact information."
+            });
+          }
+        } else {
+          // Generic error for other issues
+          setFeedback({
+            type: "error",
+            message: "There was an error submitting your application. Please try again later."
+          });
+        }
       }
     }
-
+    
     setIsSubmitting(false);
   };
 
@@ -237,6 +383,29 @@ const Partner = () => {
   const formGroupStyle = {
     marginBottom: "25px",
     position: "relative",
+  };
+
+  // Feedback message component
+  const FeedbackMessage = () => {
+    if (!feedback.message) return null;
+    
+    return (
+      <div 
+        style={{
+          ...feedbackStyle.base,
+          ...feedbackStyle[feedback.type],
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {feedback.type === "success" ? (
+            <span style={{ marginRight: "10px", fontSize: "20px" }}>✅</span>
+          ) : (
+            <span style={{ marginRight: "10px", fontSize: "20px" }}>⚠️</span>
+          )}
+          <span>{feedback.message}</span>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -407,6 +576,9 @@ const Partner = () => {
               boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
             }}
           >
+            {/* Feedback message */}
+            <FeedbackMessage />
+            
             <div style={formGroupStyle}>
               <input
                 type="text"
@@ -664,7 +836,7 @@ const Partner = () => {
             >
               {isSubmitting ? "Processing..." : "Click to Join"}
             </button>
-
+            
             {Object.keys(errors).length > 0 && (
               <div
                 style={{
