@@ -891,7 +891,7 @@ const Home = () => {
 
     try {
       const response = await axios.post(
-        "http://api.tellyoudoc.com/api/v1/contact-us",
+        "https://api.tellyoudoc.com/api/v1/contact-us",
         formData
       );
 
