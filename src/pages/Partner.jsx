@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import "../styles/Partner.css";
 
+import axios from "axios";
+
 const Partner = () => {
   const [formData, setFormData] = useState({
     fullName: "",
