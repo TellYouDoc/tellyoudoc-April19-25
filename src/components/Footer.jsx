@@ -32,7 +32,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          <div className="footer-section">
+{/*           <div className="footer-section">
             <h4>Contact Us</h4>
             <ul>
               <li>
@@ -72,7 +72,7 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="footer-bottom">
         <p>
