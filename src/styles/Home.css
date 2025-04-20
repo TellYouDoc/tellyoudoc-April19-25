@@ -225,7 +225,7 @@
 
 /* About Section Styles */
 .about-section {
-  min-height: 40vh; /* Reduced from 60vh */
+  min-height: 115vh; /* Reduced from 60vh */
   width: 100%;
   position: relative;
   background-color: #f9f9f9;
@@ -369,9 +369,13 @@
 
 .about-item-label {
   font-weight: 600;
-  font-size: 1.5rem;
-  color: #333;
+  font-size: 2rem;
   display: block;
+  text-align: flex-start;
+  padding: 0;
+  color: #05A1A4;
+  line-height: 0.8;
+  margin-bottom: 0.6rem;
 }
 
 .feature-item-heading {
@@ -399,12 +403,12 @@
   .about-section-content {
     flex-wrap: nowrap;
     gap: 2rem;
-    padding: 0 2rem;
   }
 
   .about-images-grid {
-    height: 450px;
+    height: 400px;
     max-width: 550px;
+    margin-left: 1rem;
   }
 
   .about-content {

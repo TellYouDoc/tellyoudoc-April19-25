@@ -982,45 +982,41 @@ const Home = () => {
             <img
               src={aboutImageUrl}
               alt="About Us"
-              style={{ width: "100%", height: "fit-content", borderRadius: "12px" }}
+              style={{ width: "100%", height: "fit-content" }}
             />
           </div>
           <div className="about-content">
-            <div className="about-text">
-              <div className="about-info">
-                <div className="about-item">
-                  <div
-                    className="about-item-label"
-                    style={{ color: "#05A1A4" }}
-                  >
-                    Vision
-                  </div>
-                  <p style={{ textAlign: "justify" }}>
-                    To revolutionize healthcare accessibility by bridging the
-                    gap between patients and doctors, empowering individuals
-                    with seamless, digital access to quality medical
-                    consultations, and building healthier communities across
-                    India.
-                  </p>
+            <div className="about-info">
+              <div className="about-item">
+                <div
+                  className="about-item-label"
+                >
+                  Vision
                 </div>
+                <p style={{ textAlign: "justify" }}>
+                  To revolutionize healthcare accessibility by bridging the gap
+                  between patients and doctors, empowering individuals with
+                  seamless, digital access to quality medical consultations, and
+                  building healthier communities across India.
+                </p>
+              </div>
 
-                <div className="about-item">
-                  <div
-                    className="about-item-label"
-                    style={{ color: "#05A1A4" }}
-                  >
-                    Mission
-                  </div>
-                  <p style={{ textAlign: "justify" }}>
-                    Our mission is to simplify healthcare access for everyone
-                    through a user-friendly platform where patients can connect
-                    with trusted doctors, track and communicate symptoms, and
-                    receive expert medical guidance. We are committed to
-                    leveraging technology to enhance patient outcomes, support
-                    doctors in expanding their reach, and prioritize secure,
-                    efficient, and compassionate healthcare for all.
-                  </p>
+              <div className="about-item">
+                <div
+                  className="about-item-label"
+                  style={{ color: "#05A1A4" }}
+                >
+                  Mission
                 </div>
+                <p style={{ textAlign: "justify" }}>
+                  Our mission is to simplify healthcare access for everyone
+                  through a user-friendly platform where patients can connect
+                  with trusted doctors, track and communicate symptoms, and
+                  receive expert medical guidance. We are committed to
+                  leveraging technology to enhance patient outcomes, support
+                  doctors in expanding their reach, and prioritize secure,
+                  efficient, and compassionate healthcare for all.
+                </p>
               </div>
             </div>
           </div>
