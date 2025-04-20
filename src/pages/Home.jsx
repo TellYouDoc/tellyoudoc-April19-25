@@ -3,9 +3,6 @@ import { Link } from "react-router-dom";
 import "../styles/Home.css";
 import axios from "axios";
 
-// Hero Background
-import heroBackgroundUrl from "../assets/images/home-hero.jpg";
-
 // About Us Background
 import aboutImageUrl from "../assets/images/about-1.jpg";
 import aboutImageUrl2 from "../assets/images/about-2.jpg";
@@ -936,9 +933,7 @@ const Home = () => {
     <div className="home-container" id="home-container">
       {/* Hero Section */}
       <section id="home" className="hero-section">
-        <div className="hero-background">
-          <img src={heroBackgroundUrl} alt="Healthcare background" />
-        </div>
+        <div className="hero-background"></div>
         <div className="product-content hero-content-wrapper">
           <div className="about-content hero-text">
             <div className="about-text">
@@ -974,51 +969,33 @@ const Home = () => {
       <section id="about" className="about-section">
         <div className="section-header">
           <h2>About Us</h2>
-          <p className="section-subtitle">
+          {/* <p className="section-subtitle">
             <span className="highlight-text">TRACK</span>{" "}
             <span className="separator">|</span>{" "}
             <span className="highlight-text">TALK</span>{" "}
             <span className="separator">|</span>{" "}
             <span className="highlight-text">TREAT</span>
-          </p>
+          </p> */}
         </div>
         <div className="product-content about-section-content">
           <div className="about-images-grid">
-            {[0, 1, 2, 3].map((position) => (
-              <div key={position} className="about-image-wrapper">
-                {slidingImages[position] ? (
-                  <>
-                    <img
-                      src={aboutImages[aboutImagePositions[position]]}
-                      alt={`Healthcare Innovation ${position + 1}`}
-                      className={`about-image ${
-                        getAnimationClasses(position).out
-                      }`}
-                    />
-                    <img
-                      src={aboutImages[newImages[position]]}
-                      alt={`Healthcare Innovation new`}
-                      className={`about-image ${
-                        getAnimationClasses(position).in
-                      }`}
-                    />
-                  </>
-                ) : (
-                  <img
-                    src={aboutImages[aboutImagePositions[position]]}
-                    alt={`Healthcare Innovation ${position + 1}`}
-                    className="about-image"
-                  />
-                )}
-              </div>
-            ))}
+            <img
+              src={aboutImageUrl}
+              alt="About Us"
+              style={{ width: "100%", height: "fit-content", borderRadius: "12px" }}
+            />
           </div>
           <div className="about-content">
             <div className="about-text">
               <div className="about-info">
                 <div className="about-item">
-                  <div className="about-item-label">Vision</div>
-                  <p>
+                  <div
+                    className="about-item-label"
+                    style={{ color: "#05A1A4" }}
+                  >
+                    Vision
+                  </div>
+                  <p style={{ textAlign: "justify" }}>
                     To revolutionize healthcare accessibility by bridging the
                     gap between patients and doctors, empowering individuals
                     with seamless, digital access to quality medical
@@ -1028,8 +1005,13 @@ const Home = () => {
                 </div>
 
                 <div className="about-item">
-                  <div className="about-item-label">Mission</div>
-                  <p>
+                  <div
+                    className="about-item-label"
+                    style={{ color: "#05A1A4" }}
+                  >
+                    Mission
+                  </div>
+                  <p style={{ textAlign: "justify" }}>
                     Our mission is to simplify healthcare access for everyone
                     through a user-friendly platform where patients can connect
                     with trusted doctors, track and communicate symptoms, and

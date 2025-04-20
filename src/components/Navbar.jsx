@@ -25,7 +25,15 @@ const Navbar = () => {
     if (isHomePage) {
       const section = document.getElementById(sectionId);
       if (section) {
-        section.scrollIntoView({ behavior: "smooth" });
+        const navbarHeight = 50; // Height of the navbar
+        const sectionPosition =
+          section.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = sectionPosition - navbarHeight;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
         closeMenu();
       }
     } else {
@@ -73,7 +81,7 @@ const Navbar = () => {
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="logo">
         <Link to="/" onClick={closeMenu}>
-          <img src={logoImage} alt="tellYouDoc Logo" />
+          <img src={logoImage} alt="tellYouDoc Logo" className="logo-image" />
         </Link>
       </div>
 
@@ -104,6 +112,15 @@ const Navbar = () => {
           }}
         >
           About Us
+        </a>
+        <a
+          href="/#product"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection("product");
+          }}
+        >
+          Offerings
         </a>
         <a
           href="/#founders"
