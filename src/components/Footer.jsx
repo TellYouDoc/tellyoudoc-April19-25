@@ -7,7 +7,6 @@ const Footer = () => {
       <div className="footer-content">
         <div className="footer-logo">
           <img src={logoImage} alt="tellYouDoc Logo" />
-          <p>Simplifying healthcare access for everyone</p>
         </div>
 
         <div className="footer-links">
@@ -32,7 +31,7 @@ const Footer = () => {
             </ul>
           </div>
 
-{/*           <div className="footer-section">
+          {/* <div className="footer-section">
             <h4>Contact Us</h4>
             <ul>
               <li>
@@ -70,17 +69,20 @@ const Footer = () => {
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
-      </div> */}
+      </div>
 
       <div className="footer-bottom">
         <p>
-          &copy; {new Date().getFullYear()} tellYouDoc. All rights reserved.
+          &copy; {new Date().getFullYear()}{" "}
+          <span style={{ fontWeight: "bold", color: "orange" }}>tellYou</span>
+          <span style={{ fontWeight: "bold", color: "green" }}>Doc</span>. All
+          rights reserved.
         </p>
         <div className="footer-bottom-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms & Conditions</a>
+          {/* <a href="#">Privacy Policy</a> */}
+          {/* <a href="#">Terms & Conditions</a> */}
         </div>
       </div>
     </footer>
