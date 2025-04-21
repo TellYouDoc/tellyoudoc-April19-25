@@ -76,8 +76,7 @@ const Footer = () => {
       <div className="footer-bottom">
         <p>
           &copy; {new Date().getFullYear()}{" "}
-          <span style={{ fontWeight: "bold", color: "orange" }}>tellYou</span>
-          <span style={{ fontWeight: "bold", color: "green" }}>Doc</span>. All
+          Precise Medication Private Limited. All
           rights reserved.
         </p>
         <div className="footer-bottom-links">
