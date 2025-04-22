@@ -1241,7 +1241,7 @@
 
 /* Contact Section */
 .contact-section {
-  padding: 5rem 5%;
+  padding: 2rem 5%;
   background-color: #f9f9f9;
   position: relative;
   overflow: hidden;
@@ -1769,7 +1769,7 @@
 .founder-role {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--primary-color);
+  color: black;
   margin: 0;
 }
 
@@ -1932,7 +1932,7 @@ img:hover {
   opacity: 1;
   transform: translateY(0);
   /* Slightly delay the container animation */
-  transition-delay: 0.01s; /* Slight delay for the container */
+  transition-delay: 0.001s; /* Slight delay for the container */
 }
 
 .feature-animation.hidden {

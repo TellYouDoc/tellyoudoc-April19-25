@@ -956,23 +956,6 @@ const Home = () => {
           <div className="about-content hero-text">
             <div className="about-text">
               <div className="about-header">
-                <span 
-                  className="about-label hero-label"
-                  style={{
-                    display: "inline-block",
-                    padding: "5px 10px",
-                    fontSize: "0.9rem",
-                    fontWeight: 600,
-                    color: "#2a7d73",
-                    backgroundColor: "rgba(42, 125, 115, 0.1)",
-                    borderRadius: "20px",
-                    marginBottom: "0.5rem",
-                    textTransform: "uppercase",
-                    letterSpacing: "1px"
-                  }}
-                >
-                  Healthcare Tech
-                </span>
                 <h5 
                   className="about-title hero-title"
                   style={{

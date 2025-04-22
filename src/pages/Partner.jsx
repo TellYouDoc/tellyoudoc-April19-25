@@ -1005,7 +1005,7 @@ const Partner = () => {
                             : "0",
                       }}
                     >
-                      Reason to Join (optional)
+                      Reason to Join
                     </label>
                   </div>
 
@@ -1382,7 +1382,7 @@ const Partner = () => {
           {/* Feature Boxes */}
           {betaLaunchFeatures.map((feature) => (
             <div key={feature.id} className="beta-launch-feature-box">
-              <div className="beta-launch-feature-icon" style={{ width: "120px", height: "120px", borderWidth: "4px" }}>
+              <div className="beta-launch-feature-icon" style={{ width: "120px", height: "120px", borderWidth: "2px" }}>
                 <img src={feature.icon} alt={feature.title} style={{ width: "110px", height: "110px" }} />
               </div>
               <div className="beta-launch-feature-content">

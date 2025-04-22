@@ -230,7 +230,7 @@
 }
 
 .benefits-heading {
-  color: #FF7007;
+  color: #059FA4;
   font-size: 2.3rem;
   margin-bottom: 1rem;
   font-weight: 700;
@@ -245,7 +245,7 @@
   left: 0;
   width: 50px;
   height: 3px;
-  background: #FF7007;
+  background: #059FA4;
   border-radius: 2px;
 }
 
@@ -1412,7 +1412,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   background: white;
-  border: 3px solid #ff69b4;
+  border: 1px solid #ff69b4;
   padding: 5px;
   overflow: hidden;
 }
@@ -1420,7 +1420,7 @@
 .beta-launch-feature-icon::before {
   content: '';
   position: absolute;
-  inset: -2px;
+  inset: -1px;
   background: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4);
   border-radius: 50%;
   z-index: -1;
@@ -1556,7 +1556,7 @@
     width: 80px;
     height: 80px;
     margin-bottom: 15px;
-    border-width: 3px;
+    border-width: 2px;
     padding: 4px;
   }
 
@@ -1606,7 +1606,7 @@
     width: 70px;
     height: 70px;
     margin-bottom: 15px;
-    border-width: 2px;
+    border-width: 1px;
     padding: 3px;
   }
 
@@ -1652,7 +1652,7 @@
 .who-can-join-main-heading {
   font-size: clamp(30px, 6vw, 44px);
   font-weight: 800;
-  color: #6598e4;
+  color: #FF7007;
   margin-bottom: 15px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   letter-spacing: -0.5px;
@@ -1671,7 +1671,7 @@
 .who-can-join-heading-underline {
   width: 90px;
   height: 4px;
-  background: #6598e4;
+  background: #FF7007;
   margin: 20px auto 0;
   border-radius: 2px;
   box-shadow: 0 2px 6px rgba(232, 62, 140, 0.2);
