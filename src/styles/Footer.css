@@ -7,6 +7,12 @@
   overflow: hidden;
 }
 
+.light-footer {
+  background: #f5f7fa;
+  color: #333;
+}
+
+/* Removing the blue border from the top of the footer
 .footer::before {
   content: '';
   position: absolute;
@@ -17,6 +23,7 @@
   background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
   animation: pulse 2s infinite;
 }
+*/
 
 .footer-content {
   display: grid;
@@ -29,7 +36,7 @@
 .footer-logo {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   text-align: center;
   animation: fadeIn 0.8s ease forwards;
 }
@@ -48,12 +55,7 @@
 .footer-logo img {
   height: 45px;
   filter: brightness(1.1);
-  transition: transform 0.3s ease;
   margin-bottom: 1rem;
-}
-
-.footer-logo img:hover {
-  transform: rotate(10deg);
 }
 
 .footer-logo p {
@@ -64,10 +66,65 @@
   font-size: 0.95rem;
 }
 
+.light-footer .footer-logo p {
+  color: #555;
+}
+
+.footer-address {
+  margin-top: 15px;
+  text-align: left;
+  color: #555 !important;
+  line-height: 1.6 !important;
+  font-size: 0.9rem !important;
+}
+
+.footer-email {
+  color: #FF7007 !important;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block;
+  margin-top: 5px;
+  transition: color 0.3s ease;
+}
+
+.footer-email:hover {
+  color: #059FA4 !important;
+  text-decoration: underline;
+}
+
+.location-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: #FF7007;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E") no-repeat center;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E") no-repeat center;
+  mask-size: cover;
+  -webkit-mask-size: cover;
+  margin-right: 8px;
+  position: relative;
+  top: 3px;
+}
+
+.footer-links-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .footer-links {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 2rem;
+}
+
+.footer-links-top {
+  margin-bottom: 1rem;
+}
+
+.footer-links-bottom {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .footer-section {
@@ -88,22 +145,35 @@
   font-size: 1.2rem;
   letter-spacing: 1px;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.light-footer .footer-section h4 {
+  color: #FF7007;
 }
 
 .footer-section ul {
   list-style: none;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .footer-section li {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   transition: all 0.3s ease;
   opacity: 0.8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .footer-section li:hover {
   opacity: 1;
-  transform: translateX(8px);
+  transform: translateY(-3px);
 }
 
 .footer-section a {
@@ -113,6 +183,10 @@
   position: relative;
   padding-left: 0;
   transition: all 0.3s ease;
+}
+
+.light-footer .footer-section a {
+  color: #555;
 }
 
 .footer-section a:not([href^="mailto"]):not([href^="http"]):not([href^="#"]):not([href^="/"])::before {
@@ -130,6 +204,10 @@
 
 .footer-section a:hover {
   color: var(--primary-color);
+}
+
+.light-footer .footer-section a:hover {
+  color: #059FA4;
 }
 
 .footer-section i {
@@ -150,9 +228,17 @@
   opacity: 0;
 }
 
+.light-footer .footer-bottom {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 .footer-bottom p {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.6);
+}
+
+.light-footer .footer-bottom p {
+  color: #555;
 }
 
 .footer-bottom-links {
@@ -162,13 +248,13 @@
 
 .footer-bottom-links a {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(0, 0, 0, 0.6);
   transition: color 0.3s ease;
   position: relative;
 }
 
 .footer-bottom-links a:hover {
-  color: var(--primary-color);
+  color: #e83e8c;
 }
 
 .footer-bottom-links a::after {
@@ -178,7 +264,7 @@
   height: 1px;
   bottom: -3px;
   left: 0;
-  background-color: var(--primary-color);
+  background-color: #e83e8c;
   transition: width 0.3s ease;
 }
 
@@ -231,7 +317,7 @@
   display: inline-block;
   width: 18px;
   height: 18px;
-  background-color: #ffffff;
+  background-color: #FF7007;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'/%3E%3C/svg%3E") no-repeat center;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'/%3E%3C/svg%3E") no-repeat center;
   mask-size: cover;
@@ -245,7 +331,7 @@
   display: inline-block;
   width: 18px;
   height: 18px;
-  background-color: #ffffff;
+  background-color: #FF7007;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z'/%3E%3C/svg%3E") no-repeat center;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z'/%3E%3C/svg%3E") no-repeat center;
   mask-size: cover;
@@ -259,7 +345,7 @@
   display: inline-block;
   width: 18px;
   height: 18px;
-  background-color: #ffffff;
+  background-color: #FF7007;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z'/%3E%3C/svg%3E") no-repeat center;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z'/%3E%3C/svg%3E") no-repeat center;
   mask-size: cover;
@@ -273,7 +359,7 @@
   display: inline-block;
   width: 18px;
   height: 18px;
-  background-color: #ffffff;
+  background-color: #FF7007;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z'/%3E%3C/svg%3E") no-repeat center;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z'/%3E%3C/svg%3E") no-repeat center;
   mask-size: cover;
@@ -336,6 +422,10 @@
     text-align: center;
   }
   
+  .footer-section ul {
+    justify-content: center;
+  }
+  
   .footer-section h4::after {
     left: 50%;
     transform: translateX(-50%);
@@ -382,4 +472,9 @@
   .footer-links {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* Add hover effect for icons */
+.footer-links-bottom .footer-section li:hover i {
+  background-color: #059FA4;
 }

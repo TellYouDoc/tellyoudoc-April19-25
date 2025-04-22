@@ -68,9 +68,14 @@ const Home = () => {
   const [productImagePositions, setProductImagePositions] = useState([
     0, 1, 2, 3,
   ]);
+  // Separate state variables for About and Product sections
   const [slidingImages, setSlidingImages] = useState({});
   const [newImages, setNewImages] = useState({});
   const [animationTypes, setAnimationTypes] = useState({});
+  // Add new state variables for product section animations
+  const [productSlidingImages, setProductSlidingImages] = useState({});
+  const [productNewImages, setProductNewImages] = useState({});
+  const [productAnimationTypes, setProductAnimationTypes] = useState({});
 
   const aboutImages = [
     aboutImageUrl,
@@ -192,36 +197,38 @@ const Home = () => {
   // Features data
   const features = [
     {
-      name: "Oncology Focused Modules",
+      name: "Breast Cancer Treatment",
       icon: "https://img.freepik.com/free-vector/hand-drawn-epidemiology-illustration_23-2149707548.jpg",
-      subFeatures: ["Breast Cancer Screening", "Chemotherapy Management"],
+      subFeatures: [
+        "Review and track breast health, mastalgia patterns, and patient-reported outcomes.",
+      ],
       carouselImage:
         "https://placehold.co/280x580/2a7d73/ffffff?text=Symptom+Explorer",
     },
     {
-      name: "Proactive Patient Monitoring",
+      name: "Chemotherapy Management",
       icon: "https://img.freepik.com/free-vector/information-tab-concept-illustration_114360-4868.jpg",
-      subFeatures: ["Symptom Logs", "Smart Alerts & Trends"],
+      subFeatures: [
+        "Review daily vitals, side effects, adjust medication schedules throughout chemo cycles.",
+      ],
       carouselImage:
         "https://placehold.co/280x580/2a7d73/ffffff?text=Dashboard",
     },
     {
-      name: "OPD Management",
+      name: "OPD & Appointment Management",
       icon: "https://img.freepik.com/free-photo/female-patients-talking-hospital-indoors_23-2148981280.jpg",
-      subFeatures: ["Patient Flow Insights", "Consultation Management"],
+      subFeatures: [
+        "Manage and review consultation management, patient flow insight, and more ",
+      ],
       carouselImage:
         "https://placehold.co/280x580/2a7d73/ffffff?text=Cancer+Care",
     },
     {
       name: "Doctor's Assistance Hub",
       icon: "https://img.freepik.com/free-vector/lovely-flat-characters-speaking-different-languages_23-2147872797.jpg",
-      subFeatures: ["Add Assistants", "Controlled Task Assignment"],
-      carouselImage: "https://placehold.co/280x580/2a7d73/ffffff?text=Language",
-    },
-    {
-      name: "Built for Indian Healthcare",
-      icon: "https://img.freepik.com/free-vector/lovely-flat-characters-speaking-different-languages_23-2147872797.jpg",
-      subFeatures: ["Multi-Language Interface", "Indian Compliance Ready"],
+      subFeatures: [
+        "Add RMOs nurses, or clinic staff  to manage patients, schedules etc. in sync with doctor.",
+      ],
       carouselImage: "https://placehold.co/280x580/2a7d73/ffffff?text=Language",
     },
   ];
@@ -286,7 +293,7 @@ const Home = () => {
     };
   }, [aboutImagePositions, aboutImages.length]);
 
-  // Effect for product section image rotation
+  // Effect for product section image rotation - update to use product-specific state variables
   useEffect(() => {
     const rotateProductImages = () => {
       // Get currently visible image indices
@@ -319,10 +326,10 @@ const Home = () => {
         newSlidingImages[position] = true;
       }
 
-      // Update all state at once
-      setSlidingImages(newSlidingImages);
-      setNewImages(newImagesCandidates);
-      setAnimationTypes(newAnimationTypes);
+      // Update all state at once - using product-specific state variables
+      setProductSlidingImages(newSlidingImages);
+      setProductNewImages(newImagesCandidates);
+      setProductAnimationTypes(newAnimationTypes);
 
       // After animation completes, update the positions array
       setTimeout(() => {
@@ -331,26 +338,37 @@ const Home = () => {
         });
 
         // Reset sliding states
-        setSlidingImages({});
-        setNewImages({});
-      }, 1250); // Match this with CSS transition duration
+        setProductSlidingImages({});
+        setProductNewImages({});
+      }, 1300); // Slightly longer animation duration
     };
 
-    // Set up interval for rotating images
-    productImagesTimerRef.current = setInterval(rotateProductImages, 5000);
+    // Start rotation only when the section is visible
+    if (isProductSectionVisible) {
+      // Set up interval for rotating images
+      productImagesTimerRef.current = setInterval(rotateProductImages, 5000);
+    }
 
     return () => {
       if (productImagesTimerRef.current) {
         clearInterval(productImagesTimerRef.current);
       }
     };
-  }, [productImagePositions, productImages.length]);
+  }, [productImagePositions, productImages.length, isProductSectionVisible]);
 
-  // Helper to determine animation classes based on type
-  const getAnimationClasses = (position) => {
-    if (!slidingImages[position]) return { out: "", in: "" };
+  // Helper to determine animation classes based on type - update to check for section type
+  const getAnimationClasses = (position, isProductSection = false) => {
+    // Use the appropriate state variables based on section type
+    const sectionSlidingImages = isProductSection
+      ? productSlidingImages
+      : slidingImages;
+    const sectionAnimationTypes = isProductSection
+      ? productAnimationTypes
+      : animationTypes;
 
-    const animationType = animationTypes[position];
+    if (!sectionSlidingImages[position]) return { out: "", in: "" };
+
+    const animationType = sectionAnimationTypes[position];
     switch (animationType) {
       case "left":
         return { out: "sliding-out-right", in: "sliding-in-left" };
@@ -938,18 +956,111 @@ const Home = () => {
           <div className="about-content hero-text">
             <div className="about-text">
               <div className="about-header">
-                <span className="about-label hero-label">Healthcare Tech</span>
-                <h5 className="about-title hero-title">
-                  <span>Empowering</span> Clinicians with Smart Digital Tools
+                <span 
+                  className="about-label hero-label"
+                  style={{
+                    display: "inline-block",
+                    padding: "5px 10px",
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    color: "#2a7d73",
+                    backgroundColor: "rgba(42, 125, 115, 0.1)",
+                    borderRadius: "20px",
+                    marginBottom: "0.5rem",
+                    textTransform: "uppercase",
+                    letterSpacing: "1px"
+                  }}
+                >
+                  Healthcare Tech
+                </span>
+                <h5 
+                  className="about-title hero-title"
+                  style={{
+                    color: "#1a1a1a",
+                    fontSize: "3.8rem",
+                    marginBottom: "1.5rem",
+                    fontWeight: 800,
+                    lineHeight: 1.1,
+                    letterSpacing: "-0.5px",
+                    position: "relative",
+                    display: "inline-block"
+                  }}
+                >
+                  Reimagine Cancer Care with{" "}
+                  <span 
+                    style={{
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      color: "#FF7007",
+                      display: "inline"
+                    }}
+                  >
+                    tellyou
+                  </span>
+                  <span 
+                    style={{
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      color: "#05AFA4",
+                      display: "inline"
+                    }}
+                  >
+                    doc
+                  </span>
+                  <span 
+                    style={{
+                      position: "absolute",
+                      bottom: "-10px",
+                      left: 0,
+                      width: "80px",
+                      height: "4px",
+                      background: "linear-gradient(90deg, #2a7d73, #3b6baa)",
+                      borderRadius: "2px"
+                    }}
+                  ></span>
                 </h5>
               </div>
               <div className="about-info">
-                <p className="hero-description">
-                  Specialized for Breast Cancer Screening, Chemotherapy
-                  Management, OPD Management & Doctor Assistance, & more.
+                <p 
+                  className="hero-description"
+                  style={{
+                    fontSize: "1.2rem",
+                    marginBottom: "2rem",
+                    color: "#333",
+                    lineHeight: 1.7,
+                    textShadow: "none"
+                  }}
+                >
+                  Smart tools for breast cancer screening, chemo management, OPD
+                  workflows, and assistant-led care — all in one app. Built for
+                  doctors. Backed by clinical expertise.
                 </p>
                 <div className="hero-cta">
-                  <Link to="/partner" className="cta-button">
+                  <Link 
+                    to="/partner" 
+                    className="cta-button"
+                    style={{
+                      background: "linear-gradient(90deg, #2a7d73, #3b6baa)",
+                      border: "none",
+                      color: "white",
+                      padding: "14px 32px",
+                      fontSize: "1.05rem",
+                      fontWeight: 600,
+                      borderRadius: "30px",
+                      boxShadow: "0 4px 15px rgba(42, 125, 115, 0.3)",
+                      transition: "all 0.3s ease",
+                      display: "inline-block",
+                      textDecoration: "none"
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.transform = "translateY(-3px)";
+                      e.currentTarget.style.boxShadow = "0 8px 20px rgba(42, 125, 115, 0.4)";
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = "0 4px 15px rgba(42, 125, 115, 0.3)";
+                    }}
+                  >
                     Be Beta Partner
                   </Link>
                 </div>
@@ -982,17 +1093,14 @@ const Home = () => {
             <img
               src={aboutImageUrl}
               alt="About Us"
-              style={{ width: "100%", height: "fit-content" }}
+              className="about-section-image"
+              style={{ marginLeft: "100px" }}
             />
           </div>
           <div className="about-content">
             <div className="about-info">
               <div className="about-item">
-                <div
-                  className="about-item-label"
-                >
-                  Vision
-                </div>
+                <div className="about-item-label">Vision</div>
                 <p style={{ textAlign: "justify" }}>
                   To revolutionize healthcare accessibility by bridging the gap
                   between patients and doctors, empowering individuals with
@@ -1002,10 +1110,7 @@ const Home = () => {
               </div>
 
               <div className="about-item">
-                <div
-                  className="about-item-label"
-                  style={{ color: "#05A1A4" }}
-                >
+                <div className="about-item-label" style={{ color: "#05A1A4" }}>
                   Mission
                 </div>
                 <p style={{ textAlign: "justify" }}>
@@ -1027,20 +1132,18 @@ const Home = () => {
       <section id="product" className="product-section" ref={productSectionRef}>
         <div className="section-header">
           <h2>Our Offerings</h2>
-          <p className="section-subtitle">
-            Empowering healthcare through innovation
-          </p>
         </div>
         <div
           className={`product-content tellyoudoc-offers-content ${
             isProductSectionVisible ? "animate-section" : ""
           }`}
         >
-          <div className="about-content feature-content">
+          <div
+            className="about-content feature-content"
+            style={{ justifyContent: "center", display: "flex" }}
+          >
             <div className="about-text">
-              <div className="about-header">
-                <h5 className="about-title">Core Features....</h5>
-              </div>
+              <div className="about-header"></div>
               <div className="about-info">
                 {features.map((feature, featureIndex) => (
                   <div
@@ -1048,6 +1151,7 @@ const Home = () => {
                     className={`feature-animation about-item ${
                       isFeatureVisible(featureIndex) ? "active" : "hidden"
                     }`}
+                    style={{ marginBottom: "45px" }}
                   >
                     <span
                       className="about-item-label feature-item-heading"
@@ -1065,7 +1169,7 @@ const Home = () => {
                               : "hidden"
                           }`}
                         >
-                          • {subFeature}
+                          {subFeature}
                         </div>
                       ))}
                     </div>
@@ -1074,23 +1178,30 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="about-images-grid" style={{ marginBottom: "auto" }}>
+          <div
+            className="product-images-grid"
+            style={{
+              width: "450px",
+              height: "450px",
+              maxWidth: "450px",
+            }}
+          >
             {[0, 1, 2, 3].map((position) => (
               <div key={position} className="about-image-wrapper">
-                {slidingImages[position] ? (
+                {productSlidingImages[position] ? (
                   <>
                     <img
                       src={productImages[productImagePositions[position]]}
                       alt={`Healthcare Innovation ${position + 1}`}
                       className={`about-image product-image ${
-                        getAnimationClasses(position).out
+                        getAnimationClasses(position, true).out
                       }`}
                     />
                     <img
-                      src={productImages[newImages[position]]}
+                      src={productImages[productNewImages[position]]}
                       alt={`Healthcare Innovation new`}
                       className={`about-image product-image ${
-                        getAnimationClasses(position).in
+                        getAnimationClasses(position, true).in
                       }`}
                     />
                   </>
@@ -1109,11 +1220,14 @@ const Home = () => {
 
       {/* Founders Section */}
       <section id="founders" className="founders-section">
+        <div className="bubble-1"></div>
+        <div className="bubble-2"></div>
+        <div className="bubble-3"></div>
         <div className="section-header">
           <h2>Core Team</h2>
-          <p className="section-subtitle">
+          {/* <p className="section-subtitle">
             Meet the minds behind TellYouDoc's healthcare innovation
-          </p>
+          </p> */}
         </div>
         <div className="founders-container">
           <div className="founder-card">
@@ -1131,10 +1245,10 @@ const Home = () => {
                 <h3>Dr. Shovan Barma</h3>
                 <p className="founder-role">
                   Founder,{" "}
-                  <span style={{ color: "orange", fontWeight: 800 }}>
+                  <span style={{ color: "#FF7007", fontWeight: 800 }}>
                     tellyou
                   </span>
-                  <span style={{ color: "green", fontWeight: 800 }}>doc</span>
+                  <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>
                 </p>
                 <p className="founder-affiliation">
                   Associate Professor, IIIT Guwahati
@@ -1150,8 +1264,8 @@ const Home = () => {
               Taiwan, Dr. Barma has spent over a decade researching AI based
               intelligent systems design and their application in real-world
               healthcare. The{" "}
-              <span style={{ color: "orange", fontWeight: 800 }}>tellyou</span>
-              <span style={{ color: "green", fontWeight: 800 }}>doc</span>{" "}
+              <span style={{ color: "#FF7007", fontWeight: 800 }}>tellyou</span>
+              <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>{" "}
               platform was born out of his observation that many Indian patients
               struggle to express their medical problems clearly during
               consultation, and often fail to track their regular symptoms
@@ -1177,10 +1291,10 @@ const Home = () => {
                 <h3>Dr. Soumen Das</h3>
                 <p className="founder-role">
                   Co-Founder,{" "}
-                  <span style={{ color: "orange", fontWeight: 800 }}>
+                  <span style={{ color: "#FF7007", fontWeight: 800 }}>
                     tellyou
                   </span>
-                  <span style={{ color: "green", fontWeight: 800 }}>doc</span>
+                  <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>
                 </p>
                 <p className="founder-affiliation">
                   Senior Consultant, Surgical Oncology
@@ -1200,8 +1314,8 @@ const Home = () => {
               fellowships including FRCS (Glasgow), FACS (USA), and European
               Breast Surgical Oncology Certification, becoming the first Indian
               surgeon to hold this distinction. The{" "}
-              <span style={{ color: "orange", fontWeight: 800 }}>tellyou</span>
-              <span style={{ color: "green", fontWeight: 800 }}>doc</span>{" "}
+              <span style={{ color: "#FF7007", fontWeight: 800 }}>tellyou</span>
+              <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>{" "}
               platform was co-founded by Dr. Das after years of witnessing
               patients struggle to explain symptoms clearly during
               consultations, and the lack of tools to track symptoms regularly
@@ -1220,11 +1334,11 @@ const Home = () => {
 
       {/* Contact Section */}
       <section id="contact" className="contact-section">
+        <div className="bubble-1"></div>
+        <div className="bubble-2"></div>
+        <div className="bubble-3"></div>
         <div className="section-header">
           <h2>Contact Us</h2>
-          <p className="section-subtitle">
-            Get in touch with our team for any queries or support
-          </p>
         </div>
 
         {/* Map and Form Section */}

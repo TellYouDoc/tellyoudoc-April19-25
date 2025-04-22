@@ -25,7 +25,7 @@ const Navbar = () => {
     if (isHomePage) {
       const section = document.getElementById(sectionId);
       if (section) {
-        const navbarHeight = 50; // Height of the navbar
+        const navbarHeight = 80; // Height of the navbar
         const sectionPosition =
           section.getBoundingClientRect().top + window.pageYOffset;
         const offsetPosition = sectionPosition - navbarHeight;
