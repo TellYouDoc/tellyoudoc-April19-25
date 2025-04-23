@@ -1019,7 +1019,7 @@ const Home = () => {
                 <div className="home-hero-cta">
                   <Link
                     to="/partner"
-                    className="cta-button"
+                    className="home-cta-button"
                     onMouseOver={(e) => {
                       e.currentTarget.style.transform = "translateY(-3px)";
                       e.currentTarget.style.boxShadow =
