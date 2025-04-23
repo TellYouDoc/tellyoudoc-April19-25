@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "../styles/Partner.css";
 
 import Ribbon from "../assets/images/ribon.png";
+import { useLocation } from "react-router-dom";
 
 import whoisin from "../assets/images/who-can-join-1.png";
 import whoisin2 from "../assets/images/who-can-join-2.png";
@@ -29,6 +30,8 @@ const Partner = () => {
     reason: "",
   });
 
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
   // State for form validation
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,11 +45,20 @@ const Partner = () => {
 
   // State to track if the form is showing
   const [showForm, setShowForm] = useState(false);
+// Get URL parameters
+const location = useLocation();
 
-  // Check if screen is mobile size
+// Check URL parameters for openForm
+useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  if (params.get("openForm") === "true") {
+    setShowForm(true);
+  }
+}, [location]);
+  // Update the useEffect for responsive detection
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 576);
+      setIsMobile(window.innerWidth <= 768);
     };
 
     // Initial check
@@ -69,25 +81,6 @@ const Partner = () => {
       return () => clearTimeout(timer);
     }
   }, [feedback]);
-
-  // Responsive styles object for reuse
-  const responsive = {
-    container: {
-      padding: "clamp(20px, 5vw, 80px) clamp(15px, 3vw, 40px)",
-    },
-    heading: {
-      fontSize: "clamp(24px, 5vw, 32px)",
-    },
-    subheading: {
-      fontSize: "clamp(20px, 4vw, 24px)",
-    },
-    paragraph: {
-      fontSize: "clamp(14px, 3vw, 16px)",
-    },
-    smallText: {
-      fontSize: "clamp(12px, 2vw, 14px)",
-    },
-  };
 
   // Add smooth scrolling behavior
   useEffect(() => {
@@ -138,60 +131,100 @@ const Partner = () => {
   };
 
   // Input style with error handling
-  const inputStyle = (name) => ({
-    ...interactiveStyle,
-    width: "100%",
-    padding: "8px 15px",
-    fontSize: "16px",
-    border: `1px solid ${
-      errors[name]
+  // Modified inputStyle function with responsiveness
+  const inputStyle = (name) => {
+    // Base styles
+    const baseStyle = {
+      ...interactiveStyle,
+      width: "100%",
+      padding: isMobile ? "6px 12px" : "8px 15px",
+      fontSize: isMobile ? "14px" : "16px",
+      border: `1px solid ${errors[name]
         ? "#ff4d4f"
         : focusedInput === name || formData[name]
-        ? "#4A90E2"
-        : "#ddd"
-    }`,
-    borderRadius: "5px",
-    backgroundColor: "white",
-    outline: "none",
-    height: "45px",
-    boxSizing: "border-box",
-    lineHeight: "normal",
-  });
+          ? "#4A90E2"
+          : "#ddd"
+        }`,
+      borderRadius: "5px",
+      backgroundColor: "white",
+      outline: "none",
+      height: isMobile ? "40px" : "45px",
+      boxSizing: "border-box",
+      lineHeight: "normal",
+    };
 
-  // Restore the original label style
-  const labelStyle = (name) => ({
-    ...interactiveStyle,
-    position: "absolute",
-    left: "15px",
-    top: formData[name] || focusedInput === name ? "-10px" : "50%",
-    transform:
-      formData[name] || focusedInput === name
-        ? "translateY(0)"
-        : "translateY(-50%)",
-    fontSize: formData[name] || focusedInput === name ? "12px" : "16px",
-    color: errors[name]
-      ? "#ff4d4f"
-      : formData[name] || focusedInput === name
-      ? "#4A90E2"
-      : "#666",
-    pointerEvents: "none",
-    backgroundColor:
-      formData[name] || focusedInput === name ? "white" : "transparent",
-    padding: formData[name] || focusedInput === name ? "0 5px" : "0",
-    zIndex: "1",
-  });
+    // Apply additional styles for extremely small screens
+    if (window.innerWidth <= 375) {
+      baseStyle.padding = "5px 10px";
+      baseStyle.fontSize = "13px";
+      baseStyle.height = "36px";
+    }
+
+    return baseStyle;
+  };
+
+  // Modified labelStyle function with responsiveness
+  const labelStyle = (name) => {
+    // Determine font size based on screen size and field state
+    let fontSize;
+    if (window.innerWidth <= 375) {
+      fontSize = formData[name] || focusedInput === name ? "10px" : "13px";
+    } else if (window.innerWidth <= 320) {
+      fontSize = formData[name] || focusedInput === name ? "11px" : "10px";
+    } else if (isMobile) {
+      fontSize = formData[name] || focusedInput === name ? "11px" : "12px";
+    } else {
+      fontSize = formData[name] || focusedInput === name ? "12px" : "14px";
+    }
+
+    // Base styles
+    return {
+      ...interactiveStyle,
+      position: "absolute",
+      left: isMobile ? "12px" : "15px",
+      top: formData[name] || focusedInput === name ?
+        (isMobile ? "-8px" : "-10px") :
+        "50%",
+      transform:
+        formData[name] || focusedInput === name
+          ? "translateY(0)"
+          : "translateY(-50%)",
+      fontSize: fontSize,
+      color: errors[name]
+        ? "#ff4d4f"
+        : formData[name] || focusedInput === name
+          ? "#4A90E2"
+          : "#666",
+      pointerEvents: "none",
+      backgroundColor:
+        formData[name] || focusedInput === name ? "white" : "transparent",
+      padding: formData[name] || focusedInput === name ?
+        (isMobile ? "0 3px" : "0 5px") :
+        "0",
+      zIndex: "1",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      maxWidth: "90%",
+    };
+  };
 
   // Update textarea style to align content to the top
-  const textareaStyle = (name) => ({
-    ...inputStyle(name),
-    height: "120px",
-    resize: "vertical",
-    paddingTop: "12px",
-    paddingBottom: "10px",
-    verticalAlign: "top",
-    lineHeight: "1.5",
-    textAlign: "left",
-  });
+  const textareaStyle = (name) => {
+    const baseStyle = {
+      ...inputStyle(name),
+      height: window.innerWidth <= 375 ? "60px" : "120px", // Fixed height based on screen size
+      resize: "none", // Prevent any resizing
+      paddingTop: "12px",
+      paddingBottom: "10px",
+      verticalAlign: "top",
+      lineHeight: "1.5",
+      textAlign: "left",
+      overflow: "auto", // Add scrolling if content exceeds the fixed height
+    };
+
+    return baseStyle;
+  };
 
   // Update select styles to include error handling
   const selectStyle = (name) => ({
@@ -213,32 +246,6 @@ const Partner = () => {
     fontSize: "12px",
     marginTop: "5px",
     fontWeight: "500",
-  };
-
-  // Feedback message styles
-  const feedbackStyle = {
-    success: {
-      backgroundColor: "#f6ffed",
-      border: "1px solid #b7eb8f",
-      borderLeft: "4px solid #52c41a",
-      color: "#52c41a",
-    },
-    error: {
-      backgroundColor: "#fff2f0",
-      border: "1px solid #ffccc7",
-      borderLeft: "4px solid #ff4d4f",
-      color: "#ff4d4f",
-    },
-    base: {
-      padding: "16px",
-      borderRadius: "4px",
-      marginBottom: "20px",
-      fontSize: "16px",
-      lineHeight: "1.5",
-      position: "relative",
-      animation: "slideDown 0.3s ease",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-    },
   };
 
   // Form validation function
@@ -430,9 +437,8 @@ const Partner = () => {
 
     return (
       <div
-        className={`feedback-message ${
-          feedback.type === "success" ? "feedback-success" : "feedback-error"
-        }`}
+        className={`feedback-message ${feedback.type === "success" ? "feedback-success" : "feedback-error"
+          }`}
       >
         <div className="feedback-icon">
           {feedback.type === "success" ? (
@@ -587,6 +593,20 @@ const Partner = () => {
     },
   ];
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Then modify your function to use the state variable
+  const getResponsiveLabel = (fullLabel, shortLabel) => {
+    return screenWidth <= 425 ? shortLabel : fullLabel;
+  };
+
   // Function to handle showing the form with slide animation
   const handleShowForm = (e) => {
     e.preventDefault();
@@ -633,7 +653,7 @@ const Partner = () => {
                 doc
               </span>{" "}
               — a smarter way to streamline cancer diagnosis, treatment
-              management, and patient support. <br/><br/> Join the Beta program and help to
+              management, and patient support. <br /><br /> Join the Beta program and help to
               shape the future of cancer care alongside leading oncologists.
             </p>
             <div className="hero-cta">
@@ -642,7 +662,7 @@ const Partner = () => {
                   Beta Features
                 </a>
               </div>
-              <div className="cta-buttons">
+              <div className="cta-buttons" id="cta-2">
                 <a href="#who-can-join-section" className="cta-button">
                   Who can join ?
                 </a>
@@ -656,7 +676,7 @@ const Partner = () => {
           </div>
 
           <div className="hero-space">
-            <div className="benefits-container">
+            <div className="benefits-container" style={{ marginTop: showForm ? "170px" : "20px" }}>
               <h2 className="benefits-heading">Beta Benefits</h2>
 
               {heroBenefits.map((benefit) => (
@@ -665,15 +685,14 @@ const Partner = () => {
                   className={`benefit ${benefit.className}`}
                 >
                   <div className="benefit-header">
-                    <div className="benefit-count">{benefit.id}</div>
+                    <div className="benefit-count" id="beta-benefit-count">{benefit.id}</div>
                     <h3 className="benefit-title">{benefit.title}</h3>
                   </div>
                   <p
-                    className={`benefit-description ${
-                      isMobile
-                        ? "benefit-description-mobile"
-                        : "benefit-description-desktop"
-                    }`}
+                    className={`benefit-description ${isMobile
+                      ? "benefit-description-mobile"
+                      : "benefit-description-desktop"
+                      }`}
                   >
                     {benefit.description}
                   </p>
@@ -686,25 +705,21 @@ const Partner = () => {
             </div>
           </div>
 
-          <div
-            className={`hero-form-container ${showForm ? "slide-in-left" : ""}`}
-          >
+          <div className={`hero-form-container ${showForm ? "slide-in-left" : ""}`}  style={{borderRadius: "10px"}}>
             <div className="hero-form-wrapper">
               <div className="hero-form-header">
                 <h2 className="hero-form-title">Join the Beta Program</h2>
-                <button
-                  className="hero-form-close"
-                  onClick={() => setShowForm(false)}
-                >
+                <button className="hero-form-close" onClick={() => setShowForm(false)}>
                   ×
                 </button>
               </div>
+
               <div className="eligibility-note">
                 <span className="asterisk">*</span> Only professionals and institutions working in India having valid registration.
               </div>
+
               <div className="hero-form-content">
                 <form onSubmit={handleSubmit} className="form-container">
-                  {/* Feedback message */}
                   <FeedbackMessage />
 
                   <div style={{ ...formGroupStyle, marginBottom: "12px" }}>
@@ -720,7 +735,7 @@ const Partner = () => {
                       required
                     />
                     <label htmlFor="fullName" style={labelStyle("fullName")}>
-                      Full Name
+                      {getResponsiveLabel("Full Name", "Name")}
                     </label>
                     {errors.fullName && (
                       <div style={{ ...errorStyle, marginTop: "2px" }}>
@@ -729,13 +744,7 @@ const Partner = () => {
                     )}
                   </div>
 
-                  <div
-                    style={{
-                      ...formGridStyle,
-                      gap: "12px",
-                      marginBottom: "12px",
-                    }}
-                  >
+                  <div style={{ ...formGridStyle, gap: "12px", marginBottom: "12px" }}>
                     <div style={formGridItemStyle}>
                       <input
                         type="tel"
@@ -749,11 +758,8 @@ const Partner = () => {
                         required
                         maxLength="10"
                       />
-                      <label
-                        htmlFor="mobileNumber"
-                        style={labelStyle("mobileNumber")}
-                      >
-                        Mobile Number
+                      <label htmlFor="mobileNumber" style={labelStyle("mobileNumber")}>
+                        {getResponsiveLabel("Mobile Number", "Mobile")}
                       </label>
                       {errors.mobileNumber && (
                         <div style={{ ...errorStyle, marginTop: "2px" }}>
@@ -775,7 +781,7 @@ const Partner = () => {
                         required
                       />
                       <label htmlFor="email" style={labelStyle("email")}>
-                        Email Address
+                        {getResponsiveLabel("Email Address", "Email")}
                       </label>
                       {errors.email && (
                         <div style={{ ...errorStyle, marginTop: "2px" }}>
@@ -785,13 +791,7 @@ const Partner = () => {
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      ...formGridStyle,
-                      gap: "12px",
-                      marginBottom: "12px",
-                    }}
-                  >
+                  <div style={{ ...formGridStyle, gap: "12px", marginBottom: "12px" }}>
                     <div style={formGridItemStyle}>
                       <input
                         type="text"
@@ -805,7 +805,7 @@ const Partner = () => {
                         required
                       />
                       <label htmlFor="city" style={labelStyle("city")}>
-                        City
+                        {getResponsiveLabel("City", "City")}
                       </label>
                       {errors.city && (
                         <div style={{ ...errorStyle, marginTop: "2px" }}>
@@ -835,7 +835,7 @@ const Partner = () => {
                         <option value="Other">Other</option>
                       </select>
                       <label htmlFor="state" style={labelStyle("state")}>
-                        State
+                        {getResponsiveLabel("State", "State")}
                       </label>
                       {errors.state && (
                         <div style={{ ...errorStyle, marginTop: "2px" }}>
@@ -845,13 +845,7 @@ const Partner = () => {
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      ...formGridStyle,
-                      gap: "12px",
-                      marginBottom: "12px",
-                    }}
-                  >
+                  <div style={{ ...formGridStyle, gap: "12px", marginBottom: "12px" }}>
                     <div style={formGridItemStyle}>
                       <select
                         id="specialization"
@@ -865,19 +859,14 @@ const Partner = () => {
                       >
                         <option value=""></option>
                         <option value="Oncologist">Oncologist</option>
-                        <option value="General Physician">
-                          General Physician
-                        </option>
+                        <option value="General Physician">General Physician</option>
                         <option value="Surgeon">Surgeon</option>
                         <option value="Gynecologist">Gynecologist</option>
                         <option value="Pediatrician">Pediatrician</option>
                         <option value="Other">Other</option>
                       </select>
-                      <label
-                        htmlFor="specialization"
-                        style={labelStyle("specialization")}
-                      >
-                        Medical Specialization
+                      <label htmlFor="specialization" style={labelStyle("specialization")}>
+                        {getResponsiveLabel("Medical Specialization", "Specialization")}
                       </label>
                       {errors.specialization && (
                         <div style={{ ...errorStyle, marginTop: "2px" }}>
@@ -885,6 +874,7 @@ const Partner = () => {
                         </div>
                       )}
                     </div>
+
                     <div style={formGridItemStyle}>
                       <input
                         type="text"
@@ -897,11 +887,8 @@ const Partner = () => {
                         style={{ ...inputStyle("qualification") }}
                         required
                       />
-                      <label
-                        htmlFor="qualification"
-                        style={labelStyle("qualification")}
-                      >
-                        Medical Qualification
+                      <label htmlFor="qualification" style={labelStyle("qualification")}>
+                        {getResponsiveLabel("Medical Qualification", "Qualification")}
                       </label>
                       {errors.qualification && (
                         <div style={{ ...errorStyle, marginTop: "2px" }}>
@@ -911,13 +898,7 @@ const Partner = () => {
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      ...formGridStyle,
-                      gap: "12px",
-                      marginBottom: "12px",
-                    }}
-                  >
+                  <div style={{ ...formGridStyle, gap: "12px", marginBottom: "12px" }}>
                     <div style={formGridItemStyle}>
                       <input
                         type="text"
@@ -929,11 +910,8 @@ const Partner = () => {
                         onBlur={handleBlur}
                         style={{ ...inputStyle("hospitalName") }}
                       />
-                      <label
-                        htmlFor="hospitalName"
-                        style={labelStyle("hospitalName")}
-                      >
-                        Hospital / Clinic Name
+                      <label htmlFor="hospitalName" style={labelStyle("hospitalName")}>
+                        {getResponsiveLabel("Hospital / Clinic Name", "Hospital/Clinic")}
                       </label>
                     </div>
 
@@ -951,11 +929,8 @@ const Partner = () => {
                         style={{ ...inputStyle("experience") }}
                         required
                       />
-                      <label
-                        htmlFor="experience"
-                        style={labelStyle("experience")}
-                      >
-                        Years of Experience
+                      <label htmlFor="experience" style={labelStyle("experience")}>
+                        {getResponsiveLabel("Years of Experience", "Experience")}
                       </label>
                       {errors.experience && (
                         <div style={{ ...errorStyle, marginTop: "2px" }}>
@@ -965,7 +940,7 @@ const Partner = () => {
                     </div>
                   </div>
 
-                  <div style={{ ...formGroupStyle, marginBottom: "12px" }}>
+                  <div style={{ ...formGroupStyle, marginBottom: "5px" }}>
                     <textarea
                       id="reason"
                       name="reason"
@@ -976,70 +951,56 @@ const Partner = () => {
                       onBlur={handleBlur}
                       style={{
                         ...textareaStyle("reason"),
-                        minHeight: "80px",
+                        minHeight: window.innerWidth <= 375 ? "60px" : "80px", // Set fixed height based on screen size
                       }}
                     ></textarea>
                     <label
                       htmlFor="reason"
                       style={{
                         ...labelStyle("reason"),
-                        top:
-                          formData.reason || focusedInput === "reason"
-                            ? "-10px"
-                            : "12px",
-                        transform:
-                          formData.reason || focusedInput === "reason"
-                            ? "translateY(0)"
-                            : "translateY(0)",
-                        fontSize:
-                          formData.reason || focusedInput === "reason"
-                            ? "12px"
-                            : "16px",
-                        backgroundColor:
-                          formData.reason || focusedInput === "reason"
-                            ? "white"
-                            : "transparent",
-                        padding:
-                          formData.reason || focusedInput === "reason"
-                            ? "0 5px"
-                            : "0",
+                        top: formData.reason || focusedInput === "reason" ? "-10px" : "12px",
+                        transform: formData.reason || focusedInput === "reason" ? "translateY(0)" : "translateY(0)",
+                        fontSize: formData.reason || focusedInput === "reason"
+                          ? (window.innerWidth <= 375 ? "10px" : "12px")
+                          : (window.innerWidth <= 375 ? "13px" : "16px"),
+                        backgroundColor: formData.reason || focusedInput === "reason" ? "white" : "transparent",
+                        padding: formData.reason || focusedInput === "reason"
+                          ? (window.innerWidth <= 375 ? "0 3px" : "0 5px")
+                          : "0",
                       }}
                     >
-                      Reason to Join
+                      {getResponsiveLabel("Reason to Join", "Reason")}
                     </label>
                   </div>
 
                   <button
                     type="submit"
-                    className={`form-submit-button ${
-                      isSubmitting
-                        ? "form-submit-button-submitting"
-                        : "form-submit-button-active"
-                    }`}
+                    className={`form-submit-button ${isSubmitting ? "form-submit-button-submitting" : "form-submit-button-active"}`}
                     disabled={isSubmitting}
                     style={{
-                      padding: "10px 20px",
+                      padding: window.innerWidth <= 375 ? "8px 15px" : "10px 20px",
                       marginTop: "8px",
-                      fontSize: "16px",
+                      fontSize: window.innerWidth <= 375 ? "14px" : "16px",
                     }}
                   >
-                    {isSubmitting ? "Processing..." : "Click to Join"}
+                    {isSubmitting ? "Processing..." : getResponsiveLabel("Click to Join", "Join")}
                   </button>
 
-                  {/* Privacy Assurance as footnote */}
                   <div
                     style={{
-                      fontSize: "0.85rem",
+                      fontSize: window.innerWidth <= 375 ? "0.75rem" : "0.85rem",
                       marginTop: "8px",
                       color: "#666",
                       textAlign: "left"
                     }}
                   >
-                    <small style={{ fontSize: "0.85rem", lineHeight: "1.4" }}>
+                    <small style={{ fontSize: window.innerWidth <= 375 ? "0.75rem" : "0.85rem", lineHeight: "1.4" }}>
                       <span style={{ color: "#e83e8c" }}>*</span>
-                      <strong>Assurance of Privacy: </strong> We value your
-                      trust. All your details will be kept confidential and used
-                      only for internal beta coordination.
+                      <strong>{getResponsiveLabel("Assurance of Privacy:", "Privacy:")}</strong>
+                      {getResponsiveLabel(
+                        " We value your trust. All your details will be kept confidential and used only for internal beta coordination.",
+                        " Your details will be kept confidential."
+                      )}
                     </small>
                   </div>
                 </form>
@@ -1048,310 +1009,6 @@ const Partner = () => {
           </div>
         </div>
       </section>
-
-      <style jsx="true">{`
-        .hero-content-wrapper {
-          position: relative;
-          overflow: hidden;
-          display: flex;
-          flex-wrap: wrap;
-          align-items: flex-start;
-          min-height: 750px;
-          padding-top: 30px;
-        }
-
-        .hero-text {
-          transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
-          width: 48%;
-          padding-right: 20px;
-          align-self: flex-start;
-        }
-
-        .slide-out-left {
-          transform: translateX(-120%);
-          opacity: 0;
-        }
-
-        .hero-space {
-          width: 48%;
-          margin-left: 4%;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-          align-self: flex-start;
-        }
-
-        .hero-form-container {
-          position: absolute;
-          top: 30px;
-          left: 0;
-          width: 48%;
-          height: auto;
-          background: transparent;
-          transform: translateX(-120%);
-          transition: transform 0.8s ease-in-out;
-          z-index: 10;
-          display: flex;
-          align-items: flex-start;
-          justify-content: flex-start;
-          padding: 20px 20px 40px;
-          box-shadow: none;
-          border-radius: 0;
-          backdrop-filter: none;
-        }
-
-        .slide-in-left {
-          transform: translateX(0);
-        }
-
-        .hero-form-wrapper {
-          width: 100%;
-          max-width: 100%;
-          background: #fff;
-          border-radius: 8px;
-          padding: 15px;
-          box-shadow: 0 10px 25px rgba(232, 62, 140, 0.12);
-          position: relative;
-        }
-
-        .hero-form-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-          padding-bottom: 8px;
-          border-bottom: 2px solid rgba(232, 62, 140, 0.2);
-          background: #fff;
-          z-index: 5;
-        }
-
-        .hero-form-title {
-          font-size: 1.3rem;
-          color: #2c3e50;
-          margin: 0;
-          position: relative;
-        }
-
-        .hero-form-title:after {
-          content: "";
-          position: absolute;
-          bottom: -8px;
-          left: 0;
-          width: 50px;
-          height: 2px;
-          border-radius: 2px;
-        }
-
-        .hero-form-close {
-          background: none;
-          border: none;
-          font-size: 1.8rem;
-          color: #888;
-          cursor: pointer;
-          padding: 0;
-          width: 30px;
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          transition: all 0.3s ease;
-        }
-
-        .hero-form-close:hover {
-          background: rgba(232, 62, 140, 0.1);
-          color: #e83e8c;
-        }
-
-        .hero-form-content .form-container {
-          padding: 0 !important;
-          box-shadow: none !important;
-          border: none !important;
-          background: transparent !important;
-        }
-
-        @media (max-width: 992px) {
-          .hero-content-wrapper {
-            min-height: 1050px;
-            flex-direction: column;
-            padding-top: 20px;
-          }
-
-          .hero-text,
-          .hero-space {
-            width: 100%;
-            padding-right: 0;
-          }
-
-          .hero-form-container {
-            width: 100%;
-            top: 20px;
-          }
-
-          .hero-space {
-            margin-top: 30px;
-            margin-left: 0;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .hero-content-wrapper {
-            min-height: 1200px;
-            padding-top: 15px;
-          }
-
-          .hero-form-container {
-            width: 100%;
-            padding: 15px;
-            top: 15px;
-          }
-
-          .hero-form-wrapper {
-            padding: 15px;
-          }
-        }
-
-        .feedback-message {
-          margin-bottom: 15px;
-          padding: 15px;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          animation: fadeInDown 0.4s ease-out forwards;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .feedback-success {
-          background-color: rgba(72, 187, 120, 0.1);
-          border-left: 4px solid #48bb78;
-          color: #2f855a;
-        }
-
-        .feedback-error {
-          background-color: rgba(245, 101, 101, 0.1);
-          border-left: 4px solid #f56565;
-          color: #c53030;
-        }
-
-        .feedback-icon {
-          margin-right: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .feedback-content {
-          flex: 1;
-          font-weight: 500;
-          line-height: 1.4;
-        }
-
-        @keyframes fadeInDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .form-group {
-          position: relative;
-          margin-bottom: 15px;
-        }
-        
-        .form-container input,
-        .form-container select,
-        .form-container textarea {
-          display: block;
-          width: 100%;
-          box-sizing: border-box;
-          font-size: 16px;
-          line-height: normal;
-          font-family: inherit;
-        }
-        
-        .form-container input:focus,
-        .form-container select:focus,
-        .form-container textarea:focus {
-          border-color: #4A90E2 !important;
-          box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
-        }
-        
-        .form-container label {
-          transition: all 0.2s ease;
-          pointer-events: none;
-        }
-        
-        /* Ensure text visibility in input fields */
-        .form-container input::placeholder,
-        .form-container textarea::placeholder {
-          opacity: 0;
-        }
-        
-        .form-container input:focus::placeholder,
-        .form-container textarea:focus::placeholder {
-          opacity: 0.5;
-        }
-        
-        /* Fix for text visibility in inputs */
-        .form-container input[type="text"],
-        .form-container input[type="email"],
-        .form-container input[type="tel"],
-        .form-container input[type="number"] {
-          text-overflow: ellipsis;
-          padding-top: 0;
-          padding-bottom: 0;
-          height: 45px;
-          line-height: 45px;
-        }
-        
-        /* Fix for select elements */
-        .form-container select {
-          text-overflow: ellipsis;
-          padding-right: 30px !important;
-        }
-        
-        /* Fix for textarea */
-        .form-container textarea {
-          padding-top: 12px;
-          min-height: 80px;
-          line-height: 1.5;
-        }
-        
-        /* Fix for the labels positioning */
-        .form-container label {
-          z-index: 2;
-        }
-        
-        /* Make sure error messages don't cause layout shifts */
-        .form-container [style*="errorStyle"] {
-          min-height: 18px;
-          display: block;
-        }
-        
-        /* Fix spacing when form is showing */
-        .hero-form-content {
-          padding: 0 10px;
-        }
-
-        .eligibility-note {
-          font-size: 0.85rem;
-          color: #666;
-          margin: -5px 0 10px 0;
-          padding: 0 10px;
-          font-style: italic;
-          text-align: left;
-        }
-        
-        .eligibility-note .asterisk {
-          color: #e83e8c;
-          font-weight: bold;
-          margin-right: 2px;
-        }
-      `}</style>
 
       {/* Beta Launch Section */}
       <section className="beta-launch-section" id="beta-launch-section">
@@ -1369,7 +1026,8 @@ const Partner = () => {
         <div className="beta-launch-bubble beta-launch-bubble-extra-large"></div>
         <div className="beta-launch-bubble beta-launch-bubble-small"></div>
 
-        <div className="beta-launch-boxes-container">
+        {/* Container gets a special class based on screen size */}
+        <div className={`beta-launch-boxes-container ${isMobile ? "mobile-layout" : ""}`}>
           {/* Image Box */}
           <div className="beta-launch-image-box">
             <img
@@ -1382,8 +1040,15 @@ const Partner = () => {
           {/* Feature Boxes */}
           {betaLaunchFeatures.map((feature) => (
             <div key={feature.id} className="beta-launch-feature-box">
-              <div className="beta-launch-feature-icon" style={{ width: "120px", height: "120px", borderWidth: "2px" }}>
-                <img src={feature.icon} alt={feature.title} style={{ width: "110px", height: "110px" }} />
+              <div
+                className="beta-launch-feature-icon"
+                style={!isMobile ? { width: "120px", height: "120px", borderWidth: "2px" } : {}}
+              >
+                <img
+                  src={feature.icon}
+                  alt={feature.title}
+                  style={!isMobile ? { width: "110px", height: "110px" } : {}}
+                />
               </div>
               <div className="beta-launch-feature-content">
                 <h3 className="beta-launch-feature-title">{feature.title}</h3>
@@ -1410,148 +1075,6 @@ const Partner = () => {
         <div className="who-can-join-bubble who-can-join-bubble-large"></div>
         <div className="who-can-join-bubble who-can-join-bubble-extra-large"></div>
         <div className="who-can-join-bubble who-can-join-bubble-small"></div>
-
-        <style>
-          {`
-            .who-can-join-table {
-              width: 80%;
-              max-width: 900px;
-              margin: 30px auto;
-              border-collapse: collapse;
-              background-color: white;
-              box-shadow: 0 5px 15px rgba(232, 62, 140, 0.15);
-              border-radius: 8px;
-              overflow: hidden;
-              border: 1px solid rgba(232, 62, 140, 0.3);
-              text-align: left;
-            }
-            
-            .who-can-join-table td {
-              padding: 10px 15px;
-              border-bottom: 1px solid rgba(232, 62, 140, 0.1);
-              color: #5a6a7e;
-              font-size: 15px;
-              text-align: left;
-            }
-            
-            .who-can-join-table tr:last-child td {
-              border-bottom: none;
-            }
-            
-            .who-can-join-table tr:hover td {
-              background-color: rgba(255, 245, 247, 0.6);
-            }
-            
-            .who-can-join-table-footer {
-              text-align: left;
-              font-style: italic;
-              color: #e83e8c;
-              font-size: 16px;
-              margin: 10px auto 40px;
-              width: 90%;
-              max-width: 1200px;
-              padding-left: 20px;
-            }
-            
-            @media (max-width: 768px) {
-              .who-can-join-table th, 
-              .who-can-join-table td {
-                padding: 12px 15px;
-                font-size: 14px;
-              }
-            }
-            
-            .who-can-join-table tr:nth-child(even) {
-              background-color: rgba(255, 245, 247, 0.3);
-            }
-
-            .highlight {
-              color: #e83e8c;
-              font-weight: 500;
-            }
-
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            
-            .who-can-join-table {
-              animation: fadeIn 0.6s ease-out forwards;
-            }
-
-            @keyframes pulse {
-              0% { opacity: 0.8; }
-              50% { opacity: 1; }
-              100% { opacity: 0.8; }
-            }
-            
-            .who-can-join-table tr:last-child td {
-              animation: pulse 2s infinite ease-in-out;
-            }
-
-            .healthcare-pro-container {
-              display: flex;
-              width: 100%;
-              gap: 15px;
-              padding: 5px 0;
-            }
-            
-            .healthcare-pro-image-cell {
-              flex: 0 0 auto;
-            }
-            
-            .healthcare-pro-content-cell {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
-              gap: 5px;
-              justify-content: center;
-              text-align: left;
-            }
-            
-            .healthcare-pro-name {
-              font-weight: 700;
-              font-size: 20px;
-              font-family: 'Montserrat', sans-serif;
-              color: #e83e8c;
-              letter-spacing: 0.3px;
-              line-height: 1.3;
-              text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-              text-transform: capitalize;
-              margin-bottom: 3px;
-              text-align: left;
-            }
-            
-            .healthcare-pro-description {
-              color: #5a6a7e;
-              font-size: 16px;
-              line-height: 1.4;
-              text-align: left;
-            }
-            
-            .healthcare-pro-icon {
-              width: 80px;
-              height: 80px;
-              object-fit: contain;
-              border-radius: 50%;
-              background: rgba(255, 107, 157, 0.1);
-              padding: 6px;
-              box-shadow: 0 2px 5px rgba(232, 62, 140, 0.2);
-            }
-
-            .who-can-join-section {
-              padding: 40px 0;
-              position: relative;
-              overflow: hidden;
-              background-color: #fff;
-            }
-            
-            .who-can-join-heading-container {
-              text-align: center;
-              margin-bottom: 20px;
-            }
-          `}
-        </style>
 
         <table className="who-can-join-table">
           <tbody>

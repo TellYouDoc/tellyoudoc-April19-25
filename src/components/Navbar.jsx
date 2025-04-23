@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../styles/Navbar.css";
 import logoImage from "../assets/tellyoudoc.png";
 
@@ -7,6 +7,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
 
   const toggleMenu = () => {
@@ -76,6 +77,13 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [scrolled]);
+
+  // Navigate to partner page with form open
+  const handleJoinBeta = (e) => {
+    e.preventDefault();
+    navigate("/partner?openForm=true");
+    closeMenu();
+  };
 
   return (
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
@@ -148,6 +156,12 @@ const Navbar = () => {
           }}
         >
           Contact
+        </a>
+        <a
+          href="/partner"
+          onClick={handleJoinBeta}
+        >
+          Join Beta
         </a>
       </div>
 

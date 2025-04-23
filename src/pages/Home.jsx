@@ -604,7 +604,7 @@ const Home = () => {
 
               // Call recursively for next sub-feature
               showSubFeatures(subIndex + 1);
-            }, 300); // Show each sub-feature with a 300ms delay
+            }, 600); // Show each sub-feature with a 300ms delayW
           }
         };
 
@@ -615,7 +615,7 @@ const Home = () => {
         if (featureIndex < features.length - 1) {
           setTimeout(() => {
             showFeature(featureIndex + 1);
-          }, 2000); // Show next feature after 2 seconds
+          }, 1000); // Show next feature after 2 seconds
         } else {
           // All features have been shown
           // Wait a longer time before restarting the cycle
@@ -634,8 +634,8 @@ const Home = () => {
                 setIsExiting(false);
                 showFeatures(); // Restart the animation cycle
               }, 1000);
-            }, 3000); // Longer time for exit animation
-          }, 10000); // Show all features for 10 seconds before restarting
+            }, 2000); // Longer time for exit animation
+          }, 6000); // Show all features for 10 seconds before restarting
         }
       };
 
@@ -948,49 +948,48 @@ const Home = () => {
   };
 
   return (
-    <div className="home-container" id="home-container">
+    <div className="home-home-container" id="home-container">
       {/* Hero Section */}
-      <section id="home" className="hero-section">
-        <div className="hero-background"></div>
-        <div className="product-content hero-content-wrapper">
-          <div className="about-content hero-text">
-            <div className="about-text">
-              <div className="about-header">
-                <h5 
-                  className="about-title hero-title"
+      <section id="home" className="home-hero-section">
+        <div className="home-hero-background"></div>
+        <div className="home-hero-content-wrapper">
+          <div className="home-about-content home-hero-text">
+            <div>
+              <div className="home-hero-about-header">
+                <h5
+                  className="home-hero-title"
                   style={{
                     color: "#1a1a1a",
-                    fontSize: "3.8rem",
                     marginBottom: "1.5rem",
                     fontWeight: 800,
                     lineHeight: 1.1,
                     letterSpacing: "-0.5px",
                     position: "relative",
-                    display: "inline-block"
+                    display: "inline-block",
                   }}
                 >
                   Reimagine Cancer Care with{" "}
-                  <span 
+                  <span
                     style={{
                       WebkitBackgroundClip: "text",
                       backgroundClip: "text",
                       color: "#FF7007",
-                      display: "inline"
+                      display: "inline",
                     }}
                   >
                     tellyou
                   </span>
-                  <span 
+                  <span
                     style={{
                       WebkitBackgroundClip: "text",
                       backgroundClip: "text",
                       color: "#05AFA4",
-                      display: "inline"
+                      display: "inline",
                     }}
                   >
                     doc
                   </span>
-                  <span 
+                  <span
                     style={{
                       position: "absolute",
                       bottom: "-10px",
@@ -998,50 +997,38 @@ const Home = () => {
                       width: "80px",
                       height: "4px",
                       background: "linear-gradient(90deg, #2a7d73, #3b6baa)",
-                      borderRadius: "2px"
+                      borderRadius: "2px",
                     }}
                   ></span>
                 </h5>
               </div>
-              <div className="about-info">
-                <p 
-                  className="hero-description"
+              <div className="home-hero-about-info">
+                <p
+                  className="home-hero-description"
                   style={{
-                    fontSize: "1.2rem",
                     marginBottom: "2rem",
                     color: "#333",
                     lineHeight: 1.7,
-                    textShadow: "none"
+                    textShadow: "none",
                   }}
                 >
                   Smart tools for breast cancer screening, chemo management, OPD
                   workflows, and assistant-led care — all in one app. Built for
                   doctors. Backed by clinical expertise.
                 </p>
-                <div className="hero-cta">
-                  <Link 
-                    to="/partner" 
+                <div className="home-hero-cta">
+                  <Link
+                    to="/partner"
                     className="cta-button"
-                    style={{
-                      background: "linear-gradient(90deg, #2a7d73, #3b6baa)",
-                      border: "none",
-                      color: "white",
-                      padding: "14px 32px",
-                      fontSize: "1.05rem",
-                      fontWeight: 600,
-                      borderRadius: "30px",
-                      boxShadow: "0 4px 15px rgba(42, 125, 115, 0.3)",
-                      transition: "all 0.3s ease",
-                      display: "inline-block",
-                      textDecoration: "none"
-                    }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.transform = "translateY(-3px)";
-                      e.currentTarget.style.boxShadow = "0 8px 20px rgba(42, 125, 115, 0.4)";
+                      e.currentTarget.style.boxShadow =
+                        "0 8px 20px rgba(42, 125, 115, 0.4)";
                     }}
                     onMouseOut={(e) => {
                       e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow = "0 4px 15px rgba(42, 125, 115, 0.3)";
+                      e.currentTarget.style.boxShadow =
+                        "0 4px 15px rgba(42, 125, 115, 0.3)";
                     }}
                   >
                     Be Beta Partner
@@ -1050,41 +1037,29 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="hero-space"></div>
-        </div>
-        <div className="scroll-indicator">
-          <a href="#about">
-            <i className="fas fa-chevron-down"></i>
-          </a>
         </div>
       </section>
 
       {/* About Us Section */}
       <section id="about" className="about-section">
-        <div className="section-header">
+        <div className="home-section-header">
           <h2>About Us</h2>
-          {/* <p className="section-subtitle">
-            <span className="highlight-text">TRACK</span>{" "}
-            <span className="separator">|</span>{" "}
-            <span className="highlight-text">TALK</span>{" "}
-            <span className="separator">|</span>{" "}
-            <span className="highlight-text">TREAT</span>
-          </p> */}
         </div>
-        <div className="product-content about-section-content">
-          <div className="about-images-grid">
+        <div className="home-about-section-content">
+          <div className="home-about-images-grid">
             <img
               src={aboutImageUrl}
               alt="About Us"
-              className="about-section-image"
-              style={{ marginLeft: "100px" }}
+              className="home-about-section-image"
             />
           </div>
-          <div className="about-content">
-            <div className="about-info">
-              <div className="about-item">
-                <div className="about-item-label">Vision</div>
-                <p style={{ textAlign: "justify" }}>
+          <div className="home-about-section-about-content">
+            <div className="home-about-section-about-info">
+              <div className="home-about-section-about-item">
+                <div className="home-about-section-about-item-label">
+                  Vision
+                </div>
+                <p>
                   To revolutionize healthcare accessibility by bridging the gap
                   between patients and doctors, empowering individuals with
                   seamless, digital access to quality medical consultations, and
@@ -1092,11 +1067,11 @@ const Home = () => {
                 </p>
               </div>
 
-              <div className="about-item">
-                <div className="about-item-label" style={{ color: "#05A1A4" }}>
+              <div className="home-about-section-about-item">
+                <div className="home-about-section-about-item-label">
                   Mission
                 </div>
-                <p style={{ textAlign: "justify" }}>
+                <p>
                   Our mission is to simplify healthcare access for everyone
                   through a user-friendly platform where patients can connect
                   with trusted doctors, track and communicate symptoms, and
@@ -1113,17 +1088,17 @@ const Home = () => {
 
       {/* Product Section with Carousel */}
       <section id="product" className="product-section" ref={productSectionRef}>
-        <div className="section-header">
+        <div className="home-section-header">
           <h2>Our Offerings</h2>
         </div>
         <div
-          className={`product-content tellyoudoc-offers-content ${
+          className={`
+            product-content tellyoudoc-offers-content ${
             isProductSectionVisible ? "animate-section" : ""
-          }`}
+          } home-product-section-content`}
         >
           <div
             className="about-content feature-content"
-            style={{ justifyContent: "center", display: "flex" }}
           >
             <div className="about-text">
               <div className="about-header"></div>
@@ -1161,14 +1136,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div
-            className="product-images-grid"
-            style={{
-              width: "450px",
-              height: "450px",
-              maxWidth: "450px",
-            }}
-          >
+          <div className="product-images-grid">
             {[0, 1, 2, 3].map((position) => (
               <div key={position} className="about-image-wrapper">
                 {productSlidingImages[position] ? (
@@ -1202,19 +1170,16 @@ const Home = () => {
       </section>
 
       {/* Founders Section */}
-      <section id="founders" className="founders-section">
+      <section id="founders" className="home-founders-section">
         <div className="bubble-1"></div>
         <div className="bubble-2"></div>
         <div className="bubble-3"></div>
-        <div className="section-header">
+        <div className="home-section-header">
           <h2>Core Team</h2>
-          {/* <p className="section-subtitle">
-            Meet the minds behind TellYouDoc's healthcare innovation
-          </p> */}
         </div>
         <div className="founders-container">
           <div className="founder-card">
-            <div className="founder-header">
+            <div className="home-founder-header">
               <div className="founder-image">
                 <img
                   src="https://ieee-ims.org/sites/ieeeims/files/styles/cc_imgstyle_4_x_5/public/contacts/photo/profile_pic.jpg?h=6b0b5157&itok=lCD0DDnm"
@@ -1248,7 +1213,9 @@ const Home = () => {
               intelligent systems design and their application in real-world
               healthcare. The{" "}
               <span style={{ color: "#FF7007", fontWeight: 800 }}>tellyou</span>
-              <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>{" "}
+              <span style={{ color: "#05AFA4", fontWeight: 800 }}>
+                doc
+              </span>{" "}
               platform was born out of his observation that many Indian patients
               struggle to express their medical problems clearly during
               consultation, and often fail to track their regular symptoms
@@ -1263,7 +1230,7 @@ const Home = () => {
           </div>
 
           <div className="founder-card">
-            <div className="founder-header">
+            <div className="home-founder-header">
               <div className="founder-image">
                 <img src={doctorImageUrl} alt="Dr. Soumen Das" />
               </div>
@@ -1298,7 +1265,9 @@ const Home = () => {
               Breast Surgical Oncology Certification, becoming the first Indian
               surgeon to hold this distinction. The{" "}
               <span style={{ color: "#FF7007", fontWeight: 800 }}>tellyou</span>
-              <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>{" "}
+              <span style={{ color: "#05AFA4", fontWeight: 800 }}>
+                doc
+              </span>{" "}
               platform was co-founded by Dr. Das after years of witnessing
               patients struggle to explain symptoms clearly during
               consultations, and the lack of tools to track symptoms regularly
