@@ -9,7 +9,7 @@ export default defineConfig({
       "/api/v1": {
         target: "https://api.tellyoudoc.com",
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
     },
   },
