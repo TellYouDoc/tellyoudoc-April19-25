@@ -68,9 +68,9 @@ const Footer = () => {
             <br />
             Assam, India - 781015
             <br />
-            {/* <a href="mailto:info@tellyoudoc.com" className="footer-email">
+            <a href="mailto:info@tellyoudoc.com" className="footer-email">
               info@tellyoudoc.com
-            </a> */}
+            </a>
           </p>
         </div>
 

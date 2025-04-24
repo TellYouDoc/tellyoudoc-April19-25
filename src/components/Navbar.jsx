@@ -81,7 +81,7 @@ const Navbar = () => {
   // Navigate to partner page with form open
   const handleJoinBeta = (e) => {
     e.preventDefault();
-    navigate("/partner?openForm=true");
+    navigate("/partner");
     closeMenu();
   };
 
