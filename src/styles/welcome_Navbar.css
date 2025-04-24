@@ -209,6 +209,7 @@
       z-index: 999;
       transition: right 0.3s ease;
       box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+      background-color: #ffffff;
     }
     
     .nav-links::before {
