@@ -669,7 +669,7 @@ useEffect(() => {
               </div>
               <div className="cta-buttons">
                 <a className="cta-button" onClick={handleShowForm}>
-                  Join Beta
+                  Join Us
                 </a>
               </div>
             </div>
@@ -1102,6 +1102,8 @@ useEffect(() => {
           </tbody>
         </table>
       </section>
+
+      <div className="bottom-line"></div>
     </div>
   );
 };

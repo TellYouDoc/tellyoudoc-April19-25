@@ -210,6 +210,26 @@
   min-height: 570px;
 }
 
+.bottom-line {
+  font-size: 1.5rem;
+  position: relative;
+  animation: fadeInDown 1s ease forwards;
+  text-align: center;
+  max-width: 100%;
+  background-color: #079fa4;
+}
+
+.bottom-line::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
 /* Small mobile */
 @media (max-width: 320px) {
   .home-hero-title {
@@ -750,16 +770,16 @@
 
   .tellyoudoc-offers-content .feature-animation,
   .tellyoudoc-offers-content .subfeature-animation {
-      transform: translateZ(0);
-      backface-visibility: hidden;
-      width: 450px;
-      margin: auto;
-    }
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    width: 450px;
+    margin: auto;
+  }
 
-    .about-info {
-      margin: 0 7rem;
-      width: 100%;
-    }
+  .about-info {
+    margin: 0 7rem;
+    width: 100%;
+  }
 }
 
 /* Desktop  or Large Laptop */

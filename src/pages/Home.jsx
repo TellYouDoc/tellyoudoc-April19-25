@@ -1094,12 +1094,10 @@ const Home = () => {
         <div
           className={`
             product-content tellyoudoc-offers-content ${
-            isProductSectionVisible ? "animate-section" : ""
-          } home-product-section-content`}
+              isProductSectionVisible ? "animate-section" : ""
+            } home-product-section-content`}
         >
-          <div
-            className="about-content feature-content"
-          >
+          <div className="about-content feature-content">
             <div className="about-text">
               <div className="about-header"></div>
               <div className="about-info">
@@ -1439,6 +1437,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      <div className="bottom-line"></div>
     </div>
   );
 };

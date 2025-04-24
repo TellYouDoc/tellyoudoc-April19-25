@@ -60,7 +60,7 @@
 
 .footer-logo p {
   color: rgba(255, 255, 255, 0.7);
-  max-width: 300px;
+  max-width: 380px;
   margin-top: 0;
   line-height: 1.7;
   font-size: 0.95rem;
@@ -76,6 +76,7 @@
   color: #555 !important;
   line-height: 1.6 !important;
   font-size: 0.9rem !important;
+  max-width: fit-content;
 }
 
 .footer-email {
