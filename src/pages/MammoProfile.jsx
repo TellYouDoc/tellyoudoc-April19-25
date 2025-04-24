@@ -227,28 +227,37 @@ function MammoProfile() {
   };
 
   const getFamilyCancerSummary = () => {
-    if (!patient || !patient.medicalData) return null;
-
+    // First, check if both patient and medicalData exist
+    if (!patient || !patient.medicalData || !patient.medicalData.familyCancerHistory) {
+      return null;
+    }
+  
     let affectedCount = 0;
     let totalTypes = 0;
-
-    if (patient.medicalData.familyCancerHistory.breastCancer === 'Yes') {
-      affectedCount += patient.medicalData.familyCancerHistory.breastCancerRecords?.length || 0;
+    
+    const { familyCancerHistory } = patient.medicalData;
+  
+    // Add null checks for each property access
+    if (familyCancerHistory.breastCancer === 'Yes') {
+      affectedCount += familyCancerHistory.breastCancerRecords?.length || 0;
       totalTypes++;
     }
-    if (patient.medicalData.familyCancerHistory.ovarianCancer === 'Yes') {
-      affectedCount += patient.medicalData.familyCancerHistory.ovarianCancerRecords?.length || 0;
+    
+    if (familyCancerHistory.ovarianCancer === 'Yes') {
+      affectedCount += familyCancerHistory.ovarianCancerRecords?.length || 0;
       totalTypes++;
     }
-    if (patient.medicalData.familyCancerHistory.cervicalCancer === 'Yes') {
-      affectedCount += patient.medicalData.familyCancerHistory.cervicalCancerRecords?.length || 0;
+    
+    if (familyCancerHistory.cervicalCancer === 'Yes') {
+      affectedCount += familyCancerHistory.cervicalCancerRecords?.length || 0;
       totalTypes++;
     }
-    if (patient.medicalData.familyCancerHistory.otherCancer === 'Yes') {
-      affectedCount += patient.medicalData.familyCancerHistory.otherCancerRecords?.length || 0;
+    
+    if (familyCancerHistory.otherCancer === 'Yes') {
+      affectedCount += familyCancerHistory.otherCancerRecords?.length || 0;
       totalTypes++;
     }
-
+  
     return `${totalTypes} types, ${affectedCount} relatives`;
   };
 
