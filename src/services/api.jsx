@@ -6,7 +6,7 @@ const PROD_URL = 'https://tellyoudoc-breastcancer-74gcc.ondigitalocean.app/api/v
 
 // Determine if we're in development mode based on the environment
 const isDevelopment = process.env.NODE_ENV === 'development';
-const BASE_URL = isDevelopment ? DEV_URL : PROD_URL;
+const BASE_URL = "/api/v1";
 
 // Create axios instance with default config
 const api = axios.create({
