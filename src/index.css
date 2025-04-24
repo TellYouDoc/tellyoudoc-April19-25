@@ -516,3 +516,7 @@ input:focus, select:focus, textarea:focus {
     font-size: var(--font-size-base);
   }
 }
+
+* {
+  font-synthesis: none !important;
+}

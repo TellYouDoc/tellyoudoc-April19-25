@@ -659,3 +659,7 @@ tr:hover {
     gap: 0.5rem;
   }
 }
+
+* {
+  font-synthesis: none !important;
+}
