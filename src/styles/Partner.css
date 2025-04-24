@@ -4255,6 +4255,7 @@
   background-color: #fff;
   transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   border-right: 1px solid #ffe0e9;
+  margin: auto;
 }
 
 .beta-launch-image {
