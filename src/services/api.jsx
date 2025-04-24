@@ -2,11 +2,11 @@ import axios from 'axios';
 
 // Environment configuration
 const DEV_URL = '/api/v1'; // Using relative URL for dev to work with the proxy
-const PROD_URL = 'https://tellyoudoc-breastcancer-74gcc.ondigitalocean.app/api/v1';
+const PROD_URL = 'https://api.tellyoudoc.com/api/v1';
 
 // Determine if we're in development mode based on the environment
 const isDevelopment = process.env.NODE_ENV === 'development';
-const BASE_URL = "/api/v1";
+const BASE_URL = isDevelopment ? DEV_URL : PROD_URL;
 
 // Create axios instance with default config
 const api = axios.create({
