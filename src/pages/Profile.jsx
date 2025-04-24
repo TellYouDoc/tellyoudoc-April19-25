@@ -793,7 +793,7 @@ const Profile = () => {
       practicePincode: '',
       practiceState: '',
       practiceDistrict: '',
-      practicePincode: ''
+      practicePostOffice: ''
     };
 
     setProfileData(prev => ({
