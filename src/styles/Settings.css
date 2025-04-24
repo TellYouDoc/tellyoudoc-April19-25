@@ -1,0 +1,313 @@
+.settings-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.settings-content {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.settings-header {
+  padding: 2rem;
+  border-bottom: 1px solid #f0fdf4;
+}
+
+.settings-header h1 {
+  color: #0e9f6e;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.settings-main {
+  display: flex;
+  min-height: 600px;
+}
+
+.settings-sidebar {
+  width: 250px;
+  background: #f8fafc;
+  padding: 2rem 0;
+  border-right: 1px solid #f0fdf4;
+}
+
+.sidebar-button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 2rem;
+  background: none;
+  border: none;
+  color: #4a5568;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.sidebar-button::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: #0e9f6e;
+  transform: scaleY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-button:hover {
+  background: rgba(14, 159, 110, 0.05);
+  color: #0e9f6e;
+}
+
+.sidebar-button.active {
+  background: rgba(14, 159, 110, 0.1);
+  color: #0e9f6e;
+}
+
+.sidebar-button.active::before {
+  transform: scaleY(1);
+}
+
+.sidebar-button svg {
+  font-size: 1.2rem;
+}
+
+.settings-panel {
+  flex: 1;
+  padding: 2rem;
+  background: white;
+}
+
+.settings-section {
+  max-width: 600px;
+}
+
+.settings-section h2 {
+  color: #1a202c;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.setting-item:hover {
+  background: #f0fdf4;
+  transform: translateX(5px);
+}
+
+.setting-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.setting-icon {
+  color: #0e9f6e;
+  font-size: 1.2rem;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e2e8f0;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: #0e9f6e;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+.setting-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: #4a5568;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.setting-select:hover {
+  border-color: #0e9f6e;
+}
+
+.setting-select:focus {
+  outline: none;
+  border-color: #0e9f6e;
+  box-shadow: 0 0 0 3px rgba(14, 159, 110, 0.1);
+}
+
+.theme-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.theme-option:hover {
+  border-color: #0e9f6e;
+  color: #0e9f6e;
+}
+
+.theme-option.active {
+  background: #0e9f6e;
+  color: white;
+  border-color: #0e9f6e;
+}
+
+.export-button {
+  padding: 0.5rem 1.5rem;
+  background: #0e9f6e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.export-button:hover {
+  background: #057a55;
+  transform: translateY(-2px);
+}
+
+.delete-account-button {
+  padding: 0.5rem 1.5rem;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.delete-account-button:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1024px) {
+  .settings-main {
+    flex-direction: column;
+  }
+
+  .settings-sidebar {
+    width: 100%;
+    padding: 1rem;
+    border-right: none;
+    border-bottom: 1px solid #f0fdf4;
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+  }
+
+  .sidebar-button {
+    white-space: nowrap;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 0 1rem;
+  }
+
+  .settings-header {
+    padding: 1.5rem;
+  }
+
+  .settings-panel {
+    padding: 1.5rem;
+  }
+
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .setting-select {
+    width: 100%;
+  }
+
+  .theme-options {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .theme-option {
+    justify-content: center;
+  }
+} 

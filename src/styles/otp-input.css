@@ -1,0 +1,49 @@
+/* OTP Input Styling */
+.otp-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 20px 0;
+  width: 100%;
+}
+
+.otp-container .form-group {
+  width: auto;
+  min-width: auto;
+  flex: 1;
+}
+
+.otp-input {
+  width: 100%;
+  height: 60px;
+  font-size: 24px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  color: #1e293b;
+  transition: all 0.3s;
+}
+
+.otp-input:focus {
+  border-color: #0e9f6e;
+  outline: none;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(14, 159, 110, 0.15);
+}
+
+.verified-contact {
+  background-color: #f0fdf4;
+  border-color: #84e1bc;
+  color: #0e9f6e;
+  font-weight: 500;
+}
+
+.verified-badge {
+  color: #0e9f6e;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

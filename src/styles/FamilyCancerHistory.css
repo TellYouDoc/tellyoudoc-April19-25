@@ -1,0 +1,325 @@
+/* Family Cancer History Styles */
+.cancer-family-content {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cancer-history-section {
+  margin-bottom: 2rem;
+}
+
+.cancer-history-section h2 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  color: #1e293b;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.section-subheader {
+  color: #0f766e;
+  margin: 1.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  position: relative;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.section-subheader::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, #0e9f6e 0%, #057a55 100%);
+  border-radius: 3px;
+}
+
+/* Cancer History Boxes */
+.cancer-history-boxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.cancer-history-box {
+  background: white;
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cancer-history-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.cancer-history-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.cancer-history-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.cancer-history-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.cancer-history-details h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #1e293b;
+}
+
+.cancer-cases {
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+/* Cancer type specific styling */
+.breast.cancer-history-icon {
+  background-color: rgba(244, 114, 182, 0.1);
+  color: #db2777;
+}
+
+.cancer-history-box:has(.breast)::before {
+  background: linear-gradient(to bottom, #db2777, #be185d);
+}
+
+.breast + .cancer-history-details .cancer-cases {
+  background-color: rgba(244, 114, 182, 0.1);
+  color: #db2777;
+}
+
+.ovarian.cancer-history-icon {
+  background-color: rgba(168, 85, 247, 0.1);
+  color: #8b5cf6;
+}
+
+.cancer-history-box:has(.ovarian)::before {
+  background: linear-gradient(to bottom, #8b5cf6, #7c3aed);
+}
+
+.ovarian + .cancer-history-details .cancer-cases {
+  background-color: rgba(168, 85, 247, 0.1);
+  color: #8b5cf6;
+}
+
+.cervical.cancer-history-icon {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.cancer-history-box:has(.cervical)::before {
+  background: linear-gradient(to bottom, #3b82f6, #2563eb);
+}
+
+.cervical + .cancer-history-details .cancer-cases {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.other.cancer-history-icon {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.cancer-history-box:has(.other)::before {
+  background: linear-gradient(to bottom, #d97706, #b45309);
+}
+
+.other + .cancer-history-details .cancer-cases {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+/* Family Cancer Categories */
+.family-sections-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.immediate-family-section,
+.extended-family-section {
+  background-color: #f8fafc;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.immediate-family-section {
+  border-left: 4px solid #0ea5e9;
+}
+
+.extended-family-section {
+  border-left: 4px solid #8b5cf6;
+}
+
+.immediate-family-section:hover,
+.extended-family-section:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.family-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.family-cancer-category {
+  animation: fadeInUp 0.5s ease;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cancer-type-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.cancer-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.cancer-icon.breast {
+  background-color: #db2777;
+}
+
+.cancer-icon.ovarian {
+  background-color: #8b5cf6;
+}
+
+.cancer-icon.cervical {
+  background-color: #3b82f6;
+}
+
+.cancer-icon.other {
+  background-color: #d97706;
+}
+
+/* Family members list */
+.family-members-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.family-member-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  border-radius: 20px;
+  padding: 0.4rem 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  max-width: 100%;
+}
+
+.family-member-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.relation-name {
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.85rem;
+}
+
+.relation-age {
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: rgba(14, 165, 233, 0.1);
+  color: #0ea5e9;
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+}
+
+.extended-family-section .relation-age {
+  background-color: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+}
+
+.cancer-specific-type {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+  padding: 0.1rem 0.5rem;
+  border-radius: 10px;
+  margin-left: 0.3rem;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .cancer-history-boxes {
+    grid-template-columns: 1fr;
+  }
+  
+  .family-member-cancer {
+    flex-wrap: wrap;
+  }
+  
+  .relation {
+    width: 100%;
+    margin-bottom: 0.3rem;
+  }
+}

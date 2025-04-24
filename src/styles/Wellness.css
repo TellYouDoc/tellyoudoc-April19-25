@@ -1,0 +1,217 @@
+/* Wellness Section Styles */
+.wellness-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.wellness-item {
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.wellness-header {
+  background-color: #f1f5f9;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.wellness-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.wellness-content {
+  padding: 1rem;
+}
+
+/* Diet Options */
+.diet-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.diet-option {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.diet-option:hover {
+  background-color: #e2e8f0;
+}
+
+.diet-option.selected {
+  background-color: #dbeafe;
+}
+
+.diet-option input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+/* Stress Options */
+.stress-options {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.stress-option {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.stress-option:hover {
+  background-color: #e2e8f0;
+}
+
+.stress-option.selected {
+  background-color: #dbeafe;
+}
+
+.stress-option input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+.stress-factors {
+  margin-top: 1rem;
+}
+
+.stress-factors h4 {
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  color: #475569;
+}
+
+.factor-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.factor-tag {
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 0.3rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.factor-tag:hover {
+  background-color: #cbd5e1;
+}
+
+.factor-tag.selected {
+  background-color: #0ea5e9;
+  color: white;
+}
+
+/* Work Style */
+.workstyle-options h4, 
+.sitting-hours h4,
+.sleep-duration h4,
+.sleep-interruption h4 {
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  color: #475569;
+}
+
+.work-options {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.work-option {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.work-option:hover {
+  background-color: #e2e8f0;
+}
+
+.work-option.selected {
+  background-color: #dbeafe;
+}
+
+.work-option input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+.sitting-hours {
+  margin-top: 1rem;
+}
+
+.hours-value, .duration-value {
+  background-color: #f1f5f9;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+/* Sleep */
+.sleep-duration {
+  margin-bottom: 1rem;
+}
+
+.interruption-options {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.interruption-option {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.interruption-option:hover {
+  background-color: #e2e8f0;
+}
+
+.interruption-option.selected {
+  background-color: #dbeafe;
+}
+
+.interruption-option input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .wellness-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stress-options,
+  .work-options,
+  .interruption-options {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

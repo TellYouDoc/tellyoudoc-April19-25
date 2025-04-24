@@ -1,0 +1,394 @@
+/* Reports Dashboard Styling */
+.reports-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1.5rem;
+  background-color: #f8f9fd;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+.reports-header {
+  margin-bottom: 1.5rem;
+}
+
+.reports-header h1 {
+  color: #2d3748;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.date-display {
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+/* Top Stats Cards */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  background-color: #edf2f7;
+  color: #4a5568;
+  font-size: 1.5rem;
+}
+
+.stat-icon.active {
+  background-color: #ebf8ff;
+  color: #3182ce;
+}
+
+.stat-icon.new {
+  background-color: #e6fffa;
+  color: #38b2ac;
+}
+
+.stat-icon.biopsy {
+  background-color: #ebf4ff;
+  color: #4c51bf;
+}
+
+.stat-icon.surgery {
+  background-color: #fef5ff;
+  color: #805ad5;
+}
+
+.stat-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.25rem;
+}
+
+.stat-content p {
+  font-size: 0.875rem;
+  color: #718096;
+  margin: 0;
+}
+
+/* Chart Grid Layout */
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  padding: 1.25rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.chart-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.chart-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.chart-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.chart-icon {
+  margin-right: 0.5rem;
+  color: #4a5568;
+}
+
+.chart-content {
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Enhanced Tooltip Styling */
+.custom-tooltip {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: none;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  border-left: 4px solid #6366f1;
+  min-width: 150px;
+}
+
+.tooltip-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tooltip-value {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.tooltip-percent {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: #6366f1;
+  font-weight: 500;
+}
+
+/* Pie chart enhanced styling */
+.pie-sector {
+  filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.15));
+  transition: filter 0.3s;
+}
+
+.pie-sector:hover {
+  filter: drop-shadow(0px 0px 6px rgba(0,0,0,0.25));
+}
+
+.pie-sector-active {
+  filter: drop-shadow(0px 0px 8px rgba(0,0,0,0.2));
+}
+
+/* Insights Panel */
+.insights-panel {
+  background-color: white;
+}
+
+.insights-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.insight-item {
+  display: flex;
+  padding: 0.875rem 1rem;
+  border-radius: 0.625rem;
+  background-color: #f8fafc;
+  align-items: flex-start;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.insight-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.insight-item:nth-child(1) {
+  border-left-color: #38a169;
+}
+
+.insight-item:nth-child(2) {
+  border-left-color: #e53e3e;
+}
+
+.insight-item:nth-child(3) {
+  border-left-color: #dd6b20;
+}
+
+.insight-item:nth-child(4) {
+  border-left-color: #3182ce;
+}
+
+.insight-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.875rem;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  transition: transform 0.3s ease;
+}
+
+.insight-item:hover .insight-icon {
+  transform: scale(1.1);
+}
+
+.insight-icon.trend-up {
+  background-color: #c6f6d5;
+  color: #38a169;
+}
+
+.insight-icon.trend-down {
+  background-color: #fed7d7;
+  color: #e53e3e;
+}
+
+.insight-icon.alert {
+  background-color: #feebc8;
+  color: #dd6b20;
+}
+
+.insight-icon.positive {
+  background-color: #bee3f8;
+  color: #3182ce;
+}
+
+.insight-text h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.375rem 0;
+  color: #2d3748;
+}
+
+.insight-text p {
+  font-size: 0.85rem;
+  margin: 0;
+  color: #718096;
+  line-height: 1.4;
+}
+
+/* Chart animations - Premium Enhancements */
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.recharts-active-dot {
+  animation: pulse 2s infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .reports-container {
+    padding: 1rem;
+  }
+  
+  .stats-cards {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  .stat-card {
+    padding: 1rem;
+  }
+  
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+  
+  .stat-content h2 {
+    font-size: 1.25rem;
+  }
+  
+  .chart-grid {
+    gap: 1rem;
+  }
+  
+  .chart-card {
+    padding: 1rem;
+  }
+  
+  .insights-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Special styling for bar charts  */
+.recharts-bar-rectangle {
+  transition: opacity 0.3s;
+}
+
+.recharts-bar-rectangle:hover {
+  opacity: 0.85;
+}
+
+.recharts-text.recharts-label {
+  font-weight: 500;
+}
+
+.recharts-default-legend {
+  padding: 0.5rem 0 !important;
+}
+
+.recharts-legend-item {
+  margin-right: 1.5rem !important;
+}
+
+/* Stylings for the axis lines */
+.recharts-cartesian-axis-line {
+  stroke-width: 1px;
+}
+
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke-opacity: 0.3;
+}
+
+/* Area chart gradients */
+.recharts-area-area {
+  opacity: 0.9;
+}
+
+/* Radial bar chart animations */
+.recharts-radial-bar-background-sector {
+  opacity: 0.2;
+}

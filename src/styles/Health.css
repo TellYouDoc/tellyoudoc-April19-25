@@ -1,0 +1,505 @@
+/* Health Section Styles */
+.health-content {
+  width: 100%;
+  color: #1e293b;
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.health-header {
+  color: #0369a1;
+}
+
+.emotional-header {
+  color: #7c3aed;
+}
+
+.section-header .icon-margin-right {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+}
+
+/* Card Grid Layout */
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.health-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Health Cards */
+.health-card {
+  background-color: #f8fafc;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.health-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.health-card-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.health-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: #0ea5e9;
+  margin-right: 0.75rem;
+  color: white;
+}
+
+.health-card-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 0;
+}
+
+.health-card-content {
+  padding: 1rem;
+}
+
+/* Category Boxes */
+.health-category-box {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.health-category-box:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.category-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+/* Condition Tags */
+.condition-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.condition-tag {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+}
+
+.condition-tag.vision {
+  background-color: #3b82f6;
+}
+
+.condition-tag.cancer {
+  background-color: #ef4444;
+}
+
+.condition-tag.infectious {
+  background-color: #f97316;
+}
+
+.condition-tag.vaccination {
+  background-color: #10b981;
+}
+
+.condition-tag.allergy {
+  background-color: #8b5cf6;
+}
+
+.condition-tag.psychiatric {
+  background-color: #7c3aed;
+}
+
+.condition-tag.mental {
+  background-color: #6366f1;
+}
+
+.condition-tag.neurological {
+  background-color: #ec4899;
+}
+
+.admission-box {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.admission-box h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.admission-duration {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #f1f5f9;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* Mental Health Box */
+.mental-health-box {
+  margin-bottom: 1rem;
+}
+
+.relation-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+/* Health Detail Cards */
+.health-detail-card {
+  background-color: #f8fafc;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+}
+
+.health-detail-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.health-detail-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.health-detail-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.health-detail-header .detail-icon {
+  color: #0ea5e9;
+  font-size: 1.25rem;
+  margin-right: 0.75rem;
+}
+
+.health-detail-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 0;
+}
+
+.health-detail-content {
+  padding: 1rem;
+}
+
+/* Detail Rows */
+.detail-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.detail-row:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #64748b;
+  margin-right: 0.5rem;
+}
+
+.detail-value {
+  font-weight: 500;
+  color: #334155;
+}
+
+.detail-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.detail-tag {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 1rem;
+  background-color: #e2e8f0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* Trauma Section */
+.trauma-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.trauma-box {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+}
+
+.trauma-box h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.trauma-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.trauma-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.trauma-tag {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 1rem;
+  background-color: #fee2e2;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #b91c1c;
+}
+
+/* Emotion Handling */
+.emotion-handling {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #f0fdf4;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #166534;
+  border: 1px solid #dcfce7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .health-grid, 
+  .health-details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .trauma-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .detail-label {
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* Fix for IE 11 */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .health-grid,
+  .health-details-grid,
+  .trauma-grid {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .health-card,
+  .health-detail-card,
+  .trauma-box {
+    flex: 1 1 280px;
+    margin: 0.625rem;
+  }
+}
+
+.chronic-conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.condition-category {
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  flex: 1;
+  min-width: 250px;
+}
+
+.condition-category h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.75rem;
+}
+
+.condition-items, 
+.disease-items, 
+.vaccination-items, 
+.allergy-items, 
+.medicine-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.condition-item, 
+.disease-item, 
+.vaccination-item, 
+.allergy-item, 
+.medicine-item {
+  display: flex;
+  align-items: center;
+}
+
+.condition-bullet, 
+.disease-bullet, 
+.vaccination-bullet, 
+.allergy-bullet, 
+.medicine-bullet {
+  font-size: 1.25rem;
+  color: #0ea5e9;
+  margin-right: 0.5rem;
+}
+
+.condition-name, 
+.disease-name, 
+.vaccination-name, 
+.allergy-name, 
+.medicine-name {
+  font-size: 0.95rem;
+  color: #475569;
+}
+
+.surgery-history p, 
+.menstruation p {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.hospitalization-item {
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.hospitalization-item p {
+  font-size: 0.95rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.hospitalization-item p:last-child {
+  margin-bottom: 0;
+}
+
+.previous-conditions {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.previous-conditions li {
+  font-size: 0.95rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+.medications-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.medication-card {
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  flex: 1;
+  min-width: 200px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.medication-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.75rem;
+}
+
+.medication-card p {
+  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chronic-conditions {
+    flex-direction: column;
+  }
+  
+  .medications-list {
+    flex-direction: column;
+  }
+}

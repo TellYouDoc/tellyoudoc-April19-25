@@ -1,0 +1,595 @@
+/* Mammography List Styles */
+.mammo-list-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  background-color: #f8f9fd;
+  min-height: calc(100vh - 70px);
+}
+
+.mammo-list-header {
+  margin-bottom: 1.5rem;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.header-left h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.header-description {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-container {
+  position: relative;
+  width: 300px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #0e9f6e;
+  box-shadow: 0 0 0 3px rgba(14, 159, 110, 0.15);
+}
+
+.filter-container {
+  position: relative;
+}
+
+.filter-toggle-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-toggle-button:hover {
+  border-color: #0e9f6e;
+  background-color: #f0fdf4;
+  color: #0e9f6e;
+}
+
+.filter-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: 280px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  padding: 1rem;
+}
+
+.filter-panel h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0.5rem;
+  color: #1e293b;
+}
+
+.filter-panel h3:first-child {
+  margin-top: 0;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filter-options button {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-options button:hover {
+  border-color: #0e9f6e;
+  color: #0e9f6e;
+}
+
+.filter-options button.active {
+  background-color: #0e9f6e;
+  border-color: #0e9f6e;
+  color: white;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.filter-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.apply-filters {
+  background-color: #0e9f6e;
+  color: white;
+  border: none;
+}
+
+.apply-filters:hover {
+  background-color: #0c8b5e;
+}
+
+.reset-filters {
+  background-color: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.reset-filters:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* Stats Overview - mobile app style */
+.mammo-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.025);
+}
+
+.stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0e9f6e;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Category Filters - Mobile app style */
+.category-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem; /* For scrollbar */
+}
+
+.category-filters button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.category-filters button:hover {
+  border-color: #0e9f6e;
+  background-color: #f0fdf4;
+}
+
+.category-filters button.active {
+  background-color: #0e9f6e;
+  border-color: #0e9f6e;
+  color: white;
+}
+
+.filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: inherit;
+  font-size: 0.75rem;
+  border-radius: 12px;
+  padding: 0.1rem 0.5rem;
+  min-width: 1.5rem;
+}
+
+.category-filters button.active .filter-count {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.sort-label {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.sort-dropdown {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  background-color: white;
+  color: #1e293b;
+}
+
+/* Patient Cards Grid - Mobile app style */
+.patient-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem; /* Space for floating button */
+}
+
+.patient-card {
+  background-color: white;
+  border-radius: 12px;
+  /* Removed overflow: hidden to prevent tooltip clipping */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.patient-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.07);
+}
+
+.patient-card-header {
+  padding: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  position: relative;
+}
+
+.patient-image-container {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+.patient-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  object-fit: cover;
+  border: 2px solid rgba(14, 159, 110, 0.2);
+}
+
+.risk-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background-color: #FF6B6B;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.patient-info {
+  flex: 1;
+  min-width: 0; /* For text truncation */
+  margin-right: 1rem;
+}
+
+.patient-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.patient-details {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0 0 0.75rem 0;
+}
+
+.symptoms-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.symptom-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  background-color: rgba(74, 144, 226, 0.1);
+  color: #4A90E2;
+  border-radius: 4px;
+}
+
+.more-badge {
+  background-color: rgba(203, 213, 225, 0.3);
+  color: #64748b;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  position: relative;
+  cursor: pointer;
+}
+
+.status-icon {
+  margin-right: 0.25rem;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+/* Tooltip styles for status badges */
+.status-badge .tooltip {
+  visibility: hidden;
+  position: absolute;
+  top: 125%;
+  right: 0;
+  width: 220px;
+  background-color: #333;
+  color: white;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
+  font-weight: normal;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  /* Ensure the tooltip isn't clipped by parent elements */
+  overflow: visible;
+}
+
+.status-badge:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-title {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.tooltip-info {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tooltip-info-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.tooltip-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.patient-card-actions {
+  padding: 1rem;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-icon {
+  margin-right: 0.25rem;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.view-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #0e9f6e;
+  color: white;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.view-button:hover {
+  background-color: #0c8b5e;
+}
+
+/* Empty State */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 0;
+  background-color: white;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+}
+
+.no-results-icon {
+  font-size: 2.5rem;
+  color: #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+.no-results-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 0.5rem 0;
+}
+
+.no-results-message {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* Floating Add Button */
+.floating-add-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+}
+
+.fab-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background-color: #0e9f6e;
+  color: white;
+  border-radius: 28px;
+  box-shadow: 0 4px 10px rgba(14, 159, 110, 0.3), 0 8px 20px rgba(0, 0, 0, 0.1);
+  font-size: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fab-button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 15px rgba(14, 159, 110, 0.4), 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .mammo-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .header-content {
+    flex-direction: column;
+  }
+  
+  .header-actions {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .search-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .mammo-list-container {
+    padding: 1rem;
+  }
+  
+  .patient-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .category-filters {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    width: 100%;
+  }
+}

@@ -1,0 +1,38 @@
+/* Focused fix for patient cell styling */
+/* Use higher specificity to override existing styles */
+table.patients-table tr td.patient-cell {
+  padding: 0 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  height: 60px !important;
+  vertical-align: middle !important;
+  position: relative !important;
+}
+
+table.patients-table tr:last-child td.patient-cell {
+  border-bottom: none !important;
+}
+
+.patient-cell .patient-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 1rem;
+  height: 60px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Force same styling for all table cells */
+table.patients-table tr td {
+  border-bottom: 1px solid #e2e8f0 !important;
+  height: 60px !important;
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
+}
+
+table.patients-table tr:last-child td {
+  border-bottom: none !important;
+}
