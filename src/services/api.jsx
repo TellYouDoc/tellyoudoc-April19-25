@@ -10,7 +10,7 @@ const BASE_URL = isDevelopment ? DEV_URL : PROD_URL;
 
 // Create axios instance with default config
 const api = axios.create({
-    baseURL: PROD_URL,
+    baseURL: BASE_URL,
     timeout: 10000,
     headers: {
         "Content-Type": "application/json",
