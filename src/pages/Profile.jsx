@@ -505,7 +505,7 @@ const Profile = () => {
         formData.append('profileImage', croppedImageBlob);
 
         const response = await apiService.doctorService.updateProfileImage(formData);
-        if (response.status === 200 || response.status === 201) {
+        if (response.status === 200 || response.status === 201 || response.status === 204) {
           console.log('Profile image updated successfully');
           // You could display a success message here
           alert('Profile image updated successfully');
@@ -969,7 +969,7 @@ const Profile = () => {
       // Call the API to update profile
       const response = await apiService.doctorService.updateProfile(updatedProfileData);
       console.log('Profile update response:', response);
-      if (response.status === 201) {
+      if (response.status === 200 || response.status === 201 || response.status === 204) {
         // If profile picture was changed, upload it separately
         if (profileImage) {
           const formData = new FormData();
@@ -991,6 +991,8 @@ const Profile = () => {
       }
     } catch (error) {
       console.error('Error updating profile:', error);
+      console.error('Response details:', error.response?.data);
+      console.error('Status code:', error.response?.status);
       alert('Failed to update profile. Please try again.');
     } finally {
       setIsLoading(false);
