@@ -1308,7 +1308,7 @@
 
 .patient-section-title {
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 700;
   color: #333;
   margin-bottom: 10px;
 }
@@ -1343,7 +1343,7 @@
   justify-content: center;
   margin-right: 10px;
   color: white;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .patient-details {

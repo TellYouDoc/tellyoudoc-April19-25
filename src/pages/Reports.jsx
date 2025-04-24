@@ -514,7 +514,7 @@ const Reports = () => {
                     position="inside" 
                     fill="#fff" 
                     fontSize={12}
-                    fontWeight="bold"
+                    fontWeight="700"
                   />
                 </Pie>
                 <Tooltip content={<PieCustomTooltip />} />
@@ -625,7 +625,7 @@ const Reports = () => {
                     position="inside" 
                     fill="#fff" 
                     fontSize={12}
-                    fontWeight="bold"
+                    fontWeight="700"
                   />
                 </Pie>
                 <Tooltip content={<PieCustomTooltip />} />

@@ -681,7 +681,7 @@
   position: absolute;
   left: 0;
   color: #0e9f6e;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .family-support-list li:last-child {
@@ -958,7 +958,7 @@
   position: absolute;
   left: 0;
   color: #0e9f6e;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .diet-restrictions li:last-child {

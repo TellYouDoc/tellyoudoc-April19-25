@@ -361,7 +361,7 @@
 
 .eligibility-note .asterisk {
   color: #e83e8c;
-  font-weight: bold;
+  font-weight: 700;
   margin-right: 2px;
 }
 
@@ -1276,7 +1276,7 @@
 
   .eligibility-note .asterisk {
     color: #e83e8c;
-    font-weight: bold;
+    font-weight: 700;
     margin-right: 1.5px;
   }
 
@@ -1677,7 +1677,7 @@
 
   .eligibility-note .asterisk {
     color: #e83e8c;
-    font-weight: bold;
+    font-weight: 700;
     margin-right: 1.5px;
   }
 
@@ -2125,7 +2125,7 @@
 
   .eligibility-note .asterisk {
     color: #e83e8c;
-    font-weight: bold;
+    font-weight: 700;
     margin-right: 2px;
   }
 
@@ -2568,7 +2568,7 @@
 
   .eligibility-note .asterisk {
     color: #e83e8c;
-    font-weight: bold;
+    font-weight: 700;
     margin-right: 2px;
   }
 
@@ -3792,7 +3792,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .steps-container .step h3 {
@@ -4709,7 +4709,7 @@
 .privacy-asterisk {
   color: #4A90E2;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
   margin-right: 6px;
 }
 
