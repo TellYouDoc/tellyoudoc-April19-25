@@ -64,7 +64,7 @@ const Footer = () => {
             <i className="location-icon"></i>
             Precise Medication Research Private Limited
             <br />
-            IIIT, Bongora, Guwahati
+            IIIT Guwahati, Bongora
             <br />
             Assam, India - 781015
             <br />
