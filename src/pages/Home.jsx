@@ -1460,7 +1460,7 @@ const Home = () => {
         </section>
 
         {/* Supported By Section */}
-        <section className="home-supported-section">
+        {/* <section className="home-supported-section">
           <div className="home-section-header">
             <h2>Supported By</h2>
           </div>
@@ -1491,7 +1491,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
       <div className="bottom-line"></div>
       <Footer />
