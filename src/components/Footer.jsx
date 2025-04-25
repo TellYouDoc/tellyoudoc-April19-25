@@ -124,6 +124,10 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
+                  <a href="/partner">Join Beta</a>
+                </li>
+                <a href="/login">Doctor Zone</a>
+                <li>
                   <a
                     href="/#contact"
                     onClick={(e) => {
@@ -180,8 +184,9 @@ const Footer = () => {
 
       <div className="footer-bottom">
         <p>
-          &copy; {new Date().getFullYear()} Precise Medication Research Private Limited.
-          All rights reserved. Visuals on this website are AI generated.
+          &copy; {new Date().getFullYear()} Precise Medication Research Private
+          Limited. All rights reserved. Visuals on this website are AI
+          generated.
         </p>
         {/* <p>
           &copy; {new Date().getFullYear()}{" "}
