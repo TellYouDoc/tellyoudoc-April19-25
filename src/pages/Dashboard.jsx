@@ -466,7 +466,7 @@ function Dashboard() {
                   <div className="metric-label">Treatment Success Rate</div>
                   <div className="metric-value">
                     <div className="progress-bar">
-                      <div className="progress-fill success" style={{width: "87%"}}></div>
+                      <div className="progress-fill success" style={{width: "0%"}}></div>
                     </div>
                     <span>87%</span>
                   </div>
