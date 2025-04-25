@@ -449,7 +449,7 @@ function Dashboard() {
           <div className="dashboard-summary">
             <div className="summary-welcome">
               <div className="welcome-text">
-                <h2>Welcome back, {doctorProfile?.name || 'Doctor'}</h2>
+                <h2>Welcome back, {doctorProfile?.firstName}{doctorProfile.middleName ? ' ' + doctorProfile.middleName : ''} {doctorProfile.lastName}</h2>
                 <p>Here's what's happening with your patients today</p>
               </div>
               <div className="welcome-metrics">
