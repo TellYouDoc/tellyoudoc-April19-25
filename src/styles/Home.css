@@ -227,7 +227,7 @@
   transform: translateX(-50%);
   width: 70%;
   height: 2px;
-  background-color: var(--primary-color);
+  background-color: #079fa4;
 }
 
 /* Small mobile */
@@ -2347,5 +2347,231 @@ img:hover {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Supported By Section Styles */
+.home-supported-section {
+  padding: 80px 0;
+  background-color: #f9f9f9;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-supported-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 112, 7, 0.05) 0%, rgba(5, 175, 164, 0.05) 100%);
+  z-index: 0;
+}
+
+.home-supported-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  z-index: 1;
+  position: relative;
+}
+
+.home-supported-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+  padding: 40px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: left;
+}
+
+.home-supported-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.home-supported-logo {
+  flex: 0 0 200px;
+  margin-right: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.home-supported-logo::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  height: 80%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(5, 175, 164, 0.5), transparent);
+  transform: translateY(-50%);
+}
+
+.home-supported-image {
+  max-width: 180px;
+  height: auto;
+  transition: transform 0.4s ease, filter 0.4s ease;
+  filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+}
+
+.home-supported-image:hover {
+  transform: scale(1.08);
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.15));
+}
+
+.home-supported-info {
+  flex: 1;
+}
+
+.home-supported-info h3 {
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  position: relative;
+  padding-bottom: 18px;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+  background: linear-gradient(90deg, #333333, #1a1a1a);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.05);
+}
+
+.institution-prefix {
+  font-weight: 400;
+  font-style: italic;
+  font-size: 26px;
+}
+
+.institution-location {
+  display: inline-block;
+  color: #05AFA4;
+  font-weight: 800;
+  background: linear-gradient(90deg, #FF7007 20%, #05AFA4 80%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.home-supported-info h3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #FF7007, #05AFA4);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.home-supported-info p {
+  color: #555;
+  line-height: 1.8;
+  font-size: 16px;
+  margin-bottom: 0;
+  text-align: justify;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .home-supported-section {
+    padding: 60px 0;
+  }
+  
+  .home-supported-item {
+    flex-direction: column;
+    padding: 25px;
+  }
+  
+  .home-supported-logo {
+    margin-right: 0;
+    margin-bottom: 25px;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+  
+  .home-supported-logo::after {
+    top: auto;
+    right: 50%;
+    bottom: 0;
+    height: 1px;
+    width: 60%;
+    background: linear-gradient(to right, transparent, rgba(5, 175, 164, 0.5), transparent);
+    transform: translateX(50%);
+  }
+  
+  .home-supported-image {
+    max-width: 150px;
+    margin: 30px;
+  }
+  
+  .institution-prefix,
+  .institution-location {
+    display: inline;
+  }
+  
+  .home-supported-info h3 {
+    font-size: 26px;
+    text-align: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .home-supported-info h3::after {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+  }
+  
+  .home-supported-info p {
+    font-size: 15px;
+    text-align: justify;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-supported-section {
+    padding: 40px 0;
+  }
+  
+  .home-supported-item {
+    padding: 20px;
+  }
+  
+  .home-supported-logo::after {
+    width: 80%;
+  }
+  
+  .home-supported-image {
+    max-width: 120px;
+  }
+  
+  .home-supported-info h3 {
+    font-size: 17px;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .institution-prefix {
+    font-size: 22px;
+  }
+  
+  .home-supported-info h3::after {
+    width: 100px;
+    height: 3px;
+  }
+  
+  .home-supported-info p {
+    font-size: 14px;
   }
 }

@@ -952,501 +952,549 @@ const Home = () => {
 
   return (
     <>
-    <Welcome_Navbar />
-    <div className="home-home-container" id="home-container">
-      {/* Hero Section */}
-      <section id="home" className="home-hero-section">
-        <div className="home-hero-background"></div>
-        <div className="home-hero-content-wrapper">
-          <div className="home-about-content home-hero-text">
-            <div>
-              <div className="home-hero-about-header">
-                <h5
-                  className="home-hero-title"
-                  style={{
-                    color: "#1a1a1a",
-                    marginBottom: "1.5rem",
-                    fontWeight: 800,
-                    lineHeight: 1.1,
-                    letterSpacing: "-0.5px",
-                    position: "relative",
-                    display: "inline-block",
-                  }}
-                >
-                  Reimagine Cancer Care with{" "}
-                  <span
+      <Welcome_Navbar />
+      <div className="home-home-container" id="home-container">
+        {/* Hero Section */}
+        <section id="home" className="home-hero-section">
+          <div className="home-hero-background"></div>
+          <div className="home-hero-content-wrapper">
+            <div className="home-about-content home-hero-text">
+              <div>
+                <div className="home-hero-about-header">
+                  <h5
+                    className="home-hero-title"
                     style={{
-                      WebkitBackgroundClip: "text",
-                      backgroundClip: "text",
-                      color: "#FF7007",
-                      display: "inline",
+                      color: "#1a1a1a",
+                      marginBottom: "1.5rem",
+                      fontWeight: 800,
+                      lineHeight: 1.1,
+                      letterSpacing: "-0.5px",
+                      position: "relative",
+                      display: "inline-block",
                     }}
                   >
-                    tellyou
-                  </span>
-                  <span
-                    style={{
-                      WebkitBackgroundClip: "text",
-                      backgroundClip: "text",
-                      color: "#05AFA4",
-                      display: "inline",
-                    }}
-                  >
-                    doc
-                  </span>
-                  <span
-                    style={{
-                      position: "absolute",
-                      bottom: "-10px",
-                      left: 0,
-                      width: "80px",
-                      height: "4px",
-                      background: "linear-gradient(90deg, #2a7d73, #3b6baa)",
-                      borderRadius: "2px",
-                    }}
-                  ></span>
-                </h5>
-              </div>
-              <div className="home-hero-about-info">
-                <p
-                  className="home-hero-description"
-                  style={{
-                    marginBottom: "2rem",
-                    color: "#333",
-                    lineHeight: 1.7,
-                    textShadow: "none",
-                  }}
-                >
-                  Smart tools for breast cancer screening, chemo management, OPD
-                  workflows, and assistant-led care — all in one app. Built for
-                  doctors. Backed by clinical expertise.
-                </p>
-                <div className="home-hero-cta">
-                  <Link
-                    to="/partner"
-                    className="home-cta-button"
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.transform = "translateY(-3px)";
-                      e.currentTarget.style.boxShadow =
-                        "0 8px 20px rgba(42, 125, 115, 0.4)";
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 15px rgba(42, 125, 115, 0.3)";
-                    }}
-                  >
-                    Be Beta Partner
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Us Section */}
-      <section id="about" className="about-section">
-        <div className="home-section-header">
-          <h2>About Us</h2>
-        </div>
-        <div className="home-about-section-content">
-          <div className="home-about-images-grid">
-            <img
-              src={aboutImageUrl}
-              alt="About Us"
-              className="home-about-section-image"
-            />
-          </div>
-          <div className="home-about-section-about-content">
-            <div className="home-about-section-about-info">
-              <div className="home-about-section-about-item">
-                <div className="home-about-section-about-item-label">
-                  Vision
-                </div>
-                <p>
-                  To revolutionize healthcare accessibility by bridging the gap
-                  between patients and doctors, empowering individuals with
-                  seamless, digital access to quality medical consultations, and
-                  building healthier communities across India.
-                </p>
-              </div>
-
-              <div className="home-about-section-about-item">
-                <div className="home-about-section-about-item-label">
-                  Mission
-                </div>
-                <p>
-                  Our mission is to simplify healthcare access for everyone
-                  through a user-friendly platform where patients can connect
-                  with trusted doctors, track and communicate symptoms, and
-                  receive expert medical guidance. We are committed to
-                  leveraging technology to enhance patient outcomes, support
-                  doctors in expanding their reach, and prioritize secure,
-                  efficient, and compassionate healthcare for all.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Product Section with Carousel */}
-      <section id="product" className="product-section" ref={productSectionRef}>
-        <div className="home-section-header">
-          <h2>Our Offerings</h2>
-        </div>
-        <div
-          className={`
-            product-content tellyoudoc-offers-content ${
-            isProductSectionVisible ? "animate-section" : ""
-          } home-product-section-content`}
-        >
-          <div
-            className="about-content feature-content"
-          >
-            <div className="about-text">
-              <div className="about-header"></div>
-              <div className="about-info">
-                {features.map((feature, featureIndex) => (
-                  <div
-                    key={featureIndex}
-                    className={`feature-animation about-item ${
-                      isFeatureVisible(featureIndex) ? "active" : "hidden"
-                    }`}
-                    style={{ marginBottom: "45px" }}
-                  >
+                    Reimagine Cancer Care with{" "}
                     <span
-                      className="about-item-label feature-item-heading"
-                      style={{ color: "#05A1A4" }}
+                      style={{
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        color: "#FF7007",
+                        display: "inline",
+                      }}
                     >
-                      {feature.name}
+                      tellyou
                     </span>
-                    <div className="about-item-content">
-                      {feature.subFeatures.map((subFeature, subIndex) => (
-                        <div
-                          key={subIndex}
-                          className={`subfeature-animation ${
-                            isSubFeatureVisible(featureIndex, subIndex)
-                              ? "subfeature-in"
-                              : "hidden"
-                          }`}
-                        >
-                          {subFeature}
-                        </div>
-                      ))}
-                    </div>
+                    <span
+                      style={{
+                        WebkitBackgroundClip: "text",
+                        backgroundClip: "text",
+                        color: "#05AFA4",
+                        display: "inline",
+                      }}
+                    >
+                      doc
+                    </span>
+                    <span
+                      style={{
+                        position: "absolute",
+                        bottom: "-10px",
+                        left: 0,
+                        width: "80px",
+                        height: "4px",
+                        background: "linear-gradient(90deg, #2a7d73, #3b6baa)",
+                        borderRadius: "2px",
+                      }}
+                    ></span>
+                  </h5>
+                </div>
+                <div className="home-hero-about-info">
+                  <p
+                    className="home-hero-description"
+                    style={{
+                      marginBottom: "2rem",
+                      color: "#333",
+                      lineHeight: 1.7,
+                      textShadow: "none",
+                    }}
+                  >
+                    Smart tools for breast cancer screening, chemo management,
+                    OPD workflows, and assistant-led care — all in one app.
+                    Built for doctors. Backed by clinical expertise.
+                  </p>
+                  <div className="home-hero-cta">
+                    <Link
+                      to="/partner"
+                      className="home-cta-button"
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = "translateY(-3px)";
+                        e.currentTarget.style.boxShadow =
+                          "0 8px 20px rgba(42, 125, 115, 0.4)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow =
+                          "0 4px 15px rgba(42, 125, 115, 0.3)";
+                      }}
+                    >
+                      Be Beta Partner
+                    </Link>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
-          <div className="product-images-grid">
-            {[0, 1, 2, 3].map((position) => (
-              <div key={position} className="about-image-wrapper">
-                {productSlidingImages[position] ? (
-                  <>
+        </section>
+
+        {/* About Us Section */}
+        <section id="about" className="about-section">
+          <div className="home-section-header">
+            <h2>About Us</h2>
+          </div>
+          <div className="home-about-section-content">
+            <div className="home-about-images-grid">
+              <img
+                src={aboutImageUrl}
+                alt="About Us"
+                className="home-about-section-image"
+              />
+            </div>
+            <div className="home-about-section-about-content">
+              <div className="home-about-section-about-info">
+                <div className="home-about-section-about-item">
+                  <div className="home-about-section-about-item-label">
+                    Vision
+                  </div>
+                  <p>
+                    To revolutionize healthcare accessibility by bridging the
+                    gap between patients and doctors, empowering individuals
+                    with seamless, digital access to quality medical
+                    consultations, and building healthier communities across
+                    India.
+                  </p>
+                </div>
+
+                <div className="home-about-section-about-item">
+                  <div className="home-about-section-about-item-label">
+                    Mission
+                  </div>
+                  <p>
+                    Our mission is to simplify healthcare access for everyone
+                    through a user-friendly platform where patients can connect
+                    with trusted doctors, track and communicate symptoms, and
+                    receive expert medical guidance. We are committed to
+                    leveraging technology to enhance patient outcomes, support
+                    doctors in expanding their reach, and prioritize secure,
+                    efficient, and compassionate healthcare for all.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Product Section with Carousel */}
+        <section
+          id="product"
+          className="product-section"
+          ref={productSectionRef}
+        >
+          <div className="home-section-header">
+            <h2>Our Offerings</h2>
+          </div>
+          <div
+            className={`
+            product-content tellyoudoc-offers-content ${
+              isProductSectionVisible ? "animate-section" : ""
+            } home-product-section-content`}
+          >
+            <div className="about-content feature-content">
+              <div className="about-text">
+                <div className="about-header"></div>
+                <div className="about-info">
+                  {features.map((feature, featureIndex) => (
+                    <div
+                      key={featureIndex}
+                      className={`feature-animation about-item ${
+                        isFeatureVisible(featureIndex) ? "active" : "hidden"
+                      }`}
+                      style={{ marginBottom: "45px" }}
+                    >
+                      <span
+                        className="about-item-label feature-item-heading"
+                        style={{ color: "#05A1A4" }}
+                      >
+                        {feature.name}
+                      </span>
+                      <div className="about-item-content">
+                        {feature.subFeatures.map((subFeature, subIndex) => (
+                          <div
+                            key={subIndex}
+                            className={`subfeature-animation ${
+                              isSubFeatureVisible(featureIndex, subIndex)
+                                ? "subfeature-in"
+                                : "hidden"
+                            }`}
+                          >
+                            {subFeature}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="product-images-grid">
+              {[0, 1, 2, 3].map((position) => (
+                <div key={position} className="about-image-wrapper">
+                  {productSlidingImages[position] ? (
+                    <>
+                      <img
+                        src={productImages[productImagePositions[position]]}
+                        alt={`Healthcare Innovation ${position + 1}`}
+                        className={`about-image product-image ${
+                          getAnimationClasses(position, true).out
+                        }`}
+                      />
+                      <img
+                        src={productImages[productNewImages[position]]}
+                        alt={`Healthcare Innovation new`}
+                        className={`about-image product-image ${
+                          getAnimationClasses(position, true).in
+                        }`}
+                      />
+                    </>
+                  ) : (
                     <img
                       src={productImages[productImagePositions[position]]}
                       alt={`Healthcare Innovation ${position + 1}`}
-                      className={`about-image product-image ${
-                        getAnimationClasses(position, true).out
-                      }`}
+                      className="about-image product-image"
                     />
-                    <img
-                      src={productImages[productNewImages[position]]}
-                      alt={`Healthcare Innovation new`}
-                      className={`about-image product-image ${
-                        getAnimationClasses(position, true).in
-                      }`}
-                    />
-                  </>
-                ) : (
-                  <img
-                    src={productImages[productImagePositions[position]]}
-                    alt={`Healthcare Innovation ${position + 1}`}
-                    className="about-image product-image"
-                  />
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Founders Section */}
-      <section id="founders" className="home-founders-section">
-        <div className="bubble-1"></div>
-        <div className="bubble-2"></div>
-        <div className="bubble-3"></div>
-        <div className="home-section-header">
-          <h2>Core Team</h2>
-        </div>
-        <div className="founders-container">
-          <div className="founder-card">
-            <div className="home-founder-header">
-              <div className="founder-image">
+        {/* Founders Section */}
+        <section id="founders" className="home-founders-section">
+          <div className="bubble-1"></div>
+          <div className="bubble-2"></div>
+          <div className="bubble-3"></div>
+          <div className="home-section-header">
+            <h2>Core Team</h2>
+          </div>
+          <div className="founders-container">
+            <div className="founder-card">
+              <div className="home-founder-header">
+                <div className="founder-image">
+                  <img
+                    src="https://ieee-ims.org/sites/ieeeims/files/styles/cc_imgstyle_4_x_5/public/contacts/photo/profile_pic.jpg?h=6b0b5157&itok=lCD0DDnm"
+                    alt="Dr. Shovan Barma"
+                  />
+                </div>
+                <div
+                  className="founder-title-group"
+                  style={{ alignSelf: "flex-end" }}
+                >
+                  <h3>Dr. Shovan Barma</h3>
+                  <p className="founder-role">
+                    Founder,{" "}
+                    <span style={{ color: "#FF7007", fontWeight: 800 }}>
+                      tellyou
+                    </span>
+                    <span style={{ color: "#05AFA4", fontWeight: 800 }}>
+                      doc
+                    </span>
+                  </p>
+                  <p className="founder-affiliation">
+                    Associate Professor, IIIT Guwahati
+                  </p>
+                </div>
+              </div>
+              <p className="founder-summary">
+                Dr. Shovan Barma is the visionary behind tellyoudoc, a digital
+                health platform designed to simplify the way patients connect
+                with doctors—especially in critical and chronic care like breast
+                cancer. Dr. Barma serves as an Associate Professor in the
+                Department of ECE at IIIT Guwahati. With a Ph.D. from NCKU,
+                Taiwan, Dr. Barma has spent over a decade researching AI based
+                intelligent systems design and their application in real-world
+                healthcare. The{" "}
+                <span style={{ color: "#FF7007", fontWeight: 800 }}>
+                  tellyou
+                </span>
+                <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>{" "}
+                platform was born out of his observation that many Indian
+                patients struggle to express their medical problems clearly
+                during consultation, and often fail to track their regular
+                symptoms pre/post consultation or during medication, leading to
+                delayed diagnosis and poor outcomes. He recognized the need for
+                a solution that bridges this communication gap—empowering
+                patients with easy-to-use tools and enabling doctors with
+                structured data. Under his leadership, tellyoudoc combines
+                technology, empathy, and clinical insight to make healthcare
+                simpler, smarter, and more connected—for both patients and
+                doctors.
+              </p>
+            </div>
+
+            <div className="founder-card">
+              <div className="home-founder-header">
+                <div className="founder-image">
+                  <img src={doctorImageUrl} alt="Dr. Soumen Das" />
+                </div>
+                <div
+                  className="founder-title-group"
+                  style={{ alignSelf: "flex-end" }}
+                >
+                  <h3>Dr. Soumen Das</h3>
+                  <p className="founder-role">
+                    Co-Founder,{" "}
+                    <span style={{ color: "#FF7007", fontWeight: 800 }}>
+                      tellyou
+                    </span>
+                    <span style={{ color: "#05AFA4", fontWeight: 800 }}>
+                      doc
+                    </span>
+                  </p>
+                  <p className="founder-affiliation">
+                    Senior Consultant, Surgical Oncology
+                  </p>
+                </div>
+              </div>
+              <p className="founder-summary">
+                Dr. Soumen Das is a nationally acclaimed breast cancer surgeon
+                and co-founder of TellyouDoc, a digital health platform created
+                to transform how breast cancer patients are diagnosed,
+                monitored, and treated. He currently serves as a Senior
+                Consultant in Surgical Oncology and is the founder of the
+                Institute of Breast Diseases, Kolkata—India's first dedicated
+                breast care center. An alumnus of Medical College, Kolkata, Dr.
+                Das topped the university in surgery and went on to complete his
+                MS in General Surgery. He later trained at Tata Memorial
+                Hospital, Mumbai, and earned prestigious fellowships including
+                FRCS (Glasgow), FACS (USA), and European Breast Surgical
+                Oncology Certification, becoming the first Indian surgeon to
+                hold this distinction. The{" "}
+                <span style={{ color: "#FF7007", fontWeight: 800 }}>
+                  tellyou
+                </span>
+                <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>{" "}
+                platform was co-founded by Dr. Das after years of witnessing
+                patients struggle to explain symptoms clearly during
+                consultations, and the lack of tools to track symptoms regularly
+                throughout treatment. These gaps often led to delayed diagnoses
+                and compromised outcomes. often led to delayed diagnoses and
+                compromised outcomes. He envisioned a system where structured
+                symptom tracking and clinical clarity come together—helping
+                doctors make timely decisions and patients stay engaged in their
+                care. Through his clinical leadership, TellyouDoc brings deep
+                medical insight to its mission of making breast cancer care more
+                responsive, personalized, and data-driven.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="contact-section">
+          <div className="bubble-1"></div>
+          <div className="bubble-2"></div>
+          <div className="bubble-3"></div>
+          <div className="home-section-header">
+            <h2>Contact Us</h2>
+          </div>
+
+          {/* Map and Form Section */}
+          <div className="contact-main-section">
+            <div className="contact-form">
+              <h3>Send us a Message</h3>
+
+              {/* Display success message if form is submitted successfully */}
+              {formStatus.isSubmitted && (
+                <div
+                  style={{
+                    padding: "20px",
+                    backgroundColor: "#e7f4e4",
+                    borderRadius: "10px",
+                    boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
+                    textAlign: "center",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <div style={{ fontSize: "48px", marginBottom: "20px" }}>
+                    ✅
+                  </div>
+                  <h3
+                    style={{
+                      fontSize: "24px",
+                      color: "#2c3e50",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    Thank You for Your Message!
+                  </h3>
+                  <p style={{ color: "#5a6a7e", lineHeight: "1.6" }}>
+                    We've received your inquiry and will get back to you
+                    shortly.
+                  </p>
+                </div>
+              )}
+
+              {/* Display error message if there was an error submitting the form */}
+              {formStatus.isError && (
+                <div
+                  style={{
+                    padding: "20px",
+                    backgroundColor: "#f4e4e4",
+                    borderRadius: "10px",
+                    boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
+                    textAlign: "center",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <div style={{ fontSize: "48px", marginBottom: "20px" }}>
+                    ❌
+                  </div>
+                  <h3
+                    style={{
+                      fontSize: "24px",
+                      color: "#2c3e50",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    Something went wrong
+                  </h3>
+                  <p style={{ color: "#5a6a7e", lineHeight: "1.6" }}>
+                    There was an error sending your message. Please try again
+                    later.
+                  </p>
+                </div>
+              )}
+
+              {/* Show the form if it hasn't been submitted successfully */}
+              {!formStatus.isSubmitted && (
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      onFocus={() => handleFocus("name")}
+                      onBlur={handleBlur}
+                      placeholder=" "
+                      required
+                    />
+                    <label htmlFor="name">Full Name</label>
+                    {errors.name && (
+                      <div style={errorMessageStyle}>{errors.name}</div>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      onFocus={() => handleFocus("email")}
+                      onBlur={handleBlur}
+                      placeholder=" "
+                      required
+                    />
+                    <label htmlFor="email">Email Address</label>
+                    {errors.email && (
+                      <div style={errorMessageStyle}>{errors.email}</div>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      onFocus={() => handleFocus("phone")}
+                      onBlur={handleBlur}
+                      placeholder=" "
+                      required
+                    />
+                    <label htmlFor="phone">Phone Number</label>
+                    {errors.phone && (
+                      <div style={errorMessageStyle}>{errors.phone}</div>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      onFocus={() => handleFocus("message")}
+                      onBlur={handleBlur}
+                      placeholder=" "
+                      required
+                    ></textarea>
+                    <label htmlFor="message">Message</label>
+                    {errors.message && (
+                      <div style={errorMessageStyle}>{errors.message}</div>
+                    )}
+                  </div>
+                  <button
+                    type="submit"
+                    className="submit-button"
+                    disabled={formStatus.isSubmitting}
+                  >
+                    {formStatus.isSubmitting
+                      ? "Sending..."
+                      : "Click to contact us"}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Supported By Section */}
+        <section className="home-supported-section">
+          <div className="home-section-header">
+            <h2>Supported By</h2>
+          </div>
+          <div className="home-supported-content">
+            <div className="home-supported-item">
+              <div className="home-supported-logo">
                 <img
-                  src="https://ieee-ims.org/sites/ieeeims/files/styles/cc_imgstyle_4_x_5/public/contacts/photo/profile_pic.jpg?h=6b0b5157&itok=lCD0DDnm"
-                  alt="Dr. Shovan Barma"
+                  src="https://upload.wikimedia.org/wikipedia/en/2/22/Indian_Institute_of_Information_Technology%2C_Guwahati_Logo.svg"
+                  alt="IIIT Guwahati Logo"
+                  className="home-supported-image"
                 />
               </div>
-              <div
-                className="founder-title-group"
-                style={{ alignSelf: "flex-end" }}
-              >
-                <h3>Dr. Shovan Barma</h3>
-                <p className="founder-role">
-                  Founder,{" "}
-                  <span style={{ color: "#FF7007", fontWeight: 800 }}>
-                    tellyou
-                  </span>
-                  <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>
+              <div className="home-supported-info">
+                <h3>Indian Institute of Information Technology, Guwahati</h3>
+                <p>
+                  We would like to express our heartfelt thanks to IIIT Guwahati
+                  for their support and guidance throughout the development of
+                  the TellyouDoc platform. Their involvement has been vital in
+                  helping us move forward with our vision of creating a
+                  meaningful and impactful healthcare solution.
                 </p>
-                <p className="founder-affiliation">
-                  Associate Professor, IIIT Guwahati
-                </p>
-              </div>
-            </div>
-            <p className="founder-summary">
-              Dr. Shovan Barma is the visionary behind tellyoudoc, a digital
-              health platform designed to simplify the way patients connect with
-              doctors—especially in critical and chronic care like breast
-              cancer. Dr. Barma serves as an Associate Professor in the
-              Department of ECE at IIIT Guwahati. With a Ph.D. from NCKU,
-              Taiwan, Dr. Barma has spent over a decade researching AI based
-              intelligent systems design and their application in real-world
-              healthcare. The{" "}
-              <span style={{ color: "#FF7007", fontWeight: 800 }}>tellyou</span>
-              <span style={{ color: "#05AFA4", fontWeight: 800 }}>
-                doc
-              </span>{" "}
-              platform was born out of his observation that many Indian patients
-              struggle to express their medical problems clearly during
-              consultation, and often fail to track their regular symptoms
-              pre/post consultation or during medication, leading to delayed
-              diagnosis and poor outcomes. He recognized the need for a solution
-              that bridges this communication gap—empowering patients with
-              easy-to-use tools and enabling doctors with structured data. Under
-              his leadership, tellyoudoc combines technology, empathy, and
-              clinical insight to make healthcare simpler, smarter, and more
-              connected—for both patients and doctors.
-            </p>
-          </div>
-
-          <div className="founder-card">
-            <div className="home-founder-header">
-              <div className="founder-image">
-                <img src={doctorImageUrl} alt="Dr. Soumen Das" />
-              </div>
-              <div
-                className="founder-title-group"
-                style={{ alignSelf: "flex-end" }}
-              >
-                <h3>Dr. Soumen Das</h3>
-                <p className="founder-role">
-                  Co-Founder,{" "}
-                  <span style={{ color: "#FF7007", fontWeight: 800 }}>
-                    tellyou
-                  </span>
-                  <span style={{ color: "#05AFA4", fontWeight: 800 }}>doc</span>
-                </p>
-                <p className="founder-affiliation">
-                  Senior Consultant, Surgical Oncology
+                <p>
+                  This collaboration exemplifies how academic institutions and
+                  healthcare initiatives can work together to create meaningful
+                  technological solutions that address critical healthcare
+                  challenges and improve patient outcomes.
                 </p>
               </div>
             </div>
-            <p className="founder-summary">
-              Dr. Soumen Das is a nationally acclaimed breast cancer surgeon and
-              co-founder of TellyouDoc, a digital health platform created to
-              transform how breast cancer patients are diagnosed, monitored, and
-              treated. He currently serves as a Senior Consultant in Surgical
-              Oncology and is the founder of the Institute of Breast Diseases,
-              Kolkata—India's first dedicated breast care center. An alumnus of
-              Medical College, Kolkata, Dr. Das topped the university in surgery
-              and went on to complete his MS in General Surgery. He later
-              trained at Tata Memorial Hospital, Mumbai, and earned prestigious
-              fellowships including FRCS (Glasgow), FACS (USA), and European
-              Breast Surgical Oncology Certification, becoming the first Indian
-              surgeon to hold this distinction. The{" "}
-              <span style={{ color: "#FF7007", fontWeight: 800 }}>tellyou</span>
-              <span style={{ color: "#05AFA4", fontWeight: 800 }}>
-                doc
-              </span>{" "}
-              platform was co-founded by Dr. Das after years of witnessing
-              patients struggle to explain symptoms clearly during
-              consultations, and the lack of tools to track symptoms regularly
-              throughout treatment. These gaps often led to delayed diagnoses
-              and compromised outcomes. often led to delayed diagnoses and
-              compromised outcomes. He envisioned a system where structured
-              symptom tracking and clinical clarity come together—helping
-              doctors make timely decisions and patients stay engaged in their
-              care. Through his clinical leadership, TellyouDoc brings deep
-              medical insight to its mission of making breast cancer care more
-              responsive, personalized, and data-driven.
-            </p>
           </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="contact-section">
-        <div className="bubble-1"></div>
-        <div className="bubble-2"></div>
-        <div className="bubble-3"></div>
-        <div className="home-section-header">
-          <h2>Contact Us</h2>
-        </div>
-
-        {/* Map and Form Section */}
-        <div className="contact-main-section">
-          <div className="contact-form">
-            <h3>Send us a Message</h3>
-
-            {/* Display success message if form is submitted successfully */}
-            {formStatus.isSubmitted && (
-              <div
-                style={{
-                  padding: "20px",
-                  backgroundColor: "#e7f4e4",
-                  borderRadius: "10px",
-                  boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
-                  textAlign: "center",
-                  marginBottom: "20px",
-                }}
-              >
-                <div style={{ fontSize: "48px", marginBottom: "20px" }}>✅</div>
-                <h3
-                  style={{
-                    fontSize: "24px",
-                    color: "#2c3e50",
-                    marginBottom: "10px",
-                  }}
-                >
-                  Thank You for Your Message!
-                </h3>
-                <p style={{ color: "#5a6a7e", lineHeight: "1.6" }}>
-                  We've received your inquiry and will get back to you shortly.
-                </p>
-              </div>
-            )}
-
-            {/* Display error message if there was an error submitting the form */}
-            {formStatus.isError && (
-              <div
-                style={{
-                  padding: "20px",
-                  backgroundColor: "#f4e4e4",
-                  borderRadius: "10px",
-                  boxShadow: "0 5px 20px rgba(0,0,0,0.05)",
-                  textAlign: "center",
-                  marginBottom: "20px",
-                }}
-              >
-                <div style={{ fontSize: "48px", marginBottom: "20px" }}>❌</div>
-                <h3
-                  style={{
-                    fontSize: "24px",
-                    color: "#2c3e50",
-                    marginBottom: "10px",
-                  }}
-                >
-                  Something went wrong
-                </h3>
-                <p style={{ color: "#5a6a7e", lineHeight: "1.6" }}>
-                  There was an error sending your message. Please try again
-                  later.
-                </p>
-              </div>
-            )}
-
-            {/* Show the form if it hasn't been submitted successfully */}
-            {!formStatus.isSubmitted && (
-              <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus("name")}
-                    onBlur={handleBlur}
-                    placeholder=" "
-                    required
-                  />
-                  <label htmlFor="name">Full Name</label>
-                  {errors.name && (
-                    <div style={errorMessageStyle}>{errors.name}</div>
-                  )}
-                </div>
-                <div className="form-group">
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus("email")}
-                    onBlur={handleBlur}
-                    placeholder=" "
-                    required
-                  />
-                  <label htmlFor="email">Email Address</label>
-                  {errors.email && (
-                    <div style={errorMessageStyle}>{errors.email}</div>
-                  )}
-                </div>
-                <div className="form-group">
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus("phone")}
-                    onBlur={handleBlur}
-                    placeholder=" "
-                    required
-                  />
-                  <label htmlFor="phone">Phone Number</label>
-                  {errors.phone && (
-                    <div style={errorMessageStyle}>{errors.phone}</div>
-                  )}
-                </div>
-                <div className="form-group">
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    onFocus={() => handleFocus("message")}
-                    onBlur={handleBlur}
-                    placeholder=" "
-                    required
-                  ></textarea>
-                  <label htmlFor="message">Message</label>
-                  {errors.message && (
-                    <div style={errorMessageStyle}>{errors.message}</div>
-                  )}
-                </div>
-                <button
-                  type="submit"
-                  className="submit-button"
-                  disabled={formStatus.isSubmitting}
-                >
-                  {formStatus.isSubmitting
-                    ? "Sending..."
-                    : "Click to contact us"}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      </section>
-    </div>
-    <div className="bottom-line"></div>
-    <Footer/>
+        </section>
+      </div>
+      <div className="bottom-line"></div>
+      <Footer />
     </>
   );
 };
