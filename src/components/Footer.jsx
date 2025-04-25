@@ -62,9 +62,9 @@ const Footer = () => {
           <img src={logoImage} alt="tellYouDoc Logo" />
           <p className="footer-address">
             <i className="location-icon"></i>
-            Precise Medications Private Limited
+            Precise Medication Research Private Limited
             <br />
-            IT Park, Bongora, Guwahati
+            IIIT, Bongora, Guwahati
             <br />
             Assam, India - 781015
             <br />
@@ -180,7 +180,7 @@ const Footer = () => {
 
       <div className="footer-bottom">
         <p>
-          &copy; {new Date().getFullYear()} Precise Medications Private Limited.
+          &copy; {new Date().getFullYear()} Precise Medication Research Private Limited.
           All rights reserved. Visuals on this website are AI generated.
         </p>
         {/* <p>
