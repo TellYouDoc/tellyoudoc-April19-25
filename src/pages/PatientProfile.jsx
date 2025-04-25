@@ -1450,7 +1450,20 @@ const PatientProfile = () => {
       alert(`Cannot download file: ${file.name}. File URL not found.`);
     }
   };
+  // Helper function to get patient initials
+  const getPatientInitials = (firstName, lastName) => {
+    let initials = "";
 
+    if (firstName) {
+      initials += firstName.charAt(0).toUpperCase();
+    }
+
+    if (lastName) {
+      initials += lastName.charAt(0).toUpperCase();
+    }
+
+    return initials || "?";
+  };
 
   return (
     <div className="patient-profile-container">
@@ -1566,11 +1579,37 @@ const PatientProfile = () => {
 
             {/* Patient Header Card */}
             <div className="patient-header-card">
+
               <div className="patient-header-info">
-                <img
-                  src={patient?.profileImage}
-                  className="patient-avatar"
-                />
+                <div className="patient-avatar-container" style={{ position: 'relative', width: '100px', height: '100px' }}>
+                  <img
+                    src={patient?.profileImage}
+                    className="patient-avatar"
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                      e.target.nextElementSibling.style.display = "flex";
+                    }}
+                    style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', position: 'relative', zIndex: '1' }}
+                  />
+                  <div className="patient-avatar-initials" style={{
+                    display: 'none',
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#3498db',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '50%',
+                    fontSize: '1.8rem',
+                    zIndex: '0'
+                  }}>
+                    {getPatientInitials(patient?.firstName, patient?.lastName)}
+                  </div>
+                </div>
                 <div className="patient-basic-info">
                   <h3 className="patient-name">{patient?.firstName + " " + (patient?.middleName ? patient?.middleName + " " : "") + patient?.lastName || 'N/A'}</h3>
                   <div className="patient-attributes">
