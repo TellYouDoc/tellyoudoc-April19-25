@@ -47,7 +47,7 @@ function Patients() {
           medicalConditions: patient?.medicalConditions || [],
 
           // Additional fields needed for web display
-          profileImage: patient?.image || '',
+          profileImage: patient?.image || 'https://randomuser.me/api/portraits/women/33.jpg',
           status: patient.session === 'current' ? 'Active' : 'Previous',
           date: patient?.date || 'N/A',
         }));
@@ -241,42 +241,6 @@ function Patients() {
     }
   };
 
-  // Function to extract initials from patient name
-const getPatientInitials = (name) => {
-  if (!name) return '';
-  
-  const nameParts = name.split(' ');
-  if (nameParts.length === 1) return nameParts[0].charAt(0).toUpperCase();
-  
-  return (
-    nameParts[0].charAt(0).toUpperCase() + 
-    nameParts[nameParts.length - 1].charAt(0).toUpperCase()
-  );
-};
-
-// Function to generate a colored background based on name
-const getInitialsAvatar = (name) => {
-  // This is a fallback if you still want to use an image
-  // But it's better to use the CSS approach with the div
-  const colors = [
-    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e',
-    '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50',
-    '#f1c40f', '#e67e22', '#e74c3c', '#ecf0f1', '#95a5a6'
-  ];
-  
-  // Generate a consistent color based on name
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  
-  const color = colors[Math.abs(hash) % colors.length];
-  
-  // For advanced implementation, you could generate a data URL with a canvas
-  // but for simplicity, we'll return empty (the div approach is better)
-  return '';
-};
-
   return (
     <div className="patients-container">
       <LoadingScreen show={isLoading} message="Loading patient records..." />
@@ -405,27 +369,21 @@ const getInitialsAvatar = (name) => {
               {displayedPatients.map((patient, index) => (
                 <tr key={patient.id} className={`table-row-animated delay-${index % 5}`}>
                   <td>
-                  <div className="patient-profile">
-  {patient.image || patient.profileImage ? (
-    <img
-      src={patient.image || patient.profileImage}
-      alt={`${patient.name}'s profile`}
-      className="patient-avatar"
-      onError={(e) => {
-        e.target.onerror = null;
-        e.target.src = getInitialsAvatar(patient.name);
-      }}
-    />
-  ) : (
-    <div className="patient-avatar initials-avatar">
-      {getPatientInitials(patient.name)}
-    </div>
-  )}
-  <div className="patient-details">
-    <span className="patient-name">{patient.name}</span>
-    <span className="patient-gender">{patient.gender}</span>
-  </div>
-</div>
+                    <div className="patient-profile">
+                      <img
+                        src={patient.image || patient.profileImage}
+                        alt={`${patient.name}'s profile`}
+                        className="patient-avatar"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://randomuser.me/api/portraits/women/33.jpg';
+                        }}
+                      />
+                      <div className="patient-details">
+                        <span className="patient-name">{patient.name}</span>
+                        <span className="patient-gender">{patient.gender}</span>
+                      </div>
+                    </div>
                   </td>
                   <td className="text-center">
                     <span className="patient-age">{patient.age} years</span>
