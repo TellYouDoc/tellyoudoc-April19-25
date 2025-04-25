@@ -30,6 +30,9 @@ import productImageUrl6 from "../assets/images/product/pr6.jpg";
 import productImageUrl7 from "../assets/images/product/pr7.jpg";
 import productImageUrl8 from "../assets/images/product/pr8.jpg";
 
+import iiitgLogo from "../assets/images/iiitg.jpg";
+import drishtiLogo from "../assets/images/drishti-cps.jpg";
+
 // Doctor Image
 import doctorImageUrl from "../assets/images/dr-soumen-das.png";
 
@@ -1460,38 +1463,31 @@ const Home = () => {
         </section>
 
         {/* Supported By Section */}
-        {/* <section className="home-supported-section">
+        <section className="home-supported-section">
           <div className="home-section-header">
             <h2>Supported By</h2>
           </div>
           <div className="home-supported-content">
-            <div className="home-supported-item">
+            <div className="home-supported-card">
               <div className="home-supported-logo">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/en/2/22/Indian_Institute_of_Information_Technology%2C_Guwahati_Logo.svg"
-                  alt="IIIT Guwahati Logo"
+                <img 
+                  src={iiitgLogo}
+                  alt="IIIT Guwahati Logo" 
                   className="home-supported-image"
                 />
               </div>
-              <div className="home-supported-info">
-                <h3>Indian Institute of Information Technology, Guwahati</h3>
-                <p>
-                  We would like to express our heartfelt thanks to IIIT Guwahati
-                  for their support and guidance throughout the development of
-                  the TellyouDoc platform. Their involvement has been vital in
-                  helping us move forward with our vision of creating a
-                  meaningful and impactful healthcare solution.
-                </p>
-                <p>
-                  This collaboration exemplifies how academic institutions and
-                  healthcare initiatives can work together to create meaningful
-                  technological solutions that address critical healthcare
-                  challenges and improve patient outcomes.
-                </p>
+            </div>
+            <div className="home-supported-card">
+              <div className="home-supported-logo">
+                <img 
+                  src={drishtiLogo}
+                  alt="Drishti CPS Logo" 
+                  className="home-supported-image"
+                />
               </div>
             </div>
           </div>
-        </section> */}
+        </section>
       </div>
       <div className="bottom-line"></div>
       <Footer />
