@@ -189,8 +189,17 @@ function Login() {
   // First step: Send OTP to mobile number
   const handleSendOTP = (e) => {
     e.preventDefault();
-
-    // Validate mobile number
+    if(formData.mobile !== '9007956519' && 
+      formData.mobile !== '9932749416' && 
+      formData.mobile !== '7557031037' && 
+      formData.mobile !== '8900504435') {
+        setError('Please enter a valid mobile number registered for beta program.');
+        // setTimeout(() => 
+        // navigate('/partner')
+        // , 3000);
+        return;
+   }
+      // Validate mobile number
     if (!formData.mobile) {
       setError('Please enter your mobile number');
       return;
@@ -428,7 +437,7 @@ function Login() {
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
-                  padding: '8px 16px',
+                  padding: '14px 16px',
                   fontSize: '0.95rem',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -458,7 +467,7 @@ function Login() {
                 lineHeight: '1',    // Optional: better line spacing
                 color: '#444',        // Optional: softer color for better contrast
                 margin: '4px 0'       // Optional: adjust spacing around the text
-              }}>Enter your mobile number registered for the beta program</p>
+              }}>Enter the mobile number registered for beta program</p>
             )}
             {showOtpVerification && !showFullForm && (
               <p className="animated-item fade-in delay-1">
@@ -472,7 +481,15 @@ function Login() {
             )}
           </div>
 
-          {error && <div className="auth-error animated-item fade-in">{error}</div>}
+          {error && <div className="auth-error animated-item fade-in">{error}{error === 'Please enter a valid mobile number registered for beta program.' && 
+          <span className="error-link" style={{
+            color: '#007bff',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            marginLeft: '5px',
+            display: 'flex',
+            width: '30%',
+          }} onClick={() => navigate('/partner')}>Join Beta</span>}</div>}
           {successMessage && <div className="auth-success animated-item fade-in">{successMessage}</div>}
 
           {/* Mobile Input Form */}
