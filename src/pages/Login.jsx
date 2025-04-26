@@ -189,17 +189,17 @@ function Login() {
   // First step: Send OTP to mobile number
   const handleSendOTP = (e) => {
     e.preventDefault();
-    if(formData.mobile !== '9007956519' && 
-      formData.mobile !== '9932749416' && 
-      formData.mobile !== '7557031037' && 
+    if (formData.mobile !== '9007956519' &&
+      formData.mobile !== '9932749416' &&
+      formData.mobile !== '7557031037' &&
       formData.mobile !== '8900504435') {
-        setError('Please enter a valid mobile number registered for beta program.');
-        // setTimeout(() => 
-        // navigate('/partner')
-        // , 3000);
-        return;
-   }
-      // Validate mobile number
+      setError('Only for Beta User.');
+      // setTimeout(() => 
+      // navigate('/partner')
+      // , 3000);
+      return;
+    }
+    // Validate mobile number
     if (!formData.mobile) {
       setError('Please enter your mobile number');
       return;
@@ -461,7 +461,7 @@ function Login() {
             </div>
             <img src={MeLogo} alt="MeLogo" className="logo-icon-me" />
             {!showOtpVerification && !showFullForm && (
-               <p className="animated-item fade-in delay-1" style={{
+              <p className="animated-item fade-in delay-1" style={{
                 fontSize: '1.05rem',  // Adjust this value to change the font size
                 fontWeight: '500',    // Optional: adjust font weight for better readability
                 lineHeight: '1',    // Optional: better line spacing
@@ -481,15 +481,41 @@ function Login() {
             )}
           </div>
 
-          {error && <div className="auth-error animated-item fade-in">{error}{error === 'Please enter a valid mobile number registered for beta program.' && 
-          <span className="error-link" style={{
-            color: '#007bff',
-            textDecoration: 'underline',
-            cursor: 'pointer',
-            marginLeft: '5px',
-            display: 'flex',
-            width: '30%',
-          }} onClick={() => navigate('/partner')}>Join Beta</span>}</div>}
+          {error && (
+            <div className="auth-error animated-item fade-in" style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              position: 'relative'
+            }}>
+              <div style={{
+                width: '100%',
+                textAlign: 'left',
+              }}>
+                {error}
+              </div>
+              {error === 'Only for Beta User.' && (
+                <span
+                  className="error-link"
+                  style={{
+                    color: 'rgba(18, 18, 20, 0.78)',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    backgroundColor: 'rgba(213, 200, 183, 0.82)',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    whiteSpace: 'nowrap',
+                    position: 'absolute',
+                    fontWeight: '500',
+                    right: '15px'
+                  }}
+                  onClick={() => navigate('/partner')}
+                >
+                  Join Beta
+                </span>
+              )}
+            </div>
+          )}
           {successMessage && <div className="auth-success animated-item fade-in">{successMessage}</div>}
 
           {/* Mobile Input Form */}
