@@ -200,6 +200,9 @@ const Home = () => {
 
   // Add a new state to track exit animations
   const [isExiting, setIsExiting] = useState(false);
+
+
+
   // Features data
   const features = [
     {

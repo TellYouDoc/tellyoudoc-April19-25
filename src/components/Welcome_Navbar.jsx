@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getCookie } from '../utils/cookieUtils';
+
 import "../styles/welcome_Navbar.css";
 import logoImage from "../assets/tellyoudoc.png";
 
@@ -45,6 +47,14 @@ const Welcome_Navbar = () => {
       closeMenu();
     }
   };
+  const isUserAuthenticated = () => {
+    const accessToken = getCookie('AccessToken');
+    const refreshToken = getCookie('RefreshToken');
+    return !!(accessToken && refreshToken);
+  };
+
+   // Determine where the Doctors Zone link should go
+   const doctorsZoneTarget = isUserAuthenticated() ? '/dashboard' : '/login';
 
   // Handle scrolling to section after navigation to homepage
   useEffect(() => {
@@ -146,7 +156,9 @@ const Welcome_Navbar = () => {
           Join Beta
         </a>
         <a
-          href="/login"
+          href={doctorsZoneTarget}
+          target="_blank" 
+        rel="noopener noreferrer"
         >
           Doctor Zone
         </a>

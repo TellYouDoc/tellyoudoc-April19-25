@@ -75,7 +75,7 @@ function AppRoutes() {
       <Suspense fallback={<LoadingScreen show={true} message="Loading page..." />}>
         <Routes>
           {/* Public routes with automatic redirection if authenticated */}
-          <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Home />} />
+          <Route path="/" element={isAuthenticated ? <Navigate to="/Home" replace /> : <Home />} />
           <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
           <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
           
@@ -142,6 +142,7 @@ function AppRoutes() {
           } />
           
           <Route path="/partner" element={<Partner />} />
+          <Route path="/Home" element={<Home />} />
           {/* Redirect to login if not authenticated */}
           
           {/* Redirect all other routes to home */}
