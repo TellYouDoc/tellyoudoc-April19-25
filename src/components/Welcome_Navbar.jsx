@@ -55,6 +55,26 @@ const Welcome_Navbar = () => {
 
    // Determine where the Doctors Zone link should go
    const doctorsZoneTarget = isUserAuthenticated() ? '/dashboard' : '/login';
+// Add this handling for the Doctor Zone link
+const handleDoctorZoneClick = (e) => {
+  e.preventDefault();
+  
+  // If already on login page, don't open in new tab
+  if (location.pathname === '/login' && !isUserAuthenticated()) {
+    // Just close menu if we're already on login page
+    closeMenu();
+    return;
+  }
+  
+  // Otherwise navigate normally
+  if (isUserAuthenticated()) {
+    window.open('/dashboard', '_blank', 'noopener,noreferrer');
+  } else {
+    window.open('/login', '_blank', 'noopener,noreferrer');
+  }
+  
+  closeMenu();
+};
 
   // Handle scrolling to section after navigation to homepage
   useEffect(() => {
@@ -157,8 +177,7 @@ const Welcome_Navbar = () => {
         </a>
         <a
           href={doctorsZoneTarget}
-          target="_blank" 
-        rel="noopener noreferrer"
+          onClick={handleDoctorZoneClick}
         >
           Doctor Zone
         </a>
