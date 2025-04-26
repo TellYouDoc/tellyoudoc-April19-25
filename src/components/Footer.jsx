@@ -66,7 +66,7 @@ const Footer = () => {
             <br />
             IIIT Guwahati, Bongora
             <br />
-            Assam, India - 781015
+            Assam - 781015, India
             <br />
             <a href="mailto:info@tellyoudoc.com" className="footer-email">
               info@tellyoudoc.com
