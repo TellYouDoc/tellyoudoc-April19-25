@@ -46,12 +46,12 @@ function Login() {
   useEffect(() => {
     // Add subtle background animation
     document.body.classList.add('login-bg-animation');
-    
+
     // Trigger animations when component mounts
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 100);
-    
+
     return () => {
       clearTimeout(timer);
       document.body.classList.remove('login-bg-animation');
@@ -392,16 +392,16 @@ function Login() {
             <div className="beta-warning animated-item fade-in delay-1" style={{
               border: '2px solid rgba(46, 43, 167, 0.15)',
               borderRadius: '10px',
-              padding: '10px',
+              padding: '14px',
               background: 'linear-gradient(135deg, rgba(46, 43, 167, 0.03) 0%, rgba(73, 69, 228, 0.08) 100%)',
               boxShadow: '0 6px 16px rgba(46, 43, 167, 0.08), 0 2px 4px rgba(46, 43, 167, 0.04)',
               marginBottom: '12px',
               display: 'flex',
-              flexDirection: 'row', /* Changed from column to row for more compact layout */
+              flexDirection: 'column', /* Changed from row to column */
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
               position: 'relative',
-              overflow: 'hidden'
+              overflow: 'hidden',
             }}>
               <div style={{
                 position: 'absolute',
@@ -417,9 +417,9 @@ function Login() {
                 color: 'rgba(46, 43, 167, 0.92)',
                 fontWeight: '700',
                 margin: '0',
-                textAlign: 'left',
+                textAlign: 'center',
                 textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)'
-              }}>Restricted to Beta Users only</p>
+              }}>Restricted to Beta Users</p>
 
               <button
                 className="animated-item fade-in delay-2"
@@ -438,13 +438,13 @@ function Login() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   whiteSpace: 'nowrap',
-                  marginLeft: '10px'
+                  width: '220px' /* Set a specific width for the button */
                 }}
                 onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
                 onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
                 onClick={() => navigate('/partner')}
               >
-                <span style={{ marginRight: '8px' }}>Join Beta</span>
+                <span style={{ marginRight: '8px', marginLeft: '20px' }}>Join Beta</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ marginLeft: '4px' }}>
                   <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -452,7 +452,13 @@ function Login() {
             </div>
             <img src={MeLogo} alt="MeLogo" className="logo-icon-me" />
             {!showOtpVerification && !showFullForm && (
-              <p className="animated-item fade-in delay-1">Enter your mobile number to get started</p>
+               <p className="animated-item fade-in delay-1" style={{
+                fontSize: '1.05rem',  // Adjust this value to change the font size
+                fontWeight: '500',    // Optional: adjust font weight for better readability
+                lineHeight: '1',    // Optional: better line spacing
+                color: '#444',        // Optional: softer color for better contrast
+                margin: '4px 0'       // Optional: adjust spacing around the text
+              }}>Enter your mobile number registered for the beta program</p>
             )}
             {showOtpVerification && !showFullForm && (
               <p className="animated-item fade-in delay-1">
