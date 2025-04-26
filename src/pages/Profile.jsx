@@ -23,7 +23,8 @@ const Profile = () => {
   const [tempImage, setTempImage] = useState(null);
   const [croppedImageBlob, setCroppedImageBlob] = useState(null);
   const cropImageRef = useRef(null);
-
+// Add this near your other useState declarations
+const [isPermanentAddressSame, setIsPermanentAddressSame] = useState(false);
   const [profileData, setProfileData] = useState({
     basicDetails: {
       firstName: '',
@@ -541,6 +542,7 @@ const Profile = () => {
 
   // Function to handle address changes
   const handleAddressChange = (addressType, field, value) => {
+    // Set the value in the state
     setProfileData(prev => ({
       ...prev,
       contactAddress: {
@@ -552,6 +554,11 @@ const Profile = () => {
       }
     }));
 
+    // If user is manually changing the permanent address, set isPermanentAddressSame to false
+    if (addressType === 'permanentAddress') {
+      setIsPermanentAddressSame(false);
+    }
+
     // Mark that profile has changes
     setHasProfileChanges(true);
   };
@@ -560,12 +567,13 @@ const Profile = () => {
   const handleCopyCurrentAddress = () => {
     if (!isEditing) return;
 
+    setIsPermanentAddressSame(true); // Set the flag to true
+    
     setProfileData(prev => ({
       ...prev,
       contactAddress: {
         ...prev.contactAddress,
-        permanentAddress: { ...prev.contactAddress.currentAddress },
-        isPermanentAddressSame: true
+        permanentAddress: { ...prev.contactAddress.currentAddress }
       }
     }));
   };
@@ -585,6 +593,7 @@ const Profile = () => {
           contactAddress: {
             ...prev.contactAddress,
             [addressType]: {
+              ...prev.contactAddress[addressType],
               state: addressDetails.state,
               district: addressDetails.district,
               postOffice: addressDetails.postOffice
@@ -928,9 +937,6 @@ const Profile = () => {
     try {
       setIsLoading(true);
 
-      // Check if permanent address is same as current
-      const isPermanentAddressSame = profileData.isPermanentAddressSame || false;
-
       // Prepare profile data for API submission
       const updatedProfileData = {
         firstName: profileData.basicDetails.firstName,
@@ -938,15 +944,29 @@ const Profile = () => {
         lastName: profileData.basicDetails.lastName,
         gender: profileData.basicDetails.gender,
         dob: formatDateForApi(profileData.basicDetails.dateOfBirth),
-        // bio: profileData.basicDetails.bio,
-        currentAddress: profileData.contactAddress.currentAddress,
-        isPermanentAddressSame: isPermanentAddressSame,
+           // Correctly format current address
+           currentAddress: {
+            addressLine1: profileData.contactAddress.currentAddress.addressLine1 || '',
+            addressLine2: profileData.contactAddress.currentAddress.addressLine2 || '',
+            pincode: profileData.contactAddress.currentAddress.pincode || '',
+            state: profileData.contactAddress.currentAddress.state || '',
+            district: profileData.contactAddress.currentAddress.district || '',
+            postOffice: profileData.contactAddress.currentAddress.postOffice || ''
+          },
+          
+          isPermanentAddressSame: isPermanentAddressSame,
 
-        // Only include permanentAddress if addresses are different
-        ...(isPermanentAddressSame ? {} : {
-          permanentAddress: profileData.contactAddress.permanentAddress
-        }),
-
+          // Only include permanentAddress if addresses are different
+          ...(isPermanentAddressSame ? {} : {
+            permanentAddress: {
+              addressLine1: profileData.contactAddress.permanentAddress.addressLine1 || '',
+              addressLine2: profileData.contactAddress.permanentAddress.addressLine2 || '',
+              pincode: profileData.contactAddress.permanentAddress.pincode || '',
+              state: profileData.contactAddress.permanentAddress.state || '',
+              district: profileData.contactAddress.permanentAddress.district || '',
+              postOffice: profileData.contactAddress.permanentAddress.postOffice || ''
+            }
+          }),
         professionalDetails: {
           registrationNumber: profileData.medicalCertification.registrationNumber,
           medicalCouncil: profileData.medicalCertification.medicalCouncil,
@@ -966,6 +986,7 @@ const Profile = () => {
         socialMedia: profileData.basicDetails.socialMedia
       };
 
+      console.log('Updated profile data:', JSON.stringify(updatedProfileData, null, 2));
       // Call the API to update profile
       const response = await apiService.doctorService.updateProfile(updatedProfileData);
       console.log('Profile update response:', response);
@@ -1029,6 +1050,7 @@ const Profile = () => {
       return dateString;
     }
   };
+
   return (
     <div className={`profile-container ${isEditing ? 'edit-mode-active' : 'edit-mode-inactive'}`}>
       {isLoading ? (
@@ -1210,7 +1232,8 @@ const Profile = () => {
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                   </select>
-                </div>                <div className="form-group">
+                </div>
+                <div className="form-group">
                   <label>Date of Birth</label>
                   <input
                     type="text"
