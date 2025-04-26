@@ -30,8 +30,8 @@ import productImageUrl6 from "../assets/images/product/pr6.jpg";
 import productImageUrl7 from "../assets/images/product/pr7.jpg";
 import productImageUrl8 from "../assets/images/product/pr8.jpg";
 
-import iiitgLogo from "../assets/images/iiitg.jpg";
-import drishtiLogo from "../assets/images/drishti-cps.jpg";
+import iiitgLogo from "../assets/images/iiitg.png";
+import drishtiLogo from "../assets/images/drishti-cps.png";
 
 // Doctor Image
 import doctorImageUrl from "../assets/images/dr-soumen-das.png";
