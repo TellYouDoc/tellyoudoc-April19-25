@@ -194,10 +194,10 @@ const Footer = () => {
           <span style={{ fontWeight: "bold", color: "green" }}>Doc</span>. All
           rights reserved.
         </p> */}
-        {/* <div className="footer-bottom-links">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms & Conditions</a>
-        </div> */}
+        <div className="footer-bottom-links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms & Conditions</a>
+        </div>
       </div>
     </footer>
   );

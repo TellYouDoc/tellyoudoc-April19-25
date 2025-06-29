@@ -384,9 +384,7 @@ const Privacy = () => {
               <p>Bongora, Guwahati, Assam - 781015</p>
               <p>
                 Email:{" "}
-                <a href="mailto:contact@tellyoudoc.com">
-                  contact@tellyoudoc.com
-                </a>
+                <a href="mailto:info@tellyoudoc.com">info@tellyoudoc.com</a>
               </p>
             </div>
           </section>

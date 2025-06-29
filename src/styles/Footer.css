@@ -249,27 +249,11 @@
 .footer-bottom-links a {
   font-size: 0.9rem;
   color: rgba(0, 0, 0, 0.6);
-  transition: color 0.3s ease;
-  position: relative;
+  text-decoration: none;
 }
 
 .footer-bottom-links a:hover {
-  color: #e83e8c;
-}
-
-.footer-bottom-links a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 1px;
-  bottom: -3px;
-  left: 0;
-  background-color: #e83e8c;
-  transition: width 0.3s ease;
-}
-
-.footer-bottom-links a:hover::after {
-  width: 100%;
+  color: #667eea;
 }
 
 /* Updated Social Media Icons styling */
@@ -440,6 +424,15 @@
     align-items: center;
     text-align: center;
     gap: 1rem;
+  }
+  
+  .footer-bottom-links {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .footer-bottom-links a {
+    font-size: 0.85rem;
   }
 }
 

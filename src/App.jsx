@@ -17,7 +17,7 @@ import { getCookie, removeCookie } from "./utils/cookieUtils";
 
 // Privacy Policy Page & Terms & Conditions Page
 const Privacy = lazy(() => import("./pages/Privacy"));
-// const TermsConditions = lazy(() => import("./pages/TermsConditions"));
+const Terms = lazy(() => import("./pages/Terms"));
 
 // Doctor Dashboard Pages
 const Login = lazy(() => import("./pages/Login"));
@@ -162,6 +162,7 @@ function AppRoutes() {
             }
           />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
           <Route
             path="/login"
             element={
