@@ -31,6 +31,7 @@ const Profile = lazy(() => import("./pages/Profile"));
 const MammoList = lazy(() => import("./pages/MammoList"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const MammoProfile = lazy(() => import("./pages/MammoProfile"));
+const DeleteAccount = lazy(() => import("./pages/DeleteAccount"));
 
 // Admin Login Pages
 const AdminLogin = lazy(() => import("./pages/Administrator/AdminLogin"));
@@ -272,6 +273,7 @@ function AppRoutes() {
 
           <Route path="/partner" element={<Partner />} />
           <Route path="/Home" element={<Home />} />
+          <Route path="/delete-account" element={<DeleteAccount />} />
           {/* Redirect to login if not authenticated */}
 
           {/* Routes for the Admin Panel */}
