@@ -1,0 +1,120 @@
+
+
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.screening-table {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+}
+
+/* Status tag styles */
+.status-tag-scheduled {
+  font-weight: 500;
+}
+
+.status-tag-completed {
+  font-weight: 500;
+}
+
+.status-tag-cancelled {
+  font-weight: 500;
+}
+
+.status-tag-pending {
+  font-weight: 500;
+}
+
+/* Modal styles */
+.screening-detail-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.screening-detail-modal .ant-modal-header {
+  background-color: #f0f8ff;
+  padding: 16px 24px;
+}
+
+.screening-detail-modal .ant-modal-title {
+  font-size: 18px;
+  color: #1890ff;
+}
+
+.screening-detail-card .ant-card-body {
+  padding: 0;
+}
+
+.screening-detail-card .ant-card {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
+}
+
+.screening-detail-card .ant-card-head {
+  background-color: #f5f5f5;
+  padding: 12px 16px;
+}
+
+.screening-detail-card .ant-card-body {
+  padding: 16px;
+}
+
+/* Assignment summary in assign doctor modal */
+.screening-assignment-summary {
+  padding: 12px;
+  background-color: #f5f5f5;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+/* Add screening button */
+.add-screening-button {
+  height: 40px;
+  padding: 0 20px;
+  font-weight: 500;
+}
+
+/* View and assign buttons */
+.view-button, .assign-button {
+  border-radius: 4px;
+}
+
+.view-button {
+  background-color: #1890ff;
+}
+
+.assign-button {
+  background-color: white;
+  color: #1890ff;
+  border-color: #1890ff;
+}
+
+.assign-button:hover {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border-color: #1890ff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .filter-section {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filter-section > * {
+    width: 100% !important;
+    margin-bottom: 8px;
+  }
+}

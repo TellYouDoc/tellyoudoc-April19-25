@@ -1,5 +1,5 @@
 // Authentication utility functions
-import { setCookie } from './cookieUtils';
+import { setCookie, getCookie } from './cookieUtils';
 
 // Save authentication tokens with proper cookie settings
 export function saveAuthTokens(accessToken, refreshToken, userData) {
@@ -30,15 +30,8 @@ export function saveAuthTokens(accessToken, refreshToken, userData) {
 // Check if the user is authenticated
 export function isAuthenticated() {
   // Check both cookies and localStorage for tokens
-  const cookieAccessToken = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('AccessToken='))
-    ?.split('=')[1];
-    
-  const cookieRefreshToken = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('RefreshToken='))
-    ?.split('=')[1];
+  const cookieAccessToken = getCookie('AccessToken');
+  const cookieRefreshToken = getCookie('RefreshToken');
     
   const localAccessToken = localStorage.getItem('AccessToken');
   const localRefreshToken = localStorage.getItem('RefreshToken');
@@ -47,30 +40,54 @@ export function isAuthenticated() {
   const accessToken = cookieAccessToken || localAccessToken;
   const refreshToken = cookieRefreshToken || localRefreshToken;
   
-  console.log('Auth check tokens:', { 
-    cookieAccessToken,
-    cookieRefreshToken,
-    localAccessToken,
-    localRefreshToken,
-    finalAccessToken: accessToken,
-    finalRefreshToken: refreshToken
-  });
+  // Synchronize cookie and localStorage if they're mismatched but valid
+  if (accessToken && refreshToken) {
+    // If cookie exists but localStorage doesn't, update localStorage
+    if (cookieAccessToken && !localAccessToken) {
+      localStorage.setItem('AccessToken', cookieAccessToken);
+    }
+    
+    // If localStorage exists but cookie doesn't, update cookie
+    if (localAccessToken && !cookieAccessToken) {
+      document.cookie = `AccessToken=${localAccessToken}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=strict`;
+    }
+    
+    // Do the same for refresh token
+    if (cookieRefreshToken && !localRefreshToken) {
+      localStorage.setItem('RefreshToken', cookieRefreshToken);
+    }
+    
+    if (localRefreshToken && !cookieRefreshToken) {
+      document.cookie = `RefreshToken=${localRefreshToken}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=strict`;
+    }
+    
+    // Also update the current page in case of refresh
+    const currentPath = window.location.pathname;
+    if (currentPath && 
+        currentPath !== '/' && 
+        currentPath !== '/login' && 
+        currentPath !== '/register' &&
+        currentPath !== '/partner' &&
+        currentPath !== '/home' &&
+        !currentPath.startsWith('/admin')) {
+      localStorage.setItem('lastViewedPage', currentPath);
+      console.log('Auth check saved path:', currentPath);
+    }
+  }
   
   return !!(accessToken && refreshToken);
 }
 
-// Clear all authentication data
-export function logout() {
+// Remove all authentication data (logout)
+export function clearAuthData() {
   // Clear cookies
-  document.cookie = 'AccessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-  document.cookie = 'RefreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  document.cookie = 'AccessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; samesite=strict';
+  document.cookie = 'RefreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; samesite=strict';
   
   // Clear localStorage
   localStorage.removeItem('AccessToken');
   localStorage.removeItem('RefreshToken');
   localStorage.removeItem('UserData');
-  
-  return true;
 }
 
 // Get user data

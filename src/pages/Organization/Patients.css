@@ -1,0 +1,42 @@
+/* Patients Page Styles */
+
+/* Card styles */
+.report-card {
+  margin-bottom: 20px;
+}
+
+.report-card .ant-card-head {
+  background-color: #f6f6f6;
+}
+
+/* Timeline customizations */
+.ant-timeline-item-content {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100%;
+}
+
+/* Modal customizations */
+.ant-modal-content {
+  border-radius: 8px;
+}
+
+.ant-modal-header {
+  border-radius: 8px 8px 0 0;
+}
+
+/* Tabs customizations */
+.ant-tabs-nav-wrap {
+  justify-content: center;
+}
+
+/* Description layouts */
+.ant-descriptions-bordered .ant-descriptions-item-label {
+  background-color: #fafafa;
+  font-weight: 500;
+}
+
+/* List item hover effects */
+.ant-list-item:hover {
+  background-color: #f5f5f5;
+}

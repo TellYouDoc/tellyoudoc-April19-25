@@ -180,7 +180,6 @@
 .founder-title-group {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin-top: 13px;
 }
 
@@ -547,7 +546,6 @@
 
   .product-content {
     flex-direction: column-reverse;
-    border: 1px solid black;
   }
 
   .tellyoudoc-offers-content .feature-animation,
@@ -1832,7 +1830,7 @@
 .founder-affiliation {
   font-size: 0.9rem;
   color: #666;
-  margin: 0.25rem 0 0 0;
+  margin: 0px 0 0 0;
 }
 
 .founder-summary {

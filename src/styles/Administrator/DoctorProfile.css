@@ -1,0 +1,1012 @@
+/* Doctor Profile Page Styles */
+:root {
+  /* Using TellYouDoc green color theme */
+  --profile-primary: #0e9f6e;
+  --profile-primary-dark: #057a55;
+  --profile-primary-light: #d1fae5;
+  --profile-success: #0e9f6e;
+  --profile-info: #3182ce;
+  --profile-warning: #c27803;
+  --profile-danger: #e02424;
+}
+
+.doctor-profile-container {
+  padding: 24px;
+}
+
+.loading-spinner,
+.error {
+  text-align: center;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.error h2 {
+  color: #ff4d4f;
+  margin-bottom: 16px;
+}
+
+.error p {
+  margin-bottom: 24px;
+  color: #666;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid var(--primary-color, #0e9f6e);
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced styles for better UI */
+.profile-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+}
+
+.profile-header {
+  border-bottom: none;
+  background: linear-gradient(to right, #0e9f6e, #057a55);
+  color: white;
+}
+
+/* Back Navigation */
+.back-navigation {
+  margin-bottom: 24px;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  color: var(--profile-primary);
+  border-color: var(--profile-primary);
+}
+
+.back-button:hover {
+  color: var(--profile-primary-dark);
+  border-color: var(--profile-primary-dark);
+  background-color: #f0fdf4;
+}
+
+/* Profile Cards */
+.profile-card {
+  margin-bottom: 24px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(14, 159, 110, 0.15);
+}
+
+.profile-header {
+  padding: 24px;
+}
+
+/* Doctor Header Info */
+.doctor-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.doctor-name {
+  margin-bottom: 8px !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+.doctor-badges {
+  margin-bottom: 8px;
+}
+
+.doctor-specialization {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.header-contact-info {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.header-contact-info .ant-typography {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Profile Avatar */
+.profile-avatar {
+  display: flex;
+  justify-content: center;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 576px) {
+  .profile-avatar {
+    margin: 0 auto 16px;
+  }
+}
+
+/* Social Media Icons */
+.social-media-links {
+  margin-top: 16px;
+  display: flex;
+  gap: 16px;
+}
+
+.social-icon {  font-size: 24px;
+  transition: all 0.3s ease;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  margin-right: 0;
+  color: white;
+}
+
+.social-icon:hover {
+  transform: translateY(-5px) scale(1.1);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.linkedin {
+  background-color: #0077b5;
+}
+
+.facebook {
+  background-color: #1877f2;
+}
+
+.twitter {
+  background-color: #1da1f2;
+}
+
+.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+/* Tabs Content */
+.profile-tabs {
+  padding: 0;
+}
+
+.profile-tabs .ant-tabs-nav {
+  margin-bottom: 24px;
+}
+
+.profile-tabs .ant-tabs-tab {
+  padding: 12px 20px;
+  font-weight: 500;
+}
+
+.profile-tabs .ant-tabs-tab-active {
+  font-weight: 600;
+}
+
+.profile-tabs .ant-tabs-content {
+  padding: 0 12px;
+}
+
+.tab-content {
+  padding: 24px 0;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.section-header h4 {
+  margin-bottom: 0;
+}
+
+/* Description Lists */
+.description-list {
+  margin-bottom: 24px;
+}
+
+.ant-descriptions-item-label {
+  font-weight: 500;
+  color: #666;
+}
+
+/* Social Media List */
+.social-media-list {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(14, 159, 110, 0.1);
+}
+
+.social-media-list .ant-list-item {
+  padding: 16px;
+  transition: all 0.3s ease;
+}
+
+.social-media-list .ant-list-item:hover {
+  background-color: #f0fdf4;
+}
+
+.social-list-icon {
+  font-size: 22px;
+  margin-right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* Same As Current Address */
+.same-as-current {
+  padding: 16px 20px;
+  background-color: #f0fdf4;
+  border-radius: 8px;
+  border: 1px dashed var(--profile-primary);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.same-as-current:hover {
+  box-shadow: 0 4px 12px rgba(14, 159, 110, 0.15);
+  transform: translateY(-2px);
+  background-color: #e1f9ee;
+}
+
+.same-as-current-checkbox {
+  display: flex !important;
+  align-items: center;
+}
+
+.same-as-current-checkbox .ant-checkbox-inner {
+  transform: scale(1.2);
+  border-color: var(--profile-primary);
+}
+
+.same-as-current-checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--profile-primary);
+  border-color: var(--profile-primary);
+}
+
+/* Same as Current Address Checkbox Styling */
+.same-address-checkbox {
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #f0fdf4;
+  border: 1px dashed var(--profile-primary);
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.same-address-checkbox:hover {
+  background-color: #e1f9ee;
+  box-shadow: 0 2px 8px rgba(14, 159, 110, 0.1);
+}
+
+.same-address-label {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--profile-primary-dark);
+}
+
+.same-address-icon {
+  margin-right: 8px;
+  color: var(--profile-primary);
+  font-size: 16px;
+}
+
+/* Address container styling */
+.address-container {
+  position: relative;
+  border-left: 3px solid var(--profile-primary);
+}
+
+.address-container .ant-descriptions {
+  margin-bottom: 10px;
+}
+
+.address-map-link {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.map-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background-color: #e1f9ee;
+  color: var(--profile-primary);
+  transition: all 0.3s ease;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(14, 159, 110, 0.3);
+}
+
+.map-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transition: left 0.7s ease;
+  z-index: 1;
+}
+
+.map-link:hover::before {
+  left: 100%;
+}
+
+.map-link:hover {
+  background-color: var(--profile-primary);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(14, 159, 110, 0.25);
+}
+
+/* Contact information styling */
+.description-list a {
+  position: relative;
+  color: var(--profile-primary);
+  transition: all 0.3s ease;
+}
+
+.description-list a:hover {
+  color: var(--profile-primary-dark);
+  text-decoration: none;
+  padding-left: 5px;
+}
+
+.description-list a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--profile-primary);
+  transition: width 0.3s ease;
+}
+
+.description-list a:hover::after {
+  width: 100%;
+}
+
+/* Enhanced titles with icons */
+.section-title h4 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  color: var(--profile-primary-dark);
+  font-weight: 600;
+}
+
+.section-title h4 .anticon {
+  margin-right: 8px;
+  color: var(--profile-primary);
+  font-size: 18px;
+}
+
+/* Qualification List */
+.qualifications-list .ant-list-item {
+  padding: 12px 16px;
+}
+
+.qualification-icon {
+  margin-right: 10px;
+  color: var(--primary-color, #0e9f6e);
+}
+
+/* Practice Card */
+.practice-card {
+  background-color: #fafafa;
+  border: 1px solid #f0f0f0;
+}
+
+/* Subscription Badge */
+.subscription-badge {
+  display: flex;
+  align-items: center;
+}
+
+/* Certification Card */
+.certification-card {
+  background-color: #fcfcfc;
+}
+
+/* Dividers */
+.ant-divider {
+  margin: 24px 0;
+}
+
+/* No Data Message */
+.no-data {
+  padding: 24px;
+  background-color: #f9f9f9;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.no-data:hover {
+  background-color: #f0f0f0;
+}
+
+/* Edit buttons styling */
+.edit-button {
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  background-color: var(--primary-color, #0e9f6e);
+  border-color: var(--primary-color, #0e9f6e);
+}
+
+.edit-button:hover {
+  transform: translateY(-2px);
+  background-color: var(--primary-dark, #057a55);
+  border-color: var(--primary-dark, #057a55);
+  box-shadow: 0 4px 10px rgba(14, 159, 110, 0.25);
+}
+
+/* Modal enhancements */
+.ant-modal-header {
+  background: #f0fdf4;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.ant-modal-title {
+  font-weight: 600;
+  color: var(--profile-primary-dark);
+}
+
+.ant-modal-footer {
+  border-top: 1px solid #eaeaea;
+  padding: 15px 24px;
+}
+
+/* Animation for tabs */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tab styles with green theme */
+.profile-tabs .ant-tabs-ink-bar {
+  background-color: var(--profile-primary);
+}
+
+.profile-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--profile-primary);
+}
+
+.profile-tabs .ant-tabs-tab:hover {
+  color: var(--profile-primary);
+}
+
+/* Update tag colors to match theme */
+.ant-tag-blue {
+  color: #1e429f;
+  background: #e1effe;
+  border-color: #c3ddfd;
+}
+
+.ant-tag-green {
+  color: #057a55;
+  background: #d1fae5;
+  border-color: #a7f3d0;
+}
+
+.ant-tag-purple {
+  color: #5521b5;
+  background: #ede9fe;
+  border-color: #ddd6fe;
+}
+
+.ant-tag-magenta {
+  color: #9d174d;
+  background: #fce7f3;
+  border-color: #fbcfe8;
+}
+
+.ant-tag-cyan {
+  color: #0e7490;
+  background: #cffafe;
+  border-color: #a5f3fc;
+}
+
+/* Button styling */
+.ant-btn-primary {
+  background-color: var(--profile-primary);
+  border-color: var(--profile-primary);
+}
+
+.ant-btn-primary:hover, 
+.ant-btn-primary:focus {
+  background-color: var(--profile-primary-dark);
+  border-color: var(--profile-primary-dark);
+}
+
+/* Badge colors */
+.subscription-badge .ant-badge-status-processing {
+  background-color: var(--profile-primary);
+}
+
+/* Form elements focus state */
+.ant-input:focus, 
+.ant-input-focused,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--profile-primary) !important;
+  box-shadow: 0 0 0 2px rgba(14, 159, 110, 0.2) !important;
+}
+
+/* Form field focus styles */
+.ant-input:hover {
+  border-color: var(--profile-primary);
+}
+
+.ant-input:focus,
+.ant-input-focused {
+  border-color: var(--profile-primary);
+  box-shadow: 0 0 0 2px rgba(14, 159, 110, 0.2);
+}
+
+.ant-select:hover .ant-select-selector {
+  border-color: var(--profile-primary);
+}
+
+.ant-select-focused:not(.ant-select-disabled) .ant-select-selector {
+  border-color: var(--profile-primary);
+  box-shadow: 0 0 0 2px rgba(14, 159, 110, 0.2);
+}
+
+/* Form button hover state */
+.ant-form-item-control-input-content .ant-btn-primary {
+  background-color: var(--profile-primary);
+  border-color: var(--profile-primary);
+}
+
+.ant-form-item-control-input-content .ant-btn-primary:hover,
+.ant-form-item-control-input-content .ant-btn-primary:focus {
+  background-color: var(--profile-primary-dark);
+  border-color: var(--profile-primary-dark);
+}
+
+/* Switch component */
+.ant-switch-checked {
+  background-color: var(--profile-primary);
+}
+
+/* Section styling improvements */
+.section-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(14, 159, 110, 0.08);
+  transition: all 0.3s ease;
+}
+
+.section-container:hover {
+  box-shadow: 0 4px 12px rgba(14, 159, 110, 0.15);
+}
+
+.section-title {
+  color: var(--profile-primary-dark);
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 20px;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--profile-primary);
+  border-radius: 4px;
+}
+
+/* List item styling improvements */
+.ant-list-item {
+  transition: all 0.3s ease;
+}
+
+.ant-list-item:hover {
+  background-color: #f0fdf4;
+}
+
+/* Links in lists */
+.ant-list-item-meta-description a {
+  color: var(--profile-primary);
+  transition: all 0.3s ease;
+}
+
+.ant-list-item-meta-description a:hover {
+  color: var(--profile-primary-dark);
+  text-decoration: underline;
+}
+
+/* Language tags */
+.language-tag {
+  margin: 4px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.language-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Description item styling */
+.ant-descriptions-item-container {
+  padding: 8px 0;
+}
+
+.ant-descriptions-item-container .ant-descriptions-item-label {
+  font-weight: 500;
+}
+
+.ant-descriptions-bordered .ant-descriptions-item-label {
+  background-color: #f7fcf9;
+}
+
+/* Links style */
+.profile-card a {
+  color: var(--profile-primary);
+  transition: all 0.2s ease;
+}
+
+.profile-card a:hover {
+  color: var(--profile-primary-dark);
+  text-decoration: underline;
+}
+
+/* Card animations and hover effects */
+.certification-card, .practice-card {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(14, 159, 110, 0.1);
+}
+
+.certification-card:hover, .practice-card:hover {
+  box-shadow: 0 6px 16px rgba(14, 159, 110, 0.15);
+  transform: translateY(-3px);
+}
+
+/* Tab content animation */
+.profile-tabs .ant-tabs-tabpane {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Descriptions enrichment */
+.ant-descriptions-item-content {
+  position: relative;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.ant-descriptions-item-content:hover {
+  background-color: #f0fdf4;
+}
+
+/* Social media in list styling */
+.social-list-icon.linkedin {
+  background-color: #0077b5;
+}
+
+.social-list-icon.facebook {
+  background-color: #1877f2;
+}
+
+.social-list-icon.twitter {
+  background-color: #1da1f2;
+}
+
+.social-list-icon.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+/* Enhanced section titles with icon */
+.section-title h4 {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: var(--profile-primary-dark);
+}
+
+.section-title h4::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  background-color: var(--profile-primary);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z'/%3E%3C/svg%3E");
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+
+/* Enhanced Modal Styling */
+.green-theme-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.green-theme-modal .ant-modal-header {
+  background: linear-gradient(to right, rgba(14, 159, 110, 0.9), rgba(5, 122, 85, 0.8));
+  border-bottom: none;
+  padding: 16px 24px;
+}
+
+.green-theme-modal .ant-modal-title {
+  color: white;
+  font-weight: 600;
+}
+
+.modal-title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-title-icon {
+  font-size: 20px;
+  color: white;
+}
+
+.green-theme-modal .ant-modal-footer {
+  border-top: 1px solid #f0f0f0;
+  padding: 15px 24px;
+}
+
+/* Form Section Styling */
+.form-section {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-left: 3px solid var(--profile-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.form-section:hover {
+  box-shadow: 0 4px 12px rgba(14, 159, 110, 0.15);
+  background-color: #f5f5f5;
+}
+
+.form-section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e8e8e8;
+  color: var(--profile-primary-dark);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.form-section-icon {
+  margin-right: 8px;
+  color: var(--profile-primary);
+  font-size: 18px;
+}
+
+/* Form Item Label with Icon */
+.form-item-label {
+  display: flex;
+  align-items: center;
+}
+
+.form-item-icon {
+  margin-right: 6px;
+  color: var(--profile-primary);
+}
+
+/* Same Address Checkbox */
+.same-address-checkbox {
+  margin-bottom: 24px;
+  width: 100%;
+  display: block;
+}
+
+.ant-form-item.same-address-checkbox .ant-form-item-control-input {
+  min-height: auto;
+}
+
+.ant-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+/* Permanent Address Form */
+.permanent-address-form {
+  border-top: 1px dashed var(--profile-primary-light);
+  padding-top: 20px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-top: 16px;
+  background-color: #f9fbfa;
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease-in-out;
+  position: relative;
+}
+
+.permanent-address-form::before {
+  content: 'Permanent Address Details';
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  background-color: white;
+  padding: 0 10px;
+  font-size: 12px;
+  color: var(--profile-primary);
+  font-weight: 500;
+}
+
+/* Input with prefix icons */
+.ant-input-affix-wrapper {
+  border-radius: 6px;
+  padding: 6px 11px;
+  transition: all 0.3s ease;
+}
+
+.ant-input-affix-wrapper:hover {
+  border-color: var(--profile-primary);
+}
+
+.ant-input-affix-wrapper-focused {
+  border-color: var(--profile-primary);
+  box-shadow: 0 0 0 2px rgba(14, 159, 110, 0.2);
+}
+
+.ant-input-prefix {
+  color: var(--profile-primary);
+  margin-right: 8px;
+}
+
+/* Additional Address Container Enhancements */
+.address-container {
+  animation: fadeSlideIn 0.4s ease-in-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Contact Item Hover Effect */
+.description-list .ant-descriptions-item {
+  transition: all 0.3s ease;
+}
+
+.description-list .ant-descriptions-item:hover {
+  background-color: #f0fdf4;
+}
+
+.description-list .ant-descriptions-item-content a {
+  display: inline-block;
+}
+
+/* Address sections visual enhancement */
+.address-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  background-color: var(--profile-primary-light);
+  border-radius: 0 8px 0 30px;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+.address-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  background-color: var(--profile-primary-light);
+  border-radius: 0 30px 0 8px;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+/* Tab switch animation */
+.ant-tabs-tab {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.ant-tabs-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background-color: var(--profile-primary);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.ant-tabs-tab:hover::after {
+  width: 40%;
+}
+
+.ant-tabs-tab-active::after {
+  width: 80% !important;
+}

@@ -189,16 +189,16 @@ function Login() {
   // First step: Send OTP to mobile number
   const handleSendOTP = (e) => {
     e.preventDefault();
-    if (formData.mobile !== '9007956519' &&
-      formData.mobile !== '9932749416' &&
-      formData.mobile !== '7557031037' &&
-      formData.mobile !== '8900504435') {
-      setError('Only for Beta User.');
-      // setTimeout(() => 
-      // navigate('/partner')
-      // , 3000);
-      return;
-    }
+    // if (formData.mobile !== '9007956519' &&
+    //   formData.mobile !== '9932749416' &&
+    //   formData.mobile !== '7557031037' &&
+    //   formData.mobile !== '8900504435') {
+    //   setError('Only for Beta User.');
+    //   // setTimeout(() => 
+    //   // navigate('/partner')
+    //   // , 3000);
+    //   return;
+    // }
     // Validate mobile number
     if (!formData.mobile) {
       setError('Please enter your mobile number');
@@ -280,7 +280,17 @@ function Login() {
 
           // Redirect to dashboard with a delay to ensure cookies are properly set
           setTimeout(() => {
-            window.location.replace('/dashboard');
+            // Get the last viewed page from localStorage (the page the user was on before logout or refresh)
+            const lastViewedPage = localStorage.getItem('lastViewedPage');
+            
+            // If there's a saved path, navigate to it
+            if (lastViewedPage && lastViewedPage !== '/login') {
+              console.log('Redirecting to last viewed page:', lastViewedPage);
+              window.location.replace(lastViewedPage);
+            } else {
+              // Default to dashboard
+              window.location.replace('/dashboard');
+            }
           }, 1000);
         } else {
           // Unexpected status code

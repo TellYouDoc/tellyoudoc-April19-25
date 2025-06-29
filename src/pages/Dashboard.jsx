@@ -373,6 +373,9 @@ function Dashboard() {
   const fetchDoctorProfile = async () => {
     try {
       const response = await apiService.doctorService.getProfile();
+
+      // console.log(response);
+
       if (response.status === 200) {
         const profileData = response.data?.data || {};
         console.log("Doctor Profile Data:", profileData);
@@ -1126,10 +1129,12 @@ function Dashboard() {
           </div>
         </div>
       )}
-      
-      {showModal && (
+        {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
+            <button className="modal-close" onClick={closeModal} aria-label="Close modal">
+              ×
+            </button>
             <h2>My QR Code</h2>
             <div ref={qrCodeRef}>
               <QRCodeSVG value={UDIID} size={256} />
@@ -1140,7 +1145,6 @@ function Dashboard() {
                 {isCopied ? 'Copied!' : 'Copy ID'}
               </button>
               <button onClick={downloadQRCode}>Download QR Code</button>
-              <button onClick={closeModal}>Close</button>
             </div>
           </div>
         </div>

@@ -237,6 +237,14 @@ const Reports = () => {
     return null;
   };
 
+  // Custom empty state component for charts
+  const EmptyState = ({ message = "No data available" }) => (
+    <div className="empty-chart-state">
+      <FaClipboardList className="empty-icon" />
+      <p>{message}</p>
+    </div>
+  );
+
   if (isLoading) {
     return <LoadingScreen show={isLoading} message="Loading reports..." />;
   }
@@ -323,7 +331,7 @@ const Reports = () => {
             <FaUsers />
           </div>
           <div className="stat-content">
-            <h2>{stats.totalPatients}</h2>
+            <h2>{stats.totalPatients || 0}</h2>
             <p>Total Patients</p>
           </div>
         </div>
@@ -333,7 +341,7 @@ const Reports = () => {
             <MdHealthAndSafety />
           </div>
           <div className="stat-content">
-            <h2>{stats.activePatients}</h2>
+            <h2>{stats.activePatients || 0}</h2>
             <p>In Treatment</p>
           </div>
         </div>
@@ -343,7 +351,7 @@ const Reports = () => {
             <MdOutlineTrendingUp />
           </div>
           <div className="stat-content">
-            <h2>{stats.newPatientsThisMonth}</h2>
+            <h2>{stats.newPatientsThisMonth || 0}</h2>
             <p>New This Month</p>
           </div>
         </div>
@@ -353,7 +361,7 @@ const Reports = () => {
             <FaClipboardList />
           </div>
           <div className="stat-content">
-            <h2>{stats.biopsyCount}</h2>
+            <h2>{stats.biopsyCount || 0}</h2>
             <p>Biopsies</p>
           </div>
         </div>
@@ -363,7 +371,7 @@ const Reports = () => {
             <FaProcedures />
           </div>
           <div className="stat-content">
-            <h2>{stats.surgeryCount}</h2>
+            <h2>{stats.surgeryCount || 0}</h2>
             <p>Surgeries</p>
           </div>
         </div>
@@ -390,30 +398,34 @@ const Reports = () => {
             <h3><FaUsers className="chart-icon" /> Patient Age Distribution</h3>
           </div>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={stats.ageDistribution}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
-                <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} tickLine={{ stroke: '#ccc' }} />
-                <YAxis tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} tickLine={{ stroke: '#ccc' }} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }} />
-                <Legend wrapperStyle={{ paddingTop: 15 }} />
-                <Bar 
-                  dataKey="count" 
-                  name="Number of Patients" 
-                  radius={[10, 10, 0, 0]}
-                  barSize={35}
-                  animationDuration={1500}
+            {stats.ageDistribution && stats.ageDistribution.some(item => item.count > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={stats.ageDistribution}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
-                  {stats.ageDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                  <LabelList dataKey="count" position="top" fill="#666" fontSize={12} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
+                  <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} tickLine={{ stroke: '#ccc' }} />
+                  <YAxis tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} tickLine={{ stroke: '#ccc' }} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }} />
+                  <Legend wrapperStyle={{ paddingTop: 15 }} />
+                  <Bar 
+                    dataKey="count" 
+                    name="Number of Patients" 
+                    radius={[10, 10, 0, 0]}
+                    barSize={35}
+                    animationDuration={1500}
+                  >
+                    {stats.ageDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                    <LabelList dataKey="count" position="top" fill="#666" fontSize={12} />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState message="No age distribution data available" />
+            )}
           </div>
         </div>
 
@@ -423,31 +435,35 @@ const Reports = () => {
             <h3><FaHeartbeat className="chart-icon" /> Cancer Type Distribution</h3>
           </div>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  activeIndex={activeIndex}
-                  activeShape={renderActiveShape}
-                  data={stats.conditionsDistribution}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={90}
-                  fill="#8884d8"
-                  dataKey="count"
-                  onMouseEnter={onPieEnter}
-                  animationDuration={1200}
-                  animationBegin={200}
-                  paddingAngle={3}
-                >
-                  {stats.conditionsDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip content={<PieCustomTooltip />} />
-                <Legend layout="vertical" align="right" verticalAlign="middle" />
-              </PieChart>
-            </ResponsiveContainer>
+            {stats.conditionsDistribution && stats.conditionsDistribution.some(item => item.count > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    activeIndex={activeIndex}
+                    activeShape={renderActiveShape}
+                    data={stats.conditionsDistribution}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    fill="#8884d8"
+                    dataKey="count"
+                    onMouseEnter={onPieEnter}
+                    animationDuration={1200}
+                    animationBegin={200}
+                    paddingAngle={3}
+                  >
+                    {stats.conditionsDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<PieCustomTooltip />} />
+                  <Legend layout="vertical" align="right" verticalAlign="middle" />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState message="No cancer type distribution data available" />
+            )}
           </div>
         </div>
 
@@ -457,30 +473,34 @@ const Reports = () => {
             <h3><FaFemale className="chart-icon" /> Family Cancer History</h3>
           </div>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={stats.cancerFamilyStats}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
-                <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} tickLine={{ stroke: '#ccc' }} />
-                <YAxis tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} tickLine={{ stroke: '#ccc' }} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }} />
-                <Legend wrapperStyle={{ paddingTop: 15 }} />
-                <Bar 
-                  dataKey="value" 
-                  name="Cases in Family" 
-                  radius={[10, 10, 0, 0]}
-                  barSize={35}
-                  animationDuration={1500}
+            {stats.cancerFamilyStats && stats.cancerFamilyStats.some(item => item.value > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={stats.cancerFamilyStats}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
-                  {stats.cancerFamilyStats.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                  <LabelList dataKey="value" position="top" fill="#666" fontSize={12} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
+                  <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} tickLine={{ stroke: '#ccc' }} />
+                  <YAxis tick={{ fill: '#666', fontSize: 12 }} axisLine={{ stroke: '#ccc' }} tickLine={{ stroke: '#ccc' }} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }} />
+                  <Legend wrapperStyle={{ paddingTop: 15 }} />
+                  <Bar 
+                    dataKey="value" 
+                    name="Cases in Family" 
+                    radius={[10, 10, 0, 0]}
+                    barSize={35}
+                    animationDuration={1500}
+                  >
+                    {stats.cancerFamilyStats.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                    <LabelList dataKey="value" position="top" fill="#666" fontSize={12} />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState message="No family cancer history data available" />
+            )}
           </div>
         </div>
 
@@ -490,43 +510,47 @@ const Reports = () => {
             <h3><FaChartPie className="chart-icon" /> Risk Factor Distribution</h3>
           </div>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={[
-                    { name: 'High Risk', value: stats.riskFactors.high, fill: RISK_COLORS[0] },
-                    { name: 'Medium Risk', value: stats.riskFactors.medium, fill: RISK_COLORS[1] },
-                    { name: 'Low Risk', value: stats.riskFactors.low, fill: RISK_COLORS[2] }
-                  ]}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={80}
-                  paddingAngle={3}
-                  dataKey="value"
-                  labelLine={false}
-                  animationDuration={1200}
-                  animationBegin={200}
-                >
-                  {/* No Cell components needed as colors are in the data */}
-                  <LabelList 
-                    dataKey="value" 
-                    position="inside" 
-                    fill="#fff" 
-                    fontSize={12}
-                    fontWeight="700"
+            {stats.riskFactors && (stats.riskFactors.high > 0 || stats.riskFactors.medium > 0 || stats.riskFactors.low > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'High Risk', value: stats.riskFactors.high, fill: RISK_COLORS[0] },
+                      { name: 'Medium Risk', value: stats.riskFactors.medium, fill: RISK_COLORS[1] },
+                      { name: 'Low Risk', value: stats.riskFactors.low, fill: RISK_COLORS[2] }
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={55}
+                    outerRadius={80}
+                    paddingAngle={3}
+                    dataKey="value"
+                    labelLine={false}
+                    animationDuration={1200}
+                    animationBegin={200}
+                  >
+                    {/* No Cell components needed as colors are in the data */}
+                    <LabelList 
+                      dataKey="value" 
+                      position="inside" 
+                      fill="#fff" 
+                      fontSize={12}
+                      fontWeight="700"
+                    />
+                  </Pie>
+                  <Tooltip content={<PieCustomTooltip />} />
+                  <Legend 
+                    layout="horizontal" 
+                    align="center" 
+                    verticalAlign="bottom"
+                    iconSize={12}
+                    wrapperStyle={{ paddingTop: 20 }}
                   />
-                </Pie>
-                <Tooltip content={<PieCustomTooltip />} />
-                <Legend 
-                  layout="horizontal" 
-                  align="center" 
-                  verticalAlign="bottom"
-                  iconSize={12}
-                  wrapperStyle={{ paddingTop: 20 }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState message="No risk factor data available" />
+            )}
           </div>
         </div>
 
@@ -536,59 +560,63 @@ const Reports = () => {
             <h3><FaChartLine className="chart-icon" /> Symptom Reporting Trends (Last 6 Months)</h3>
           </div>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart
-                data={stats.symptomTrends}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <defs>
-                  <linearGradient id="painGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0.1}/>
-                  </linearGradient>
-                  <linearGradient id="lumpGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0.1}/>
-                  </linearGradient>
-                  <linearGradient id="dischargeGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ffc658" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#ffc658" stopOpacity={0.1}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
-                <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 12 }} />
-                <YAxis tick={{ fill: '#666', fontSize: 12 }} />
-                <Tooltip />
-                <Legend wrapperStyle={{ paddingTop: 10 }} />
-                <Area 
-                  type="monotone" 
-                  dataKey="Pain Reports" 
-                  stroke="#8884d8" 
-                  fillOpacity={1} 
-                  fill="url(#painGradient)" 
-                  activeDot={{ r: 6, strokeWidth: 1, stroke: '#fff' }}
-                  strokeWidth={2}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="Lump Detection" 
-                  stroke="#82ca9d" 
-                  fillOpacity={1} 
-                  fill="url(#lumpGradient)" 
-                  activeDot={{ r: 6, strokeWidth: 1, stroke: '#fff' }}
-                  strokeWidth={2}
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="Discharge Reports" 
-                  stroke="#ffc658" 
-                  fillOpacity={1} 
-                  fill="url(#dischargeGradient)" 
-                  activeDot={{ r: 6, strokeWidth: 1, stroke: '#fff' }}
-                  strokeWidth={2}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            {stats.symptomTrends && stats.symptomTrends.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart
+                  data={stats.symptomTrends}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <defs>
+                    <linearGradient id="painGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#8884d8" stopOpacity={0.1}/>
+                    </linearGradient>
+                    <linearGradient id="lumpGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#82ca9d" stopOpacity={0.1}/>
+                    </linearGradient>
+                    <linearGradient id="dischargeGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ffc658" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#ffc658" stopOpacity={0.1}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
+                  <XAxis dataKey="name" tick={{ fill: '#666', fontSize: 12 }} />
+                  <YAxis tick={{ fill: '#666', fontSize: 12 }} />
+                  <Tooltip />
+                  <Legend wrapperStyle={{ paddingTop: 10 }} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="Pain Reports" 
+                    stroke="#8884d8" 
+                    fillOpacity={1} 
+                    fill="url(#painGradient)" 
+                    activeDot={{ r: 6, strokeWidth: 1, stroke: '#fff' }}
+                    strokeWidth={2}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="Lump Detection" 
+                    stroke="#82ca9d" 
+                    fillOpacity={1} 
+                    fill="url(#lumpGradient)" 
+                    activeDot={{ r: 6, strokeWidth: 1, stroke: '#fff' }}
+                    strokeWidth={2}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="Discharge Reports" 
+                    stroke="#ffc658" 
+                    fillOpacity={1} 
+                    fill="url(#dischargeGradient)" 
+                    activeDot={{ r: 6, strokeWidth: 1, stroke: '#fff' }}
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState message="No symptom trend data available" />
+            )}
           </div>
         </div>
 
@@ -598,46 +626,50 @@ const Reports = () => {
             <h3><FaChartPie className="chart-icon" /> Sleep Duration Patterns</h3>
           </div>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={stats.sleepPatterns}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={80}
-                  paddingAngle={3}
-                  dataKey="value"
-                  labelLine={false}
-                  animationDuration={1200}
-                  animationBegin={200}
-                >
-                  {stats.sleepPatterns.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.fill} 
-                      stroke="#fff"
-                      strokeWidth={1}
+            {stats.sleepPatterns && stats.sleepPatterns.some(item => item.value > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={stats.sleepPatterns}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={55}
+                    outerRadius={80}
+                    paddingAngle={3}
+                    dataKey="value"
+                    labelLine={false}
+                    animationDuration={1200}
+                    animationBegin={200}
+                  >
+                    {stats.sleepPatterns.map((entry, index) => (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={entry.fill} 
+                        stroke="#fff"
+                        strokeWidth={1}
+                      />
+                    ))}
+                    <LabelList 
+                      dataKey="value" 
+                      position="inside" 
+                      fill="#fff" 
+                      fontSize={12}
+                      fontWeight="700"
                     />
-                  ))}
-                  <LabelList 
-                    dataKey="value" 
-                    position="inside" 
-                    fill="#fff" 
-                    fontSize={12}
-                    fontWeight="700"
+                  </Pie>
+                  <Tooltip content={<PieCustomTooltip />} />
+                  <Legend 
+                    layout="horizontal" 
+                    align="center" 
+                    verticalAlign="bottom"
+                    iconSize={12}
+                    wrapperStyle={{ paddingTop: 20 }}
                   />
-                </Pie>
-                <Tooltip content={<PieCustomTooltip />} />
-                <Legend 
-                  layout="horizontal" 
-                  align="center" 
-                  verticalAlign="bottom"
-                  iconSize={12}
-                  wrapperStyle={{ paddingTop: 20 }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState message="No sleep pattern data available" />
+            )}
           </div>
         </div>
 
@@ -647,47 +679,51 @@ const Reports = () => {
             <h3><FaSyringe className="chart-icon" /> Medication Usage</h3>
           </div>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={stats.medicationStats}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                layout="vertical"
-              >
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f5f5f5" />
-                <XAxis type="number" tick={{ fill: '#666', fontSize: 12 }} />
-                <YAxis 
-                  dataKey="name" 
-                  type="category" 
-                  width={120}
-                  tick={{ fill: '#666', fontSize: 12 }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <Tooltip cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }} />
-                <Legend wrapperStyle={{ paddingTop: 15 }} />
-                <Bar 
-                  dataKey="count" 
-                  name="Number of Patients" 
-                  radius={[0, 4, 4, 0]}
-                  barSize={20}
-                  animationDuration={1500}
+            {stats.medicationStats && stats.medicationStats.some(item => item.count > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={stats.medicationStats}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  layout="vertical"
                 >
-                  {stats.medicationStats.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.fill}
-                    />
-                  ))}
-                  <LabelList 
-                    dataKey="count" 
-                    position="right" 
-                    fill="#666" 
-                    fontSize={12} 
-                    formatter={(value) => `${value}`}
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f5f5f5" />
+                  <XAxis type="number" tick={{ fill: '#666', fontSize: 12 }} />
+                  <YAxis 
+                    dataKey="name" 
+                    type="category" 
+                    width={120}
+                    tick={{ fill: '#666', fontSize: 12 }}
+                    axisLine={false}
+                    tickLine={false}
                   />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+                  <Tooltip cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }} />
+                  <Legend wrapperStyle={{ paddingTop: 15 }} />
+                  <Bar 
+                    dataKey="count" 
+                    name="Number of Patients" 
+                    radius={[0, 4, 4, 0]}
+                    barSize={20}
+                    animationDuration={1500}
+                  >
+                    {stats.medicationStats.map((entry, index) => (
+                      <Cell 
+                        key={`cell-${index}`} 
+                        fill={entry.fill}
+                      />
+                    ))}
+                    <LabelList 
+                      dataKey="count" 
+                      position="right" 
+                      fill="#666" 
+                      fontSize={12} 
+                      formatter={(value) => `${value}`}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState message="No medication usage data available" />
+            )}
           </div>
         </div>
 
@@ -697,39 +733,43 @@ const Reports = () => {
             <h3><FaCalendarAlt className="chart-icon" /> Current Month Appointments</h3>
           </div>
           <div className="chart-content">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart
-                data={stats.appointmentStats}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
-                <XAxis 
-                  dataKey="name" 
-                  tick={{ fill: '#666', fontSize: 12 }} 
-                  axisLine={{ stroke: '#ccc' }} 
-                  tickLine={{ stroke: '#ccc' }} 
-                />
-                <YAxis 
-                  tick={{ fill: '#666', fontSize: 12 }} 
-                  axisLine={{ stroke: '#ccc' }} 
-                  tickLine={{ stroke: '#ccc' }} 
-                />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }} />
-                <Legend wrapperStyle={{ paddingTop: 15 }} />
-                <Bar 
-                  dataKey="count" 
-                  name="Appointment Count" 
-                  radius={[10, 10, 0, 0]}
-                  barSize={60}
-                  animationDuration={1500}
+            {stats.appointmentStats && stats.appointmentStats.some(item => item.count > 0) ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={stats.appointmentStats}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
-                  {stats.appointmentStats.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                  <LabelList dataKey="count" position="top" fill="#666" fontSize={12} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f5f5f5" />
+                  <XAxis 
+                    dataKey="name" 
+                    tick={{ fill: '#666', fontSize: 12 }} 
+                    axisLine={{ stroke: '#ccc' }} 
+                    tickLine={{ stroke: '#ccc' }} 
+                  />
+                  <YAxis 
+                    tick={{ fill: '#666', fontSize: 12 }} 
+                    axisLine={{ stroke: '#ccc' }} 
+                    tickLine={{ stroke: '#ccc' }} 
+                  />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(180, 180, 180, 0.1)' }} />
+                  <Legend wrapperStyle={{ paddingTop: 15 }} />
+                  <Bar 
+                    dataKey="count" 
+                    name="Appointment Count" 
+                    radius={[10, 10, 0, 0]}
+                    barSize={60}
+                    animationDuration={1500}
+                  >
+                    {stats.appointmentStats.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                    <LabelList dataKey="count" position="top" fill="#666" fontSize={12} />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <EmptyState message="No appointment data available" />
+            )}
           </div>
         </div>
 
@@ -738,38 +778,99 @@ const Reports = () => {
           <div className="chart-header">
             <h3><FaBriefcaseMedical className="chart-icon" /> Key Insights</h3>
           </div>
-          <div className="insights-content">
-            <div className="insight-item">
-              <div className="insight-icon trend-up"><MdOutlineTrendingUp /></div>
-              <div className="insight-text">
-                <h4>Pain Reporting Increasing</h4>
-                <p>Pain symptom reporting has shown a 15% increase over the last three months.</p>
+          <div className="insights-content" style={{ minHeight: '300px' }}>
+            {stats.totalPatients > 0 ? (
+              <>
+                <div className="insight-item">
+                  <div className="insight-icon trend-up"><MdOutlineTrendingUp /></div>
+                  <div className="insight-text">
+                    <h4>Pain Reporting Increasing</h4>
+                    <p>Pain symptom reporting has shown a 15% increase over the last three months.</p>
+                  </div>
+                </div>
+                <div className="insight-item">
+                  <div className="insight-icon trend-down"><MdOutlineTrendingUp style={{ transform: 'rotate(180deg)' }} /></div>
+                  <div className="insight-text">
+                    <h4>Sleep Quality Concerns</h4>
+                    <p>35% of patients report less than the recommended 7 hours of sleep.</p>
+                  </div>
+                </div>
+                <div className="insight-item">
+                  <div className="insight-icon alert"><FaHeartbeat /></div>
+                  <div className="insight-text">
+                    <h4>Family History Risk</h4>
+                    <p>30% of patients have high genetic risk based on family cancer history.</p>
+                  </div>
+                </div>
+                <div className="insight-item">
+                  <div className="insight-icon positive"><FaFileMedical /></div>
+                  <div className="insight-text">
+                    <h4>Treatment Progress</h4>
+                    <p>60% of patients in active treatment show positive response to current protocols.</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
+                <div style={{ textAlign: 'center', margin: '40px 0' }}>
+                  <FaClipboardList style={{ fontSize: '3.5rem', marginBottom: '1.2rem', opacity: 0.4, color: '#8a8a8a' }} />
+                  <p style={{ fontSize: '1.1rem', margin: 0, fontWeight: 500, color: '#8a8a8a' }}>No insights available - add patients to generate insights</p>
+                </div>
               </div>
-            </div>
-            <div className="insight-item">
-              <div className="insight-icon trend-down"><MdOutlineTrendingUp style={{ transform: 'rotate(180deg)' }} /></div>
-              <div className="insight-text">
-                <h4>Sleep Quality Concerns</h4>
-                <p>35% of patients report less than the recommended 7 hours of sleep.</p>
-              </div>
-            </div>
-            <div className="insight-item">
-              <div className="insight-icon alert"><FaHeartbeat /></div>
-              <div className="insight-text">
-                <h4>Family History Risk</h4>
-                <p>30% of patients have high genetic risk based on family cancer history.</p>
-              </div>
-            </div>
-            <div className="insight-item">
-              <div className="insight-icon positive"><FaFileMedical /></div>
-              <div className="insight-text">
-                <h4>Treatment Progress</h4>
-                <p>60% of patients in active treatment show positive response to current protocols.</p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Add CSS for empty states */}
+      <style>
+        {`
+          .empty-chart-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 250px;
+            color: #8a8a8a;
+            background-color: transparent;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+          }
+          
+          .empty-chart-state .empty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.2rem;
+            opacity: 0.4;
+          }
+          
+          .empty-chart-state p {
+            font-size: 1.1rem;
+            text-align: center;
+            margin: 0;
+            font-weight: 500;
+          }
+
+          .empty-insights-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            width: 100%;
+          }
+          
+          .empty-insights-container .empty-chart-state {
+            position: static;
+            transform: none;
+            min-height: auto;
+          }
+        `}
+      </style>
     </div>
   );
 };

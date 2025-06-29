@@ -315,7 +315,7 @@ const Appointments = () => {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
           query
-        )}&limit=5`,
+        )}&limit=10`,
         {
           headers: {
             Accept: 'application/json',
@@ -331,16 +331,28 @@ const Appointments = () => {
 
       const data = await response.json();
 
-      // Transform the API response to match our expected format
-      const formattedLocations = data.map((item) => ({
-        id: item.place_id,
-        name: item.display_name.split(',')[0],
-        address: item.display_name,
-        coordinates: {
-          lat: parseFloat(item.lat),
-          lng: parseFloat(item.lon),
-        },
-      }));
+      // Create a Map to store unique locations based on their main name
+      const uniqueLocations = new Map();
+
+      data.forEach(item => {
+        const mainName = item.display_name.split(',')[0].trim();
+        
+        // Only add if this main name hasn't been seen yet
+        if (!uniqueLocations.has(mainName)) {
+          uniqueLocations.set(mainName, {
+            id: item.place_id,
+            name: mainName,
+            address: item.display_name,
+            coordinates: {
+              lat: parseFloat(item.lat),
+              lng: parseFloat(item.lon),
+            },
+          });
+        }
+      });
+
+      // Convert Map values to array and limit to 5 results
+      const formattedLocations = Array.from(uniqueLocations.values()).slice(0, 5);
 
       setLocationSuggestions(formattedLocations);
       setShowSuggestions(formattedLocations.length > 0);
@@ -386,10 +398,12 @@ const Appointments = () => {
     setNewAppointment({
       ...newAppointment,
       location: query,
+      locationDetails: null, // Clear location details when user starts typing again
     });
 
     if (query.length < 3) {
       setShowSuggestions(false);
+      setLocationSuggestions([]); // Clear suggestions when input is too short
     }
   };
 
@@ -401,257 +415,24 @@ const Appointments = () => {
       locationDetails: location,
     });
     setShowSuggestions(false);
+    setLocationSuggestions([]); // Clear the suggestions array
   };
 
-  // Sample data for appointments - replace with your actual data source
-  // const todayAppointments = [
-  //   {
-  //     id: 1,
-  //     patientName: 'Sarah Mitchell',
-  //     time: '09:30 AM',
-  //     purpose: 'Post-Surgery Check-up',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/33.jpg',
-  //   },
-  //   {
-  //     id: 2,
-  //     patientName: 'Jennifer Lee',
-  //     time: '10:45 AM',
-  //     purpose: 'Initial Consultation',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/44.jpg',
-  //   },
-  //   {
-  //     id: 3,
-  //     patientName: 'Amanda Johnson',
-  //     time: '01:15 PM',
-  //     purpose: 'Radiation Follow-up',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/22.jpg',
-  //   },
-  //   {
-  //     id: 4,
-  //     patientName: 'Emily Rodriguez',
-  //     time: '03:00 PM',
-  //     purpose: 'Treatment Planning',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/55.jpg',
-  //   },
-  //   {
-  //     id: 10,
-  //     patientName: 'Michael Chen',
-  //     time: '08:00 AM',
-  //     purpose: 'Pre-operative Assessment',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/32.jpg',
-  //   },
-  //   {
-  //     id: 11,
-  //     patientName: 'Sofia Garcia',
-  //     time: '11:30 AM',
-  //     purpose: 'Follow-up Consultation',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/29.jpg',
-  //   },
-  //   {
-  //     id: 12,
-  //     patientName: 'David Wilson',
-  //     time: '02:45 PM',
-  //     purpose: 'Lab Results Review',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/42.jpg',
-  //   },
-  //   {
-  //     id: 13,
-  //     patientName: 'Jessica Thompson',
-  //     time: '04:15 PM',
-  //     purpose: 'Chemotherapy Session',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/17.jpg',
-  //   },
-  //   {
-  //     id: 14,
-  //     patientName: 'Robert Taylor',
-  //     time: '05:30 PM',
-  //     purpose: 'Post-treatment Evaluation',
-  //     status: 'Cancelled',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/56.jpg',
-  //   },
-  // ];
+  // Add click outside handler to close suggestions
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.location-form-group')) {
+        setShowSuggestions(false);
+        setLocationSuggestions([]);
+      }
+    };
 
-  // const upcomingAppointments = [
-  //   {
-  //     id: 5,
-  //     patientName: 'Lisa Wilson',
-  //     date: 'Apr 10, 2025',
-  //     time: '11:00 AM',
-  //     purpose: 'Chemotherapy Session',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/66.jpg',
-  //   },
-  //   {
-  //     id: 6,
-  //     patientName: 'John Doe',
-  //     date: 'Apr 11, 2025',
-  //     time: '02:30 PM',
-  //     purpose: 'Post-Op Follow-up',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/77.jpg',
-  //   },
-  //   {
-  //     id: 7,
-  //     patientName: 'Susan Adams',
-  //     date: 'Apr 12, 2025',
-  //     time: '10:15 AM',
-  //     purpose: 'Biopsy Results',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/88.jpg',
-  //   },
-  //   {
-  //     id: 15,
-  //     patientName: 'William Martinez',
-  //     date: 'Apr 14, 2025',
-  //     time: '09:00 AM',
-  //     purpose: 'Radiation Therapy Planning',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/23.jpg',
-  //   },
-  //   {
-  //     id: 16,
-  //     patientName: 'Olivia Harris',
-  //     date: 'Apr 15, 2025',
-  //     time: '01:30 PM',
-  //     purpose: 'Surgical Consultation',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/34.jpg',
-  //   },
-  //   {
-  //     id: 17,
-  //     patientName: 'James Robinson',
-  //     date: 'Apr 17, 2025',
-  //     time: '11:45 AM',
-  //     purpose: 'Immunotherapy Follow-up',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/62.jpg',
-  //   },
-  //   {
-  //     id: 18,
-  //     patientName: 'Emma Clark',
-  //     date: 'Apr 18, 2025',
-  //     time: '03:15 PM',
-  //     purpose: 'Mammography Results',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/41.jpg',
-  //   },
-  //   {
-  //     id: 19,
-  //     patientName: 'Daniel Lewis',
-  //     date: 'Apr 21, 2025',
-  //     time: '10:30 AM',
-  //     purpose: 'Post-Surgery Review',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/15.jpg',
-  //   },
-  //   {
-  //     id: 20,
-  //     patientName: 'Sophia Walker',
-  //     date: 'Apr 22, 2025',
-  //     time: '02:00 PM',
-  //     purpose: 'Treatment Response Evaluation',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/8.jpg',
-  //   },
-  //   {
-  //     id: 21,
-  //     patientName: 'Matthew Green',
-  //     date: 'Apr 24, 2025',
-  //     time: '04:45 PM',
-  //     purpose: 'Hormone Therapy Consultation',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/37.jpg',
-  //   },
-  //   {
-  //     id: 22,
-  //     patientName: 'Isabella Scott',
-  //     date: 'Apr 25, 2025',
-  //     time: '09:15 AM',
-  //     purpose: 'Genetic Counseling',
-  //     status: 'Cancelled',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/53.jpg',
-  //   },
-  //   {
-  //     id: 23,
-  //     patientName: 'Alexander Hall',
-  //     date: 'Apr 28, 2025',
-  //     time: '01:00 PM',
-  //     purpose: 'Imaging Review',
-  //     status: 'Confirmed',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/28.jpg',
-  //   },
-  // ];
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
-  // const requestedAppointments = [
-  //   {
-  //     id: 8,
-  //     patientName: 'Robert Smith',
-  //     requestDate: 'Apr 8, 2025',
-  //     preferredDate: 'Apr 16, 2025',
-  //     preferredTime: 'Afternoon',
-  //     purpose: 'Consultation',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/99.jpg',
-  //   },
-  //   {
-  //     id: 9,
-  //     patientName: 'Olivia Parker',
-  //     requestDate: 'Apr 7, 2025',
-  //     preferredDate: 'Apr 13, 2025',
-  //     preferredTime: 'Morning',
-  //     purpose: 'Second Opinion',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/11.jpg',
-  //   },
-  //   {
-  //     id: 24,
-  //     patientName: 'Thomas Young',
-  //     requestDate: 'Apr 8, 2025',
-  //     preferredDate: 'Apr 19, 2025',
-  //     preferredTime: 'Morning',
-  //     purpose: 'Initial Consultation',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/18.jpg',
-  //   },
-  //   {
-  //     id: 25,
-  //     patientName: 'Mia Allen',
-  //     requestDate: 'Apr 7, 2025',
-  //     preferredDate: 'Apr 15, 2025',
-  //     preferredTime: 'Afternoon',
-  //     purpose: 'Treatment Options Discussion',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/26.jpg',
-  //   },
-  //   {
-  //     id: 26,
-  //     patientName: 'Ethan King',
-  //     requestDate: 'Apr 8, 2025',
-  //     preferredDate: 'Apr 17, 2025',
-  //     preferredTime: 'Morning',
-  //     purpose: 'Cancer Screening',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/men/39.jpg',
-  //   },
-  //   {
-  //     id: 27,
-  //     patientName: 'Ava Wright',
-  //     requestDate: 'Apr 7, 2025',
-  //     preferredDate: 'Apr 14, 2025',
-  //     preferredTime: 'Evening',
-  //     purpose: 'Follow-up Consultation',
-  //     status: 'Pending',
-  //     profileImage: 'https://randomuser.me/api/portraits/women/47.jpg',
-  //   },
-  // ];
   // Get filtered and sorted appointments based on active tab
   const getFilteredAndSortedAppointments = () => {
     let appointments;
@@ -1300,10 +1081,10 @@ const UpcomingAppointments = ({ appointments, onReschedule, onCancel }) => {
                   <i className="fas fa-calendar-alt"></i>
                   <span className="action-text">Reschedule</span>
                 </button> */}
-                {/* <button className="action-button cancel" onClick={() => onCancel(appointment)} title="Cancel Appointment">
+                <button className="action-button cancel" onClick={() => onCancel(appointment)} title="Cancel Appointment">
                   <i className="fas fa-times"></i>
                   <span className="action-text">Cancel</span>
-                </button> */}
+                </button>
               </div>
             </div>
           ))}
@@ -1810,7 +1591,7 @@ const RequestAppointments = ({ appointments, onAccept, onDecline }) => {
                     // Replace with actual reschedule function
                     alert(`Reschedule appointment for ${appointment.patientName}`);
                   }}
-                  // onCancel={(appointment) => handleCancelAppointment(appointment)}
+                  onCancel={(appointment) => handleCancelAppointment(appointment)}
                 />
               )}
               
@@ -1821,7 +1602,7 @@ const RequestAppointments = ({ appointments, onAccept, onDecline }) => {
                     // Replace with actual reschedule function
                     alert(`Reschedule appointment for ${appointment.patientName}`);
                   }}
-                  // onCancel={(appointment) => handleCancelAppointment(appointment)}
+                  onCancel={(appointment) => handleCancelAppointment(appointment)}
                 />
               )}
               

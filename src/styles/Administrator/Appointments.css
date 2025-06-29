@@ -1,0 +1,246 @@
+/* Appointments Management styles */
+
+.admin-appointments-container {
+  padding: 20px;
+}
+
+.admin-appointments-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.admin-appointments-title h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary, #262626);
+}
+
+.admin-appointments-title p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--text-secondary, #8c8c8c);
+}
+
+.admin-appointments-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-appointments-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-appointments-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.view-mode-toggle {
+  margin-right: 8px;
+}
+
+.admin-appointments-export {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.admin-appointments-grid,
+.admin-appointments-table {
+  background-color: white;
+  border-radius: var(--radius, 8px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  padding: 16px;
+}
+
+/* Card-based layout styles */
+.appointment-card {
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.appointment-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
+}
+
+.appointment-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.appointment-card-id {
+  font-weight: 600;
+  color: #262626;
+}
+
+.appointment-card-date {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.appointment-card-divider {
+  height: 1px;
+  background-color: #f0f0f0;
+  margin: 16px 0;
+}
+
+.appointment-card-icon {
+  margin-right: 8px;
+  margin-top: 4px;
+  color: #1890ff;
+  font-size: 16px;
+}
+
+.appointment-card-date-text {
+  font-weight: 500;
+}
+
+.appointment-card-time-text {
+  color: #8c8c8c;
+  font-size: 12px;
+}
+
+.appointment-card-patient,
+.appointment-card-doctor,
+.appointment-card-type {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.appointment-card-name {
+  font-weight: 500;
+}
+
+.appointment-card-detail {
+  color: #8c8c8c;
+  font-size: 12px;
+}
+
+.no-appointments-message {
+  text-align: center;
+  padding: 40px 0;
+  color: #8c8c8c;
+}
+
+.appointments-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.appointments-pagination {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.appointments-total {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+/* Status tab styles */
+.appointment-status-tabs {
+  margin-bottom: 16px;
+}
+
+.appointment-status-tabs .ant-tabs-nav {
+  margin-bottom: 24px;
+}
+
+.appointment-status-tabs .ant-tabs-tab {
+  padding: 8px 16px;
+  font-size: 15px;
+}
+
+.appointment-status-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  font-weight: 600;
+}
+
+.appointment-status-tabs .ant-tabs-content {
+  padding-top: 8px;
+}
+
+/* Modal styles */
+.appointment-detail-card {
+  margin-bottom: 16px;
+}
+
+.appointment-detail-card .ant-card-head {
+  padding: 0 16px;
+  min-height: 40px;
+}
+
+.appointment-detail-card .ant-card-head-title {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.appointment-detail-card .ant-card-body {
+  padding: 16px;
+}
+
+/* Timeline styles */
+.appointment-timeline .ant-timeline-item {
+  padding-bottom: 16px;
+}
+
+.appointment-timeline .ant-timeline-item-content {
+  margin-left: 18px;
+  padding-top: 0;
+}
+
+.appointment-timeline p {
+  margin-bottom: 6px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .admin-appointments-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .admin-appointments-filters {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .admin-appointments-filters .ant-input-search,
+  .admin-appointments-filters .ant-picker,
+  .admin-appointments-filters .ant-select {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+  
+  .admin-appointments-actions-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .admin-appointments-export {
+    justify-content: flex-start;
+  }
+  
+  /* Make cards full width on small screens */
+  .appointment-card {
+    width: 100%;
+  }
+}

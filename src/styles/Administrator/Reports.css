@@ -1,0 +1,268 @@
+/* Reports Management styles */
+
+.admin-reports-container {
+  padding: 20px;
+}
+
+.admin-reports-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.admin-reports-title h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-primary, #262626);
+  letter-spacing: -0.5px;
+}
+
+.admin-reports-title p {
+  margin: 6px 0 0;
+  font-size: 15px;
+  color: var(--text-secondary, #8c8c8c);
+  line-height: 1.5;
+}
+
+.admin-reports-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-reports-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-reports-content {
+  background-color: white;
+  border-radius: var(--radius, 12px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  margin-top: 10px;
+}
+
+.admin-reports-content .ant-table {
+  background-color: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-reports-content .ant-table-thead > tr > th {
+  background-color: #f5f7fa;
+  color: #333;
+  font-weight: 600;
+  border-bottom: 1px solid #eaeaea;
+  padding: 16px 12px;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* Remove internal borders */
+.admin-reports-content .ant-table-cell {
+  border-right: none !important;
+  border-left: none !important;
+}
+
+.admin-reports-content .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 14px 12px;
+  transition: background 0.2s ease;
+}
+
+.admin-reports-content .ant-table-tbody > tr:hover {
+  background-color: #f0f7ff;
+}
+
+.admin-reports-content .ant-table-row:last-child > td {
+  border-bottom: none;
+}
+
+/* Add subtle alternating row colors for better readability */
+.admin-reports-content .ant-table-tbody > tr:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+/* Style for the serial number column */
+.admin-reports-content .ant-table-cell:first-child {
+  font-weight: 500;
+  text-align: center;
+  color: #666;
+  background-color: #f7f9fc;
+  width: 60px;
+}
+
+.admin-reports-content .ant-table .description-column {
+  max-width: 300px;
+  overflow: visible;
+  white-space: normal;
+}
+
+.admin-reports-content .ant-table-cell {
+  vertical-align: top;
+}
+
+.description-column div {
+  line-height: 1.6;
+  color: #333;
+  font-size: 14px;
+}
+
+.loading-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #8c8c8c;
+  font-size: 16px;
+}
+
+/* Report details styles */
+.report-details {
+  margin-top: 10px;
+}
+
+.report-info-card {
+  margin-bottom: 20px;
+}
+
+.report-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.report-date {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+.report-subject {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.report-description {
+  margin-bottom: 16px;
+  white-space: pre-line;
+}
+
+.report-reporter h3,
+.report-assigned h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.report-reporter p,
+.report-assigned p {
+  margin: 4px 0;
+}
+
+/* Comments styles */
+.report-comments {
+  padding: 10px 0;
+}
+
+.report-comment {
+  padding: 12px;
+  margin-bottom: 12px;
+  background-color: #f5f5f5;
+  border-radius: 6px;
+}
+
+.report-comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.report-comment-author {
+  font-weight: 600;
+}
+
+.report-comment-date {
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.report-comment-content {
+  white-space: pre-line;
+}
+
+.no-comments {
+  text-align: center;
+  color: #8c8c8c;
+  padding: 20px 0;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* Action buttons styling */
+.admin-reports-content .ant-btn {
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.admin-reports-content .ant-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-reports-content .ant-btn-primary {
+  background: #1890ff;
+  border-color: #1890ff;
+}
+
+.admin-reports-content .ant-btn-primary:hover {
+  background: #40a9ff;
+  border-color: #40a9ff;
+}
+
+/* Pagination styling */
+.admin-reports-content .ant-pagination {
+  margin-top: 16px;
+  padding: 8px 0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .admin-reports-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .admin-reports-filters {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .admin-reports-filters .ant-input-search,
+  .admin-reports-filters .ant-select {
+    width: 100% !important;
+    margin-right: 0 !important;
+  }
+  
+  .report-info-header {
+    flex-direction: column;
+  }
+  
+  .report-date {
+    margin-top: 8px;
+  }
+}

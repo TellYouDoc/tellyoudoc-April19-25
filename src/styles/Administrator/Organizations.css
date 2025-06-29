@@ -1,0 +1,186 @@
+/* Organizations Component Styles */
+.organizations-container {
+  padding: 20px;
+}
+
+.organizations-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.organizations-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.organizations-header-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin-bottom: 20px;
+  align-items: center;
+  width: 100%;
+  max-width: 450px;
+}
+
+.search-input {
+  flex: 1;
+  margin-right: 0;
+}
+
+/* Filter Form Styles */
+.filter-form {
+  width: 300px;
+  padding: 8px;
+}
+
+.filter-title {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #1890ff;
+  display: flex;
+  align-items: center;
+}
+
+.filter-form-item {
+  margin-bottom: 16px;
+}
+
+.filter-form-item label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #5a5a5a;
+}
+
+.filter-select {
+  width: 100%;
+}
+
+.filter-button-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.filter-button {
+  flex: 1;
+}
+
+.filter-icon-button {
+  margin-left: 0;
+  padding: 0;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+}
+
+.filter-icon-button.filtered {
+  color: #1890ff;
+  background: transparent;
+  position: relative;
+}
+
+.filter-icon-button.filtered::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: #1890ff;
+  border-radius: 50%;
+}
+
+.organizations-table {
+  margin-top: 20px;
+}
+
+.action-button {
+  margin: 0 3px;
+}
+
+.action-button-icon {
+  margin-right: 5px;
+}
+
+.action-button-primary {
+  background-color: #1890ff;
+}
+
+.action-button-success {
+  background-color: #52c41a;
+  border-color: #52c41a;
+}
+
+/* Compact icon-only action buttons */
+.action-icon-button {
+  height: 28px;
+  width: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 2px;
+}
+
+.action-icon-button.success {
+  background-color: #52c41a;
+  border-color: #52c41a;
+}
+
+/* Other type text styling */
+.other-type-text {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Type label and custom type name */
+.type-label {
+  font-weight: 500;
+  color: #666;
+  font-size: 12px;
+}
+
+.custom-type-name {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+/* Verification date styling */
+.verification-date {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .organizations-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .organizations-header-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
+}
+
+/* Loading animation for filter changes */
+.loading-icon {
+  color: #1890ff;
+  margin-right: 4px;
+}

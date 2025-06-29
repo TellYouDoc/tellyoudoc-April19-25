@@ -1138,3 +1138,73 @@
 .profile-content > *:nth-child(5) {
   animation-delay: 0.4s;
 }
+
+/* Current Treatment Status Display */
+.current-treatment-status {
+  margin: 20px 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.status-display {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f8f9fd;
+  border: 1px solid #e2e8f0;
+}
+
+.status-display.treatment {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.status-display.no-treatment {
+  background-color: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.status-icon-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 20px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.status-display.treatment .status-icon-large {
+  color: #ef4444;
+}
+
+.status-display.no-treatment .status-icon-large {
+  color: #10b981;
+}
+
+.large-icon {
+  font-size: 30px;
+}
+
+.status-text h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.status-display.treatment .status-text h4 {
+  color: #ef4444;
+}
+
+.status-display.no-treatment .status-text h4 {
+  color: #10b981;
+}
+
+.status-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+}

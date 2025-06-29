@@ -838,10 +838,42 @@ const Home = () => {
   // Form handling functions
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    
+    // Special handling for phone number to only allow digits
+    if (name === 'phone') {
+      // Remove all non-digit characters
+      const digitsOnly = value.replace(/\D/g, '');
+      // Limit to 10 digits
+      const limitedDigits = digitsOnly.slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: limitedDigits,
+      });
+    } 
+    // Special handling for email to remove spaces and convert to lowercase
+    else if (name === 'email') {
+      // Remove all spaces and convert to lowercase
+      const cleanedEmail = value.replace(/\s/g, '').toLowerCase();
+      setFormData({
+        ...formData,
+        [name]: cleanedEmail,
+      });
+    }
+    // Special handling for name and message to replace multiple spaces with single space
+    else if (name === 'name' || name === 'message') {
+      // Replace multiple spaces with a single space
+      const cleanedText = value.replace(/\s+/g, ' ');
+      setFormData({
+        ...formData,
+        [name]: cleanedText,
+      });
+    }
+    else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
 
     // Clear error when user starts typing
     if (errors[name]) {
@@ -879,7 +911,7 @@ const Home = () => {
     // Phone validation
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
-    } else if (!/^[0-9]{10}$/.test(formData.phone.trim())) {
+    } else if (!/^\d{10}$/.test(formData.phone.trim())) {
       newErrors.phone = "Please enter a valid 10-digit phone number";
     }
 
@@ -1427,6 +1459,8 @@ const Home = () => {
                       onFocus={() => handleFocus("phone")}
                       onBlur={handleBlur}
                       placeholder=" "
+                      pattern="[0-9]{10}"
+                      maxLength="10"
                       required
                     />
                     <label htmlFor="phone">Phone Number</label>

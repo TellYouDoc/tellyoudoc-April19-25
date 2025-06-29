@@ -1,0 +1,83 @@
+/* Organization Login specific styles */
+.org-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e5e6 100%);
+  padding: 20px;
+}
+
+.org-login-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  position: relative;
+}
+
+.org-login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #00c6fb 0%, #005bea 100%);
+  border-radius: 10px 10px 0 0;
+}
+
+.org-login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.org-login-header h2 {
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+  font-size: 1.75rem;
+}
+
+.org-login-header p {
+  color: #718096;
+  font-size: 1rem;
+}
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
+.password-input-container input {
+  width: 100%;
+  display: block;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  z-index: 2;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: #2d3748;
+}
+
+.password-toggle:focus {
+  outline: none;
+  color: #4299e1;
+}

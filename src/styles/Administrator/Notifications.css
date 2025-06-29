@@ -1,0 +1,323 @@
+/* Notifications Management styles */
+
+.admin-notifications-container {
+  padding: 20px;
+}
+
+.admin-notifications-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.admin-notifications-title h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary, #262626);
+}
+
+.admin-notifications-title p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--text-secondary, #8c8c8c);
+}
+
+.admin-notifications-content {
+  background-color: white;
+  border-radius: var(--radius, 8px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  padding: 16px;
+}
+
+/* Compose notification styles */
+.compose-notification-form {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.notification-preview {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.notification-preview-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.notification-preview-content {
+  font-size: 14px;
+  color: #595959;
+  white-space: pre-wrap;
+  margin-bottom: 16px;
+}
+
+.notification-preview-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.notification-preview-metadata {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #8c8c8c;
+}
+
+.target-users-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed #d9d9d9;
+}
+
+.schedule-section {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed #d9d9d9;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  gap: 12px;
+}
+
+/* History table styles */
+.notification-status {
+  display: flex;
+  align-items: center;
+}
+
+.notification-status-icon {
+  margin-right: 8px;
+}
+
+.notification-recipients {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-top: 4px;
+}
+
+.notification-time {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-top: 4px;
+}
+
+.loading-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: #8c8c8c;
+}
+
+/* Input and Textarea styles */
+.admin-notifications-container input.ant-input,
+.admin-notifications-container textarea.ant-input {
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  background: var(--background-primary);
+  width: 100%;
+}
+
+.admin-notifications-container input.ant-input:hover,
+.admin-notifications-container textarea.ant-input:hover {
+  border-color: var(--primary-color);
+}
+
+.admin-notifications-container input.ant-input:focus,
+.admin-notifications-container textarea.ant-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(14, 159, 110, 0.1);
+  outline: none;
+}
+
+/* Tabs Styling */
+.admin-notifications-container .ant-tabs-nav {
+  margin-bottom: 24px;
+  background: var(--background-primary);
+  border-radius: var(--radius);
+  padding: 4px;
+}
+
+.admin-notifications-container .ant-tabs-tab {
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+  border-radius: var(--radius);
+  margin: 0 4px !important;
+}
+
+.admin-notifications-container .ant-tabs-tab:hover {
+  color: var(--primary-color);
+  background: var(--background-secondary);
+}
+
+.admin-notifications-container .ant-tabs-tab-active {
+  background: var(--background-secondary);
+}
+
+.admin-notifications-container .ant-tabs-tab-btn {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-notifications-container .ant-form-item {
+  margin-bottom: 24px;
+}
+
+.admin-notifications-container .ant-select-selector {
+  border-radius: var(--radius) !important;
+}
+
+.admin-notifications-container .ant-radio-button-wrapper {
+  border-radius: 0;
+}
+
+.admin-notifications-container .ant-radio-button-wrapper:first-child {
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.admin-notifications-container .ant-radio-button-wrapper:last-child {
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+/* Card Styles */
+.admin-notifications-container .ant-card {
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+}
+
+.admin-notifications-container .ant-card-head {
+  min-height: auto;
+  padding: 16px 24px;
+}
+
+.admin-notifications-container .ant-card-head-title {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-notifications-container .ant-card-body {
+  padding: 24px;
+}
+
+/* Settings Styles */
+.admin-notifications-container .settings-section {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.admin-notifications-container .ant-switch {
+  background-color: var(--border-color);
+}
+
+.admin-notifications-container .ant-switch-checked {
+  background-color: var(--primary-color);
+}
+
+.admin-notifications-container .ant-input-number {
+  width: 100px;
+}
+
+/* Password Modal Styles */
+.password-change-modal .ant-modal-content {
+  border-radius: var(--radius);
+}
+
+.password-change-modal .ant-input-affix-wrapper {
+  border-radius: var(--radius);
+}
+
+.password-change-modal .ant-form-item-label > label {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.form-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* OTP Input Styles */
+.otp-input {
+  letter-spacing: 4px;
+  font-size: 18px !important;
+  text-align: center;
+}
+
+/* Button Styles */
+.admin-notifications-container .ant-btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.admin-notifications-container .ant-btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+/* Section radio group styles */
+.section-radio-group {
+  width: 100%;
+}
+
+.section-radio-group .ant-radio-button-wrapper {
+  height: 36px;
+  padding: 4px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.section-radio-group .ant-radio-button-wrapper .anticon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.section-radio-group .ant-space {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .admin-notifications-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .notification-preview {
+    width: 100%;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions button {
+    width: 100%;
+  }
+}

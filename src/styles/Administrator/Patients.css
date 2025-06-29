@@ -1,0 +1,341 @@
+/* Patient Management Page Styles */
+
+/* Container and Layout */
+.patient-container {
+  padding: 24px;
+}
+
+.patient-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.patient-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* Header Actions Container */
+.patient-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Search Input */
+.search-input {
+  width: 300px;
+}
+
+/* Status Filter */
+.status-filter {
+  min-width: 140px;
+}
+
+/* Table Styles */
+.patient-table {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Action Button Styles */
+.action-button {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 4px 8px !important;
+  height: 32px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+}
+
+.action-button-icon {
+  font-size: 14px !important;
+}
+
+.action-button-primary {
+  background: var(--admin-primary-color, #1890ff) !important;
+  border-color: var(--admin-primary-color, #1890ff) !important;
+}
+
+.action-button-success {
+  background: var(--admin-success, #52c41a) !important;
+  border-color: var(--admin-success, #52c41a) !important;
+}
+
+/* Profile Modal Styles */
+.profile-modal-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.profile-modal-content {
+  padding: 16px;
+}
+
+.profile-modal-name {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.profile-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.status-tag {
+  margin-left: 8px;
+}
+
+.health-tag-container {
+  margin-top: 8px;
+}
+
+.profile-tag {
+  margin: 0 4px 4px 0;
+}
+
+/* Container Styles */
+.patients-container {
+  padding: 24px;
+}
+
+/* Header Section */
+.patients-header {
+  margin-bottom: 24px;
+  display: flex;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .patient-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .patient-header-actions {
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .search-input,
+  .status-filter {
+    width: 100%;
+  }
+}
+
+.patients-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* Search Input */
+.search-input {
+  width: 300px;
+}
+
+/* Table Styles */
+.patients-table {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Action Buttons */
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.action-button-icon {
+  font-size: 14px;
+}
+
+.action-button-primary {
+  background: var(--admin-primary-color, #1890ff);
+  border-color: var(--admin-primary-color, #1890ff);
+}
+
+.action-button-success {
+  background: var(--admin-success, #52c41a);
+  border-color: var(--admin-success, #52c41a);
+}
+
+/* Profile Modal */
+.profile-modal-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.profile-modal-content {
+  padding: 16px;
+}
+
+.patient-name {
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.profile-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.profile-status-tag {
+  margin-left: 8px;
+}
+
+.health-conditions-container {
+  margin-top: 8px;
+}
+
+.health-condition-tag {
+  margin: 0 4px 4px 0;
+}
+
+/* Header Section */
+.patient-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.patient-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.search-input {
+  width: 300px;
+}
+
+/* Table Styles */
+.patient-table {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Action Buttons */
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.action-icon {
+  font-size: 14px;
+}
+
+.view-button {
+  background: var(--admin-primary-color, #1890ff);
+  border-color: var(--admin-primary-color, #1890ff);
+}
+
+.activate-button {
+  background: var(--admin-success, #52c41a);
+  border-color: var(--admin-success, #52c41a);
+}
+
+/* Modal Styles */
+.profile-modal-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.profile-modal-content {
+  padding: 16px;
+}
+
+.profile-modal-name {
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.profile-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.profile-tags {
+  margin-top: 8px;
+}
+
+.profile-tag {
+  margin: 0 4px 4px 0;
+}
+
+/* Health Condition Tags */
+.health-tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Status Tags */
+.status-tag {
+  margin-left: 8px;
+}
+
+/* Table Action Column Layout */
+.action-buttons-container {
+  display: flex;
+  gap: 8px;
+}
+
+/* Header Actions Container */
+.patient-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Status Filter */
+.status-filter {
+  min-width: 140px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .patient-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .patient-header-actions {
+    width: 100%;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .search-input,
+  .status-filter {
+    width: 100%;
+  }
+}

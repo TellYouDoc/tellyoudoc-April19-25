@@ -1,0 +1,315 @@
+/* Organization Patient Management Page Styles */
+
+/* Primary/secondary colors should match the overall theme */
+:root {
+  --primary-color: #3d9be7;
+  --primary-color-hover: #2b8ad2;
+  --secondary-color: #f0f2f5;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-light: #999999;
+  --border-color: #e8e8e8;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #f5222d;
+  --info-color: #1890ff;
+}
+
+/* Card styles - Minimalistic Design */
+.report-card {
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.report-card .ant-card-head {
+  background-color: white;
+  border-bottom: none;
+  padding-top: 0;
+}
+
+.report-card .ant-card-body {
+  padding: 0;
+}
+
+.report-card .ant-list-bordered {
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+}
+
+.report-card h4 {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+/* Timeline customizations */
+.patient-visit-timeline {
+  padding: 20px;
+}
+
+.patient-visit-timeline .ant-timeline-item {
+  padding-bottom: 25px;
+}
+
+.patient-visit-timeline .ant-timeline-item-content {
+  margin-left: 20px !important;
+  margin-right: 0 !important;
+  width: calc(100% - 100px);
+  text-align: left;
+}
+
+.patient-visit-timeline .ant-timeline-item-label {
+  width: 80px !important;
+  text-align: right;
+  padding-right: 12px;
+}
+
+/* Modal customizations - Minimalistic Design */
+.patient-detail-modal .ant-modal-content {
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.patient-detail-modal .ant-modal-header {
+  border-radius: 4px 4px 0 0;
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 24px;
+}
+
+.patient-detail-modal .ant-modal-title {
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 16px;
+}
+
+.patient-detail-modal .ant-modal-body {
+  padding: 16px 24px;
+}
+
+/* Tabs customizations - Minimalistic Design */
+.patient-detail-tabs .ant-tabs-nav {
+  margin-bottom: 16px;
+}
+
+.patient-detail-tabs .ant-tabs-nav-wrap {
+  justify-content: flex-start;
+}
+
+.patient-detail-tabs .ant-tabs-tab {
+  padding: 8px 16px;
+  margin-right: 8px;
+  transition: all 0.2s ease;
+}
+
+.patient-detail-tabs .ant-tabs-tab:hover {
+  color: var(--primary-color);
+}
+
+.patient-detail-tabs .ant-tabs-tab-active {
+  font-weight: 500;
+}
+
+.patient-detail-tabs .ant-tabs-ink-bar {
+  height: 2px;
+}
+
+/* Description layouts - Minimalistic Design */
+.patient-descriptions .ant-descriptions-item-label {
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.patient-descriptions .ant-descriptions-item-content {
+  padding: 8px 0;
+  color: var(--text-primary);
+}
+
+/* Remove borders for cleaner look */
+.patient-descriptions.ant-descriptions-bordered .ant-descriptions-view {
+  border: none;
+}
+
+.patient-descriptions.ant-descriptions-bordered .ant-descriptions-item-label,
+.patient-descriptions.ant-descriptions-bordered .ant-descriptions-item-content {
+  border-right: none;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* List item styles - Minimalistic Design */
+.medical-report-list {
+  margin-bottom: 24px;
+}
+
+.medical-report-list .ant-list-item {
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.medical-report-list .ant-list-item:last-child {
+  border-bottom: none;
+}
+
+.medical-report-list .ant-list-item:hover {
+  background-color: #fafafa;
+  padding-left: 16px;
+}
+
+.medical-report-list.ant-list-bordered {
+  border-color: #f0f0f0;
+}
+
+/* Patient information cards - Minimalistic Design */
+.patient-info-card {
+  background-color: white;
+  border: none;
+  margin-bottom: 16px;
+}
+
+.patient-info-card .ant-card-head {
+  padding-top: 0;
+  padding-bottom: 8px;
+  border-bottom: none;
+  min-height: auto;
+}
+
+.patient-info-card .ant-card-head-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.patient-info-card .ant-card-body {
+  padding-top: 0;
+}
+
+/* Doctor profile card - Minimalistic Design */
+.doctor-profile {
+  padding: 16px 20px;
+  background-color: white;
+  border: 1px solid #f0f0f0;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  box-shadow: none;
+}
+
+.doctor-profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.doctor-profile-avatar {
+  margin-right: 16px;
+}
+
+.doctor-profile-info h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Table styles */
+.patient-table .ant-table-thead > tr > th {
+  background-color: #f9f9f9;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.patient-table .ant-table-tbody > tr:hover > td {
+  background-color: #f5f7fa;
+}
+
+/* Status tag colors */
+.status-tag-active {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border-color: #91d5ff;
+}
+
+.status-tag-inactive {
+  background-color: #fff1f0;
+  color: #f5222d;
+  border-color: #ffa39e;
+}
+
+.status-tag-cured {
+  background-color: #e6fffb;
+  color: #13c2c2;
+  border-color: #87e8de;
+}
+
+.status-tag-deceased {
+  background-color: #f0f0f0;
+  color: #333333;
+  border-color: #d9d9d9;
+}
+
+/* Filter section */
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+/* Patient button styles */
+.view-button {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.view-button:hover {
+  background-color: var(--primary-color-hover);
+  border-color: var(--primary-color-hover);
+}
+
+.reports-button:hover {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Visit timeline - Minimalistic Design */
+.visit-timeline-card {
+  margin-bottom: 12px;
+  border-radius: 4px;
+  width: 100%;
+  box-shadow: none;
+  border: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.visit-timeline-card:hover {
+  border-color: var(--primary-color);
+  transform: translateX(2px);
+}
+
+.visit-timeline-card .ant-card-head {
+  min-height: auto;
+  padding: 8px 12px;
+  background-color: white;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.visit-timeline-card .ant-card-body {
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.visit-timeline-card .ant-card-head-title {
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--primary-color);
+}

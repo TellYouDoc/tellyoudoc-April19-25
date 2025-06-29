@@ -21,6 +21,7 @@ import {
 } from 'react-icons/fa';
 import { MdNotificationsActive, MdNotificationsNone } from 'react-icons/md';
 import { removeCookie, setCookie, areCookiesAccepted } from '../utils/cookieUtils';
+import { clearAuthData } from '../utils/authUtils';
 import { apiService } from '../services/api';
 import CookieConsent from './CookieConsent';
 import tellyouDocLogo from '../assets/tellyoudoc.png';
@@ -34,9 +35,21 @@ const Layout = ({ children }) => {
   const [notificationCount, setNotificationCount] = useState(3);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userData, setUserData] = useState(null);
+
+  // Percentage of profile completion
+  const [profileCompletion, setProfileCompletion] = useState(0);
+
   const notificationsRef = useRef(null);
   const closeTimeoutRef = useRef(null);
 
+  // On component mount, check if we should restore a specific page
+  useEffect(() => {
+    // Store the current path in localStorage for potential restoration after login or refresh
+    if (location.pathname !== '/login') {
+      localStorage.setItem('lastViewedPage', location.pathname);
+      console.log('Layout updated lastViewedPage:', location.pathname);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     // Try to get user data from localStorage
@@ -57,7 +70,7 @@ const Layout = ({ children }) => {
 
         if (response.data && response.status === 200) {
           setUserData(apiData);
-          console.log('User data fetched successfully:', apiData);
+          console.log(apiData);
           // Store user data in localStorage for later use
           localStorage.setItem('UserData', JSON.stringify(apiData));
         }
@@ -68,6 +81,7 @@ const Layout = ({ children }) => {
     fetchUserData();
 
   }, []);
+
   // Close mobile sidebar when navigating
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -128,18 +142,12 @@ const Layout = ({ children }) => {
   const handleLogout = (e) => {
     e.preventDefault();
 
-    // Clear authentication cookies
-    removeCookie('AccessToken');
-    removeCookie('RefreshToken');
+    // Store current page path before logout
+    localStorage.setItem('lastViewedPage', location.pathname);
+    console.log('Saving path before logout:', location.pathname);
 
-    // Clear any user data and tokens from localStorage
-    localStorage.removeItem('UserData');
-    localStorage.removeItem('AccessToken');
-    localStorage.removeItem('RefreshToken');
-
-    // Also clear cookies directly (as backup)
-    document.cookie = 'AccessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; samesite=strict';
-    document.cookie = 'RefreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; samesite=strict';
+    // Use the centralized auth clearance function
+    clearAuthData();
 
     // Navigate to login page - using window.location for a full page reload
     window.location.replace('/login');

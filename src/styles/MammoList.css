@@ -432,6 +432,10 @@
   pointer-events: none;
   /* Ensure the tooltip isn't clipped by parent elements */
   overflow: visible;
+  /* Fix tooltip position to prevent sidebar overlap */
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
 }
 
 .status-badge:hover .tooltip {
@@ -591,5 +595,11 @@
     overflow-x: auto;
     padding-bottom: 0.5rem;
     width: 100%;
+  }
+  
+  .status-badge .tooltip {
+    left: auto;
+    right: 0;
+    transform: none;
   }
 }

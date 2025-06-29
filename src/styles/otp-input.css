@@ -23,6 +23,9 @@
   background-color: #f8fafc;
   color: #1e293b;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .otp-input:focus {

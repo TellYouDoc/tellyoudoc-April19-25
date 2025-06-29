@@ -1,0 +1,26 @@
+/* PIN Code Filter */
+.pincode-filter {
+  min-width: 140px;
+}
+
+/* Status Filter */
+.status-filter {
+  min-width: 130px;
+}
+
+/* Loading icon styling */
+.loading-icon {
+  color: #1890ff;
+  margin-right: 4px;
+}
+
+/* Update responsive styles */
+@media (max-width: 768px) {
+  .pincode-filter {
+    width: 100%;
+  }
+  
+  .status-filter {
+    width: 100%;
+  }
+}

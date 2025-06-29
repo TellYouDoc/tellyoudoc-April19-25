@@ -1,0 +1,164 @@
+.settings-container {
+  padding: var(--spacing-6);
+  background: var(--background-primary);
+  min-height: 100vh;
+}
+
+.settings-title {
+  color: var(--text-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  margin-bottom: var(--spacing-6);
+}
+
+.ant-tabs-tab {
+  padding: 12px 16px !important;
+}
+
+.ant-card {
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-6);
+}
+
+.ant-card-head {
+  border-bottom: 1px solid var(--border-color);
+  padding: 16px 24px;
+}
+
+.ant-card-head-title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+}
+
+.ant-card-body {
+  padding: 24px;
+}
+
+.ant-form-item-label > label {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.ant-input,
+.ant-input-number,
+.ant-select-selector,
+.ant-input-affix-wrapper {
+  background: var(--background-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: none !important;
+}
+
+.ant-input-affix-wrapper input.ant-input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.ant-input-affix-wrapper:hover,
+.ant-input:hover,
+.ant-input-number:hover,
+.ant-select-selector:hover {
+  border-color: var(--primary-color) !important;
+}
+
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused,
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-number:focus,
+.ant-input-number-focused,
+.ant-select-selector:focus,
+.ant-select-focused .ant-select-selector {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1) !important;
+}
+
+/* Password input specific styles */
+.ant-input-password {
+  background: var(--background-secondary) !important;
+  padding: 4px 11px !important;
+}
+
+.ant-input-password:hover {
+  border-color: var(--primary-color) !important;
+}
+
+.ant-input-password-icon {
+  color: var(--text-secondary) !important;
+}
+
+.ant-input-password.ant-input-affix-wrapper > input.ant-input {
+  padding: 0 !important;
+}
+
+.ant-switch {
+  background-color: var(--border-color);
+}
+
+.ant-switch-checked {
+  background-color: var(--primary-color);
+}
+
+.ant-btn-primary {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.ant-btn-primary:hover {
+  background: var(--primary-color-hover);
+  border-color: var(--primary-color-hover);
+}
+
+/* Modal styles */
+.ant-modal-content {
+  border-radius: var(--radius) !important;
+  padding: 24px !important;
+}
+
+.ant-modal-header {
+  margin-bottom: 16px !important;
+}
+
+.ant-modal-footer {
+  margin-top: 16px !important;
+}
+
+/* OTP input styles */
+.ant-input[maxlength="6"] {
+  letter-spacing: 4px;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Notifications List Styles */
+.ant-list-item {
+  padding: 16px !important;
+  transition: background-color 0.3s ease;
+  border-radius: var(--radius);
+}
+
+.ant-list-item:hover {
+  background-color: var(--background-secondary);
+}
+
+.ant-list-item-meta-title {
+  margin-bottom: 4px !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-list-item-meta-description {
+  color: var(--text-secondary) !important;
+}
+
+/* Add margin between notification cards */
+.ant-card + .ant-card {
+  margin-top: var(--spacing-6);
+}
+
+/* Badge styling */
+.ant-badge-count {
+  background: var(--primary-color) !important;
+  box-shadow: none !important;
+}

@@ -1,5 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate, Route, useLocation } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import {
+  useParams,
+  Link,
+  useNavigate,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import {
   FaUser,
   FaArrowLeft,
@@ -13,19 +19,19 @@ import {
   FaChevronDown,
   FaFileMedicalAlt,
   FaCheckCircle,
-  FaExclamationCircle
-} from 'react-icons/fa';
-import LoadingScreen from '../components/LoadingScreen';
-import '../styles/MammoProfile.css';
-import apiService from '../services/api';
+  FaExclamationCircle,
+} from "react-icons/fa";
+import LoadingScreen from "../components/LoadingScreen";
+import "../styles/MammoProfile.css";
+import apiService from "../services/api";
 
 function MammoProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const requestId = queryParams.get('requestId');
-
+  const requestId = queryParams.get("requestId");
+  const status = queryParams.get("status");
   const [isLoading, setIsLoading] = useState(true);
   const [patient, setPatient] = useState(null);
 
@@ -37,14 +43,14 @@ function MammoProfile() {
     medicalHistory: true,
     treatmentDecision: true,
     menstrualHistory: false,
-    reproductiveHistory: false
+    reproductiveHistory: false,
   });
 
   // Toggle section expansion
   const toggleSection = (sectionKey) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [sectionKey]: !prev[sectionKey]
+      [sectionKey]: !prev[sectionKey],
     }));
   };
 
@@ -53,17 +59,19 @@ function MammoProfile() {
     try {
       setIsLoading(true);
       // Get patient details from the API
-      const response = await apiService.patientDoctorService.getPatientRequestById(id);
+      const response =
+        await apiService.patientDoctorService.getPatientRequestById(id);
+
       if (response.status === 200) {
-        console.log('Patient data fetched successfully:', response.data.data);
+        console.log("Patient data fetched successfully:", response.data.data);
         setPatient(response.data.data);
         setIsLoading(false);
       } else {
-        console.error('Failed to fetch patient data:', response);
+        console.error("Failed to fetch patient data:", response);
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching patient details:', error);
+      console.error("Error fetching patient details:", error);
       setIsLoading(false);
     }
   };
@@ -75,11 +83,18 @@ function MammoProfile() {
   // Components for displaying sections
 
   // Collapsible Section Component
-  const CollapsibleSection = ({ title, icon, sectionKey, children, isEmpty = false, summary = null }) => {
+  const CollapsibleSection = ({
+    title,
+    icon,
+    sectionKey,
+    children,
+    isEmpty = false,
+    summary = null,
+  }) => {
     const isExpanded = expandedSections[sectionKey];
 
     return (
-      <div className={`collapsible-section ${isEmpty ? 'empty-section' : ''}`}>
+      <div className={`collapsible-section ${isEmpty ? "empty-section" : ""}`}>
         <div
           className="section-header"
           onClick={() => toggleSection(sectionKey)}
@@ -88,22 +103,26 @@ function MammoProfile() {
             {icon}
             <h3 className="section-title">{title}</h3>
 
-            {isEmpty && (
-              <span className="empty-badge">No Data</span>
-            )}
+            {isEmpty && <span className="empty-badge">No Data</span>}
 
             {summary && !isEmpty && (
               <span className="summary-badge">{summary}</span>
             )}
           </div>
 
-          {isExpanded ? <FaChevronUp className="toggle-icon" /> : <FaChevronDown className="toggle-icon" />}
+          {isExpanded ? (
+            <FaChevronUp className="toggle-icon" />
+          ) : (
+            <FaChevronDown className="toggle-icon" />
+          )}
         </div>
 
         {isExpanded && (
           <div className="section-content">
             {isEmpty ? (
-              <p className="empty-content">No data available for this section</p>
+              <p className="empty-content">
+                No data available for this section
+              </p>
             ) : (
               children
             )}
@@ -124,14 +143,14 @@ function MammoProfile() {
           onClick={() => toggleSection(sectionKey)}
         >
           <h4 className="sub-section-title">{title}</h4>
-          {isExpanded ? <FaChevronUp className="toggle-icon-small" /> : <FaChevronDown className="toggle-icon-small" />}
+          {isExpanded ? (
+            <FaChevronUp className="toggle-icon-small" />
+          ) : (
+            <FaChevronDown className="toggle-icon-small" />
+          )}
         </div>
 
-        {isExpanded && (
-          <div className="sub-section-content">
-            {children}
-          </div>
-        )}
+        {isExpanded && <div className="sub-section-content">{children}</div>}
       </div>
     );
   };
@@ -140,16 +159,16 @@ function MammoProfile() {
     <div className="info-item">
       {icon}
       <span className="info-label">{label}:</span>
-      <span className="info-value">{value || 'Not provided'}</span>
+      <span className="info-value">{value || "Not provided"}</span>
     </div>
   );
 
   const YesNoCard = ({ title, value }) => {
-    const isPositive = value === 'Yes';
+    const isPositive = value === "Yes";
     return (
-      <div className={`yes-no-card ${isPositive ? 'positive' : 'negative'}`}>
+      <div className={`yes-no-card ${isPositive ? "positive" : "negative"}`}>
         <div className="yes-no-title">{title}</div>
-        <div className={`yes-no-badge ${isPositive ? 'positive' : 'negative'}`}>
+        <div className={`yes-no-badge ${isPositive ? "positive" : "negative"}`}>
           {value}
         </div>
       </div>
@@ -157,25 +176,28 @@ function MammoProfile() {
   };
 
   // Card for displaying cancer family history
-  const CompactRecordCard = ({ record, type = 'regular' }) => (
+  const CompactRecordCard = ({ record, type = "regular" }) => (
     <div className="compact-record-card">
-      {type === 'other' ? (
+      {type === "other" ? (
         <>
           <div className="compact-record-title">
-            {record.cancerType}{record.cancerTypeOther ? ` (${record.cancerTypeOther})` : ''}
+            {record.cancerType}
+            {record.cancerTypeOther ? ` (${record.cancerTypeOther})` : ""}
           </div>
           <div className="compact-record-detail">
-            {record.relation}{record.relationSide ? ` (${record.relationSide})` : ''}
+            {record.relation}
+            {record.relationSide ? ` (${record.relationSide})` : ""}
           </div>
         </>
       ) : (
         <>
           <div className="compact-record-title">
-            {record.relation}{record.relationSide ? ` (${record.relationSide})` : ''}
+            {record.relation}
+            {record.relationSide ? ` (${record.relationSide})` : ""}
           </div>
           <div className="compact-record-details">
             <span className="compact-record-detail">
-              {record.familySide || 'Not specified'}
+              {record.familySide || "Not specified"}
             </span>
             {record.ageOfDiagnosis && (
               <span className="compact-record-detail-age">
@@ -202,7 +224,11 @@ function MammoProfile() {
                 alt={image.label || `Image ${index + 1}`}
                 className="preview-image"
               />
-              {image.label && <div className="image-label">{image.label || `Image ${index + 1}`}</div>}
+              {image.label && (
+                <div className="image-label">
+                  {image.label || `Image ${index + 1}`}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -216,55 +242,62 @@ function MammoProfile() {
 
     let positiveCount = 0;
 
-    if (patient.medicalData?.breastHealth.haveLumps === 'Yes') positiveCount++;
-    if (patient.medicalData?.breastHealth.havePain === 'Yes') positiveCount++;
-    if (patient.medicalData?.breastHealth.changeInNipple === 'Yes') positiveCount++;
-    if (patient.medicalData?.breastHealth.haveRashes === 'Yes') positiveCount++;
-    if (patient.medicalData?.breastHealth.haveSwelling === 'Yes') positiveCount++;
-    if (patient.medicalData?.breastHealth.haveItching === 'Yes') positiveCount++;
+    if (patient.medicalData?.breastHealth.haveLumps === "Yes") positiveCount++;
+    if (patient.medicalData?.breastHealth.havePain === "Yes") positiveCount++;
+    if (patient.medicalData?.breastHealth.changeInNipple === "Yes")
+      positiveCount++;
+    if (patient.medicalData?.breastHealth.haveRashes === "Yes") positiveCount++;
+    if (patient.medicalData?.breastHealth.haveSwelling === "Yes")
+      positiveCount++;
+    if (patient.medicalData?.breastHealth.haveItching === "Yes")
+      positiveCount++;
 
     return `${positiveCount}/6 positive`;
   };
 
   const getFamilyCancerSummary = () => {
     // First, check if both patient and medicalData exist
-    if (!patient || !patient.medicalData || !patient.medicalData.familyCancerHistory) {
+    if (
+      !patient ||
+      !patient.medicalData ||
+      !patient.medicalData.familyCancerHistory
+    ) {
       return null;
     }
-  
+
     let affectedCount = 0;
     let totalTypes = 0;
-    
+
     const { familyCancerHistory } = patient.medicalData;
-  
+
     // Add null checks for each property access
-    if (familyCancerHistory.breastCancer === 'Yes') {
+    if (familyCancerHistory.breastCancer === "Yes") {
       affectedCount += familyCancerHistory.breastCancerRecords?.length || 0;
       totalTypes++;
     }
-    
-    if (familyCancerHistory.ovarianCancer === 'Yes') {
+
+    if (familyCancerHistory.ovarianCancer === "Yes") {
       affectedCount += familyCancerHistory.ovarianCancerRecords?.length || 0;
       totalTypes++;
     }
-    
-    if (familyCancerHistory.cervicalCancer === 'Yes') {
+
+    if (familyCancerHistory.cervicalCancer === "Yes") {
       affectedCount += familyCancerHistory.cervicalCancerRecords?.length || 0;
       totalTypes++;
     }
-    
-    if (familyCancerHistory.otherCancer === 'Yes') {
+
+    if (familyCancerHistory.otherCancer === "Yes") {
       affectedCount += familyCancerHistory.otherCancerRecords?.length || 0;
       totalTypes++;
     }
-  
+
     return `${totalTypes} types, ${affectedCount} relatives`;
   };
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
   };
 
   const getBiradsLabel = (birads) => {
@@ -274,36 +307,44 @@ function MammoProfile() {
 
   const confirmTreatmentDecision = async (needsTreatment) => {
     const message = needsTreatment
-      ? 'Are you sure you want to recommend further treatment for this patient?'
-      : 'Are you sure this patient does not need further treatment?';
+      ? "Are you sure you want to recommend further treatment for this patient?"
+      : "Are you sure this patient does not need further treatment?";
 
     if (window.confirm(message)) {
       try {
         // Call the API to update the patient's treatment status
-        const response = await apiService.patientDoctorService.acceptPatientRequest(requestId, needsTreatment);
+        const response = needsTreatment
+          ? await apiService.patientDoctorService.acceptPatientRequest(
+              requestId
+            )
+          : await apiService.patientDoctorService.rejectPatientRequest(
+              requestId
+            );
 
-        console.log('Treatment decision response:', response);
+        console.log("Treatment decision response:", response);
 
         if (response.status === 200) {
           const successMessage = needsTreatment
-            ? 'The patient has been marked for further treatment.'
-            : 'The patient has been marked as not needing further treatment.';
+            ? "The patient has been marked for further treatment."
+            : "The patient has been marked as not needing further treatment.";
 
           alert(successMessage);
           // navigate goback
           navigate(-1);
         } else {
-          alert('Failed to record decision. Please try again.');
+          alert("Failed to record decision. Please try again.");
         }
       } catch (error) {
-        console.error('Error recording treatment decision:', error);
-        alert('Failed to record decision. Please try again.');
+        console.error("Error recording treatment decision:", error);
+        alert("Failed to record decision. Please try again.");
       }
     }
   };
 
   if (isLoading) {
-    return <LoadingScreen show={isLoading} message="Loading patient details..." />;
+    return (
+      <LoadingScreen show={isLoading} message="Loading patient details..." />
+    );
   }
 
   if (!patient) {
@@ -336,35 +377,33 @@ function MammoProfile() {
         <div className="patient-info-card">
           <div className="patient-info-header">
             <div className="patient-avatar">
-              {patient.profileImage
-                ? (
-                  <img
-                    src={patient.profileImage
-                    }
-                    alt={`${patient.name}'s profile`}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      // If image fails to load, display initials instead
-                      e.target.style.display = 'none';
-                      e.target.parentNode.classList.add('avatar-text');
-                      e.target.parentNode.innerHTML = patient.name
-                        .split(' ')
-                        .map(name => name[0])
-                        .join('')
-                        .toUpperCase()
-                        .substring(0, 2);
-                    }}
-                  />
-                ) : (
-                  <span className="avatar-text">
-                    {patient.name
-                      .split(' ')
-                      .map(name => name[0])
-                      .join('')
+              {patient.profileImage ? (
+                <img
+                  src={patient.profileImage}
+                  alt={`${patient.name}'s profile`}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    // If image fails to load, display initials instead
+                    e.target.style.display = "none";
+                    e.target.parentNode.classList.add("avatar-text");
+                    e.target.parentNode.innerHTML = patient.name
+                      .split(" ")
+                      .map((name) => name[0])
+                      .join("")
                       .toUpperCase()
-                      .substring(0, 2)}
-                  </span>
-                )}
+                      .substring(0, 2);
+                  }}
+                />
+              ) : (
+                <span className="avatar-text">
+                  {patient.name
+                    .split(" ")
+                    .map((name) => name[0])
+                    .join("")
+                    .toUpperCase()
+                    .substring(0, 2)}
+                </span>
+              )}
             </div>
             <div className="patient-header-info">
               <h2 className="patient-name">{patient.name}</h2>
@@ -387,7 +426,9 @@ function MammoProfile() {
               </div>
               <div className="detail-item">
                 <div className="detail-label">Report Date</div>
-                <div className="detail-value">{formatDate(patient.reportDate)}</div>
+                <div className="detail-value">
+                  {formatDate(patient.reportDate)}
+                </div>
               </div>
             </div>
           </div>
@@ -398,19 +439,29 @@ function MammoProfile() {
               <div className="overview-stats">
                 <div className="overview-stat-item">
                   <div className="stat-label">Date</div>
-                  <div className="stat-value">{formatDate(patient.mammogramData.date)}</div>
+                  <div className="stat-value">
+                    {formatDate(patient.mammogramData.date)}
+                  </div>
                 </div>
                 <div className="overview-stat-item">
                   <div className="stat-label">Type</div>
-                  <div className="stat-value">{patient.mammogramData.type || 'Standard'}</div>
+                  <div className="stat-value">
+                    {patient.mammogramData.type || "Standard"}
+                  </div>
                 </div>
                 <div className="overview-stat-item">
                   <div className="stat-label">Category</div>
-                  <div className="stat-value category-badge">{patient.mammogramData.category || 'Screening'}</div>
+                  <div className="stat-value category-badge">
+                    {patient.mammogramData.category || "Screening"}
+                  </div>
                 </div>
                 <div className="overview-stat-item">
                   <div className="stat-label">BIRADS</div>
-                  <div className={`stat-value birads-badge birads-${patient.mammogramData.birads || 0}`}>
+                  <div
+                    className={`stat-value birads-badge birads-${
+                      patient.mammogramData.birads || 0
+                    }`}
+                  >
                     {getBiradsLabel(patient.mammogramData.birads || 0)}
                   </div>
                 </div>
@@ -452,40 +503,71 @@ function MammoProfile() {
           >
             <div className="breast-health-grid">
               <div className="yes-no-row">
-                <YesNoCard title="Has Lumps" value={patient.medicalData?.breastHealth?.haveLumps || 'No'} />
-                <YesNoCard title="Has Pain" value={patient.medicalData?.breastHealth?.havePain || 'No'} />
-                <YesNoCard title="Nipple Changes" value={patient.medicalData?.breastHealth?.changeInNipple || 'No'} />
+                <YesNoCard
+                  title="Has Lumps"
+                  value={patient.medicalData?.breastHealth?.haveLumps || "No"}
+                />
+                <YesNoCard
+                  title="Has Pain"
+                  value={patient.medicalData?.breastHealth?.havePain || "No"}
+                />
+                <YesNoCard
+                  title="Nipple Changes"
+                  value={
+                    patient.medicalData?.breastHealth?.changeInNipple || "No"
+                  }
+                />
               </div>
               <div className="yes-no-row">
-                <YesNoCard title="Has Rashes" value={patient.medicalData?.breastHealth?.haveRashes || 'No'} />
-                <YesNoCard title="Has Swelling" value={patient.medicalData?.breastHealth?.haveSwelling || 'No'} />
-                <YesNoCard title="Has Itching" value={patient.medicalData?.breastHealth?.haveItching || 'No'} />
+                <YesNoCard
+                  title="Has Rashes"
+                  value={patient.medicalData?.breastHealth?.haveRashes || "No"}
+                />
+                <YesNoCard
+                  title="Has Swelling"
+                  value={
+                    patient.medicalData?.breastHealth?.haveSwelling || "No"
+                  }
+                />
+                <YesNoCard
+                  title="Has Itching"
+                  value={patient.medicalData?.breastHealth?.haveItching || "No"}
+                />
               </div>
             </div>
 
-            {patient.medicalData?.breastHealth?.havePain === 'Yes' && (
+            {patient.medicalData?.breastHealth?.havePain === "Yes" && (
               <div className="pain-container">
                 <div className="pain-header">
                   <h4 className="pain-title">Pain Assessment</h4>
-                  <div className="pain-level-badge">Level: {patient.medicalData?.breastHealth.painLevel}/5</div>
+                  <div className="pain-level-badge">
+                    Level: {patient.medicalData?.breastHealth.painLevel}/5
+                  </div>
                 </div>
                 <div className="pain-scale-bar">
                   <div
                     className="pain-scale-fill"
-                    style={{ width: `${(patient.medicalData?.breastHealth.painLevel / 5) * 100}%` }}
+                    style={{
+                      width: `${
+                        (patient.medicalData?.breastHealth.painLevel / 5) * 100
+                      }%`,
+                    }}
                   ></div>
                 </div>
 
                 {/* Pain breast side information */}
-                {patient.medicalData?.breastHealth.painBreastSide?.length > 0 && (
+                {patient.medicalData?.breastHealth.painBreastSide?.length >
+                  0 && (
                   <div className="pain-side-section">
                     <div className="pain-side-label">Affected Side:</div>
                     <div className="pain-side-badges">
-                      {patient.medicalData?.breastHealth.painBreastSide.map((side, index) => (
-                        <div key={index} className="pain-side-badge">
-                          {side}
-                        </div>
-                      ))}
+                      {patient.medicalData?.breastHealth.painBreastSide.map(
+                        (side, index) => (
+                          <div key={index} className="pain-side-badge">
+                            {side}
+                          </div>
+                        )
+                      )}
                     </div>
                   </div>
                 )}
@@ -495,28 +577,34 @@ function MammoProfile() {
                   <h4 className="location-section-title">Pain Locations:</h4>
 
                   <div className="locations-row">
-                    {patient.medicalData?.breastHealth.leftBreastLocations?.length > 0 && (
+                    {patient.medicalData?.breastHealth.leftBreastLocations
+                      ?.length > 0 && (
                       <div className="breast-location-card">
                         <h5 className="breast-side-title">Left Breast</h5>
                         <div className="location-badges">
-                          {patient.medicalData?.breastHealth.leftBreastLocations.map((loc, idx) => (
-                            <div key={idx} className="location-badge">
-                              {loc.replace('Left', '')}
-                            </div>
-                          ))}
+                          {patient.medicalData?.breastHealth.leftBreastLocations.map(
+                            (loc, idx) => (
+                              <div key={idx} className="location-badge">
+                                {loc.replace("Left", "")}
+                              </div>
+                            )
+                          )}
                         </div>
                       </div>
                     )}
 
-                    {patient.medicalData?.breastHealth.rightBreastLocations?.length > 0 && (
+                    {patient.medicalData?.breastHealth.rightBreastLocations
+                      ?.length > 0 && (
                       <div className="breast-location-card">
                         <h5 className="breast-side-title">Right Breast</h5>
                         <div className="location-badges">
-                          {patient.medicalData?.breastHealth.rightBreastLocations.map((loc, idx) => (
-                            <div key={idx} className="location-badge">
-                              {loc.replace('Right', '')}
-                            </div>
-                          ))}
+                          {patient.medicalData?.breastHealth.rightBreastLocations.map(
+                            (loc, idx) => (
+                              <div key={idx} className="location-badge">
+                                {loc.replace("Right", "")}
+                              </div>
+                            )
+                          )}
                         </div>
                       </div>
                     )}
@@ -572,33 +660,67 @@ function MammoProfile() {
             summary={getFamilyCancerSummary()}
           >
             <div className="cancer-history-row">
-              <YesNoCard title="Breast Cancer" value={patient.medicalData?.familyCancerHistory?.breastCancer || 'No'} />
-              <YesNoCard title="Ovarian Cancer" value={patient.medicalData?.familyCancerHistory?.ovarianCancer || 'No'} />
-              <YesNoCard title="Cervical Cancer" value={patient.medicalData?.familyCancerHistory?.cervicalCancer || 'No'} />
-              <YesNoCard title="Other Cancers" value={patient.medicalData?.familyCancerHistory?.otherCancer || 'No'} />
+              <YesNoCard
+                title="Breast Cancer"
+                value={
+                  patient.medicalData?.familyCancerHistory?.breastCancer || "No"
+                }
+              />
+              <YesNoCard
+                title="Ovarian Cancer"
+                value={
+                  patient.medicalData?.familyCancerHistory?.ovarianCancer ||
+                  "No"
+                }
+              />
+              <YesNoCard
+                title="Cervical Cancer"
+                value={
+                  patient.medicalData?.familyCancerHistory?.cervicalCancer ||
+                  "No"
+                }
+              />
+              <YesNoCard
+                title="Other Cancers"
+                value={
+                  patient.medicalData?.familyCancerHistory?.otherCancer || "No"
+                }
+              />
             </div>
 
             {/* Show cancer records */}
-            {patient.medicalData?.familyCancerHistory?.breastCancer === 'Yes' &&
-              patient.medicalData?.familyCancerHistory?.breastCancerRecords?.length > 0 && (
+            {patient.medicalData?.familyCancerHistory?.breastCancer === "Yes" &&
+              patient.medicalData?.familyCancerHistory?.breastCancerRecords
+                ?.length > 0 && (
                 <div className="cancer-records-container">
-                  <h4 className="records-title">Breast Cancer Family History:</h4>
+                  <h4 className="records-title">
+                    Breast Cancer Family History:
+                  </h4>
                   <div className="compact-records-grid">
-                    {patient.medicalData?.familyCancerHistory.breastCancerRecords.map((record, index) => (
-                      <CompactRecordCard key={index} record={record} />
-                    ))}
+                    {patient.medicalData?.familyCancerHistory.breastCancerRecords.map(
+                      (record, index) => (
+                        <CompactRecordCard key={index} record={record} />
+                      )
+                    )}
                   </div>
                 </div>
               )}
 
-            {patient.medicalData?.familyCancerHistory?.otherCancer === 'Yes' &&
-              patient.medicalData?.familyCancerHistory?.otherCancerRecords?.length > 0 && (
+            {patient.medicalData?.familyCancerHistory?.otherCancer === "Yes" &&
+              patient.medicalData?.familyCancerHistory?.otherCancerRecords
+                ?.length > 0 && (
                 <div className="cancer-records-container">
                   <h4 className="records-title">Other Cancer Types:</h4>
                   <div className="compact-records-grid">
-                    {patient.medicalData?.familyCancerHistory.otherCancerRecords.map((record, index) => (
-                      <CompactRecordCard key={index} record={record} type="other" />
-                    ))}
+                    {patient.medicalData?.familyCancerHistory.otherCancerRecords.map(
+                      (record, index) => (
+                        <CompactRecordCard
+                          key={index}
+                          record={record}
+                          type="other"
+                        />
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -624,27 +746,33 @@ function MammoProfile() {
                     <div className="medical-compact-col">
                       <div className="medical-label">Menstruation Started:</div>
                       <div className="medical-value">
-                        {patient.medicalData?.medicalHistory.MenstrualHistory.menstruationStarted || 'No'}
-                        {patient.medicalData?.medicalHistory.MenstrualHistory.menstruationStarted === 'Yes' &&
-                          patient.medicalData?.medicalHistory.MenstrualHistory.menstruationStartedAge &&
+                        {patient.medicalData?.medicalHistory.MenstrualHistory
+                          .menstruationStarted || "No"}
+                        {patient.medicalData?.medicalHistory.MenstrualHistory
+                          .menstruationStarted === "Yes" &&
+                          patient.medicalData?.medicalHistory.MenstrualHistory
+                            .menstruationStartedAge &&
                           ` (Age: ${patient.medicalData?.medicalHistory.MenstrualHistory.menstruationStartedAge})`}
                       </div>
                     </div>
                     <div className="medical-compact-col">
                       <div className="medical-label">Regular Cycle:</div>
                       <div className="medical-value">
-                        {patient.medicalData?.medicalHistory.MenstrualHistory.menstrualcycle || 'No'}
+                        {patient.medicalData?.medicalHistory.MenstrualHistory
+                          .menstrualcycle || "No"}
                       </div>
                     </div>
                   </div>
 
-                  {patient.medicalData?.medicalHistory.MenstrualHistory.menopause === 'Yes' && (
+                  {patient.medicalData?.medicalHistory.MenstrualHistory
+                    .menopause === "Yes" && (
                     <div className="medical-compact-row">
                       <div className="medical-compact-col">
                         <div className="medical-label">Menopause:</div>
                         <div className="medical-value">
                           Yes
-                          {patient.medicalData?.medicalHistory.MenstrualHistory.ageofmenopause &&
+                          {patient.medicalData?.medicalHistory.MenstrualHistory
+                            .ageofmenopause &&
                             ` (Age: ${patient.medicalData?.medicalHistory.MenstrualHistory.ageofmenopause})`}
                         </div>
                       </div>
@@ -665,16 +793,22 @@ function MammoProfile() {
                     <div className="medical-compact-col">
                       <div className="medical-label">Pregnancy:</div>
                       <div className="medical-value">
-                        {patient.medicalData?.medicalHistory.ReproductiveHistory.pregnancy || 'No'}
-                        {patient.medicalData?.medicalHistory.ReproductiveHistory.pregnancy === 'Yes' &&
-                          patient.medicalData?.medicalHistory.ReproductiveHistory.numofpregnancy &&
+                        {patient.medicalData?.medicalHistory.ReproductiveHistory
+                          .pregnancy || "No"}
+                        {patient.medicalData?.medicalHistory.ReproductiveHistory
+                          .pregnancy === "Yes" &&
+                          patient.medicalData?.medicalHistory
+                            .ReproductiveHistory.numofpregnancy &&
                           ` (${patient.medicalData?.medicalHistory.ReproductiveHistory.numofpregnancy})`}
                       </div>
                     </div>
                     <div className="medical-compact-col">
-                      <div className="medical-label">First Pregnancy Before 30:</div>
+                      <div className="medical-label">
+                        First Pregnancy Before 30:
+                      </div>
                       <div className="medical-value">
-                        {patient.medicalData?.medicalHistory.ReproductiveHistory.firstpregbef30 || 'No'}
+                        {patient.medicalData?.medicalHistory.ReproductiveHistory
+                          .firstpregbef30 || "No"}
                       </div>
                     </div>
                   </div>
@@ -683,16 +817,20 @@ function MammoProfile() {
                     <div className="medical-compact-col">
                       <div className="medical-label">Breastfeeding:</div>
                       <div className="medical-value">
-                        {patient.medicalData?.medicalHistory.ReproductiveHistory.breastfed || 'No'}
-                        {patient.medicalData?.medicalHistory.ReproductiveHistory.breastfed === 'Yes' &&
-                          patient.medicalData?.medicalHistory.ReproductiveHistory.duration &&
+                        {patient.medicalData?.medicalHistory.ReproductiveHistory
+                          .breastfed || "No"}
+                        {patient.medicalData?.medicalHistory.ReproductiveHistory
+                          .breastfed === "Yes" &&
+                          patient.medicalData?.medicalHistory
+                            .ReproductiveHistory.duration &&
                           ` (${patient.medicalData?.medicalHistory.ReproductiveHistory.duration})`}
                       </div>
                     </div>
                     <div className="medical-compact-col">
                       <div className="medical-label">Children:</div>
                       <div className="medical-value">
-                        {patient.medicalData?.medicalHistory.ReproductiveHistory.numofkids || '0'}
+                        {patient.medicalData?.medicalHistory.ReproductiveHistory
+                          .numofkids || "0"}
                       </div>
                     </div>
                   </div>
@@ -704,7 +842,9 @@ function MammoProfile() {
             {patient.medicalData?.medicalHistory?.feedback && (
               <div className="feedback-container">
                 <h4 className="feedback-title">Clinical Notes</h4>
-                <div className="feedback-text">{patient.medicalData?.medicalHistory.feedback}</div>
+                <div className="feedback-text">
+                  {patient.medicalData?.medicalHistory.feedback}
+                </div>
               </div>
             )}
           </CollapsibleSection>
@@ -719,38 +859,74 @@ function MammoProfile() {
             isEmpty={false}
           >
             <h3 className="treatment-heading">Medical Assessment</h3>
-            <p className="treatment-description">
-              Based on the patient's mammography results and health assessment, select the appropriate treatment recommendation:
-            </p>
 
-            <div className="treatment-options">
-              <button
-                className="treatment-option-button non-treatment-button"
-                onClick={() => confirmTreatmentDecision(false)}
-              >
-                <div className="option-content">
-                  <FaCheckCircle className="option-icon no-treatment" />
-                  <div className="option-text-container">
-                    <div className="option-title">No Further Treatment</div>
-                    <div className="option-description">Patient does not require additional treatment</div>
+            {status === "pending" ? (
+              <>
+                <p className="treatment-description">
+                  Based on the patient's mammography results and health
+                  assessment, select the appropriate treatment recommendation:
+                </p>
+
+                <div className="treatment-options">
+                  <button
+                    className="treatment-option-button non-treatment-button"
+                    onClick={() => confirmTreatmentDecision(false)}
+                  >
+                    <div className="option-content">
+                      <FaCheckCircle className="option-icon no-treatment" />
+                      <div className="option-text-container">
+                        <div className="option-title">No Further Treatment</div>
+                        <div className="option-description">
+                          Patient does not require additional treatment
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    className="treatment-option-button treatment-button"
+                    onClick={() => confirmTreatmentDecision(true)}
+                  >
+                    <div className="option-content">
+                      <FaExclamationCircle className="option-icon treatment" />
+                      <div className="option-text-container">
+                        <div className="option-title treatment">
+                          Recommend Treatment
+                        </div>
+                        <div className="option-description">
+                          Patient requires additional medical intervention
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="current-treatment-status">
+                <div
+                  className={`status-display ${
+                    status ? "accepted" : "rejected"
+                  }`}
+                >
+                  <div className="status-icon-large">
+                    {status === "accepted" ? (
+                      <FaExclamationCircle className="large-icon" />
+                    ) : (
+                      <FaCheckCircle className="large-icon" />
+                    )}
+                  </div>
+                  <div className="status-text">
+                    <h4>
+                      {status === "accepted"
+                        ? "Treatment Recommended"
+                        : "No Further Treatment Required"}
+                    </h4>
                   </div>
                 </div>
-              </button>
+              </div>
+            )}
 
-              <button
-                className="treatment-option-button treatment-button"
-                onClick={() => confirmTreatmentDecision(true)}
-              >
-                <div className="option-content">
-                  <FaExclamationCircle className="option-icon treatment" />
-                  <div className="option-text-container">
-                    <div className="option-title treatment">Recommend Treatment</div>
-                    <div className="option-description">Patient requires additional medical intervention</div>
-                  </div>
-                </div>
-              </button>            </div>
-
-            <div className="next-steps-section">
+            {/* <div className="next-steps-section">
               <h4 className="next-steps-title">Follow-up Information</h4>
               <div className="next-steps-info">
                 <div className="next-step-item">
@@ -771,7 +947,7 @@ function MammoProfile() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </CollapsibleSection>
         </div>
       </div>

@@ -102,7 +102,6 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
   font-weight: 600;
   line-height: var(--line-height-tight);
-  margin-bottom: var(--spacing-4);
 }
 
 h1 {
@@ -519,4 +518,20 @@ input:focus, select:focus, textarea:focus {
 
 * {
   font-synthesis: none !important;
+}
+
+/* Add to your CSS file */
+.premium-table-responsive {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.premium-table-responsive .ant-table-container {
+  min-width: 800px; /* Minimum width to prevent squishing */
+}
+
+@media screen and (max-width: 1200px) {
+  .premium-table-responsive .ant-table-cell {
+    white-space: nowrap;
+  }
 }
