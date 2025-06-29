@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 import Welcome_Navbar from "../components/Welcome_Navbar";
 import Footer from "../components/Footer";
 import "../styles/Auth.css";
-import tellyouDocLogo from "../assets/tellyoudoc.png";
 
 function DeleteAccount() {
   const [formData, setFormData] = useState({
-    email: "",
+    mobile: "",
     message: "",
     deleteOptions: {
       personalInfo: false,
@@ -80,6 +79,14 @@ function DeleteAccount() {
         });
       }
     } else {
+      // Mobile validation - only numeric input
+      if (name === 'mobile') {
+        if (value && !/^\d*$/.test(value)) {
+          // Don't update state if non-numeric characters are entered
+          return;
+        }
+      }
+      
       setFormData({
         ...formData,
         [name]: value,
@@ -90,22 +97,22 @@ function DeleteAccount() {
     if (error) setError("");
   };
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const validateMobile = (mobile) => {
+    const mobileRegex = /^\d{10}$/;
+    return mobileRegex.test(mobile);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate email
-    if (!formData.email.trim()) {
-      setError("Email is required.");
+    // Validate mobile number
+    if (!formData.mobile.trim()) {
+      setError("Mobile number is required.");
       return;
     }
 
-    if (!validateEmail(formData.email)) {
-      setError("Please enter a valid email address.");
+    if (!validateMobile(formData.mobile)) {
+      setError("Please enter a valid 10-digit mobile number.");
       return;
     }
 
@@ -126,7 +133,7 @@ function DeleteAccount() {
       // Replace this simulation with actual API call to handle account deletion request
       // Example:
       // const response = await apiService.deleteAccount({
-      //   email: formData.email,
+      //   mobile: formData.mobile,
       //   message: formData.message,
       //   deleteOptions: formData.deleteOptions
       // });
@@ -237,14 +244,16 @@ function DeleteAccount() {
 
           <form onSubmit={handleSubmit} className="deletion-form">
             <div className="form-group">
-              <label htmlFor="email">Registered Email *</label>
+              <label htmlFor="mobile">Registered Mobile Number *</label>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
+                type="tel"
+                id="mobile"
+                name="mobile"
+                value={formData.mobile}
                 onChange={handleChange}
-                placeholder="Enter your registered email address"
+                placeholder="Enter your registered mobile number"
+                pattern="[0-9]{10}"
+                maxLength="10"
                 required
               />
             </div>
