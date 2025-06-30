@@ -147,7 +147,7 @@ const Terms = () => {
                 ethnically, or otherwise objectionable.
               </li>
               <li>
-                Not to impersonate any person or entity, or falsely state or
+                Not to impersonate any person or entity, or falsely  or
                 otherwise misrepresent your affiliation with a person or entity.
               </li>
               <li>
@@ -272,7 +272,7 @@ const Terms = () => {
               provisions. You agree that any legal action or proceeding between
               TellYouDoc and you for any purpose concerning these Terms or the
               parties' obligations hereunder shall be brought exclusively in the
-              courts located in [City, State of Company Registration], India.
+              courts located in Guwahati, Assam, India.
             </p>
           </section>
 
