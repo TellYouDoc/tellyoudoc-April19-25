@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
-import '../styles/Appointments.css';
-import LoadingScreen from '../components/LoadingScreen';
-import { apiService } from '../services/api';
+import Navbar from '../../components/Navbar';
+import '../../styles/Doctor/Appointments.css';
+import LoadingScreen from '../../components/LoadingScreen';
+import { apiService } from '../../services/api';
 
 const Appointments = () => {
   const [activeTab, setActiveTab] = useState('today');

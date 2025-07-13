@@ -18,16 +18,16 @@ import {
 } from "recharts";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import LoadingScreen from "../components/LoadingScreen";
-import "../styles/PatientProfile.css";
-import "../styles/FamilyStructure.css";
-import "../styles/FamilyCancerHistory.css";
-import "../styles/CancerMedical.css";
-import "../styles/CancerOverview.css";
-import "../styles/Health.css";
-import "../styles/Wellness.css";
-import "../styles/Addiction.css";
-import FileViewer from "../components/FileViewer";
+import LoadingScreen from "../../components/LoadingScreen";
+import "../../styles/Doctor/PatientProfile.css";
+import "../../styles/FamilyStructure.css";
+import "../../styles/FamilyCancerHistory.css";
+import "../../styles/CancerMedical.css";
+import "../../styles/CancerOverview.css";
+import "../../styles/Health.css";
+import "../../styles/Wellness.css";
+import "../../styles/Doctor/Addiction.css";
+import FileViewer from "../../components/FileViewer";
 
 // Import icons
 import { FaTrash } from "react-icons/fa";
@@ -59,7 +59,7 @@ import { GiMedicines, GiBodyHeight, GiWeightScale } from "react-icons/gi";
 import { TbChartHistogram, TbChartPie } from "react-icons/tb";
 import { RiMentalHealthFill } from "react-icons/ri";
 
-import apiService from "../services/api";
+import apiService from "../../services/api";
 
 const PatientProfile = () => {
 

@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // Environment configuration
-const DEV_URL = "/api/v1"; // Using relative URL for dev to work with the proxy
-const PROD_URL = "https://api.tellyoudoc.com/api/v1";
+const DEV_URL = "https://staging.api.tellyoudoc.com/api/v1"; // Using relative URL for dev to work with the proxy
+const PROD_URL = "https://staging.api.tellyoudoc.com/api/v1";
 
 // Determine if we're in development mode based on the environment
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -17,6 +17,9 @@ const api = axios.create({
     Accept: "application/json",
   },
 });
+
+// Console log the base URL
+console.log("Base URL: ", BASE_URL);
 
 // Request interceptor
 api.interceptors.request.use(
@@ -323,7 +326,8 @@ const AdministratorService = {
   changeSubscriberType: (subscriberId, data) =>
     api.patch(`/admin/subscribers/${subscriberId}/type`, data),
   // Get subscriber by ID
-  getSubscriberById: (subscriberId) => api.get(`/admin/subscribers/${subscriberId}`)
+  getSubscriberById: (subscriberId) =>
+    api.get(`/admin/subscribers/${subscriberId}`),
 };
 
 // Create the API service object

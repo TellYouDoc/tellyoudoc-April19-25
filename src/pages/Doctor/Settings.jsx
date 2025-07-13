@@ -13,7 +13,7 @@ import {
   FaChartLine,
   FaCog
 } from 'react-icons/fa';
-import '../styles/Settings.css';
+import '../../styles/Doctor/Settings.css';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('account');

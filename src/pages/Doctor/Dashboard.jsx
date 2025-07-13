@@ -16,9 +16,9 @@ import {
   FaExclamationTriangle,
   FaRegClock
 } from 'react-icons/fa';
-import LoadingScreen from '../components/LoadingScreen';
-import { apiService } from '../services/api';
-import '../styles/Dashboard.css';
+import LoadingScreen from '../../components/LoadingScreen';
+import { apiService } from '../../services/api';
+import '../../styles/Doctor/Dashboard.css';
 
 function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);

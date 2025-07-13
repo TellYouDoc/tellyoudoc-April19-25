@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaCalendarAlt, FaEnvelope, FaBell, FaCheck, FaSearch, FaFilter, FaTrash } from 'react-icons/fa';
-import Layout from '../components/Layout';
-import '../styles/Notifications.css';
+import Layout from '../../components/Layout';
+import '../../styles/Doctor/Notifications.css';
 
 function Notifications() {
   // Add a side effect to hide the sidebar and adjust layout when this page loads

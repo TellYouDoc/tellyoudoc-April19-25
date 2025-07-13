@@ -1824,7 +1824,6 @@ const Partner = () => {
                                     }
                                     style={{
                                       display: "flex",
-                                      border: "1px solid #000",
                                       background: "none",
                                       border: "none",
                                       color: timerActive.email

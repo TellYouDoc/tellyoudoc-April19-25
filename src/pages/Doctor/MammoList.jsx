@@ -17,9 +17,9 @@ import {
   FaQuestionCircle,
   FaPlusCircle,
 } from "react-icons/fa";
-import LoadingScreen from "../components/LoadingScreen";
-import "../styles/MammoList.css";
-import apiService from "../services/api";
+import LoadingScreen from "../../components/LoadingScreen";
+import "../../styles/Doctor/MammoList.css";
+import apiService from "../../services/api";
 
 function MammoList() {
   const [isLoading, setIsLoading] = useState(true);

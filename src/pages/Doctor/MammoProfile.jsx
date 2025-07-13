@@ -21,9 +21,9 @@ import {
   FaCheckCircle,
   FaExclamationCircle,
 } from "react-icons/fa";
-import LoadingScreen from "../components/LoadingScreen";
-import "../styles/MammoProfile.css";
-import apiService from "../services/api";
+import LoadingScreen from "../../components/LoadingScreen";
+import "../../styles/Doctor/MammoProfile.css";
+import apiService from "../../services/api";
 
 function MammoProfile() {
   const { id } = useParams();

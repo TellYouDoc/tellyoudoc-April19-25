@@ -7,6 +7,33 @@ import {
 } from "react-router-dom";
 import { Suspense, lazy, useState, useEffect } from "react";
 import "./styles/App.css";
+import "./styles/Doctor/Dashboard.css";
+import "./styles/Doctor/Patients.css";
+import "./styles/Doctor/PatientProfile.css";
+import "./styles/Doctor/Appointments.css";
+import "./styles/Doctor/Reports.css";
+import "./styles/Doctor/Settings.css";
+import "./styles/Doctor/Profile.css";
+import "./styles/Doctor/MammoList.css";
+import "./styles/Doctor/Notifications.css";
+import "./styles/Doctor/MammoProfile.css";
+import "./styles/Doctor/patient-fix.css";
+import "./styles/Administrator/AdminLogin.css";
+import "./styles/Administrator/AdminLayout.css";
+import "./styles/Administrator/AdminDashboard.css";
+import "./styles/Administrator/Appointments.css";
+import "./styles/Administrator/BetaPartners.css";
+import "./styles/Administrator/Content.css";
+import "./styles/Administrator/ContentEditor.css";
+import "./styles/Administrator/ContentViewer.css";
+import "./styles/Administrator/DoctorProfile.css";
+import "./styles/Administrator/Notifications.css";
+import "./styles/Administrator/Organizations.css";
+import "./styles/Administrator/Patients.css";
+import "./styles/Administrator/Reports.css";
+import "./styles/Administrator/Settings.css";
+import "./styles/Administrator/Subscribers.css";
+import "./styles/Administrator/pin-code-filter.css";
 import LoadingScreen from "./components/LoadingScreen";
 import Layout from "./components/Layout";
 import CookieConsent from "./components/CookieConsent";
@@ -21,20 +48,18 @@ const Terms = lazy(() => import("./pages/Terms"));
 
 // Doctor Dashboard Pages
 const Login = lazy(() => import("./pages/Login"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Patients = lazy(() => import("./pages/Patients"));
-const PatientProfile = lazy(() => import("./pages/PatientProfile"));
-const Appointments = lazy(() => import("./pages/Appointments"));
-const Reports = lazy(() => import("./pages/Reports"));
-const Settings = lazy(() => import("./pages/Settings"));
-const Profile = lazy(() => import("./pages/Profile"));
-const MammoList = lazy(() => import("./pages/MammoList"));
-const Notifications = lazy(() => import("./pages/Notifications"));
-const MammoProfile = lazy(() => import("./pages/MammoProfile"));
+const Dashboard = lazy(() => import("./pages/Doctor/Dashboard"));
+const Patients = lazy(() => import("./pages/Doctor/Patients"));
+const PatientProfile = lazy(() => import("./pages/Doctor/PatientProfile"));
+const Appointments = lazy(() => import("./pages/Doctor/Appointments"));
+const Reports = lazy(() => import("./pages/Doctor/Reports"));
+const Settings = lazy(() => import("./pages/Doctor/Settings"));
+const Profile = lazy(() => import("./pages/Doctor/Profile"));
+const MammoList = lazy(() => import("./pages/Doctor/MammoList"));
+const Notifications = lazy(() => import("./pages/Doctor/Notifications"));
+const MammoProfile = lazy(() => import("./pages/Doctor/MammoProfile"));
 const DoctorDeleteAccount = lazy(() => import("./pages/DoctorDeleteAccount"));
-const PatientDeleteAccount = lazy(() =>
-  import("./pages/PatientDeleteAccount")
-);
+const PatientDeleteAccount = lazy(() => import("./pages/PatientDeleteAccount"));
 
 // Admin Login Pages
 const AdminLogin = lazy(() => import("./pages/Administrator/AdminLogin"));

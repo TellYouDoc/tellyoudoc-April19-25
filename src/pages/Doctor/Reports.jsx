@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/Reports.css';
-import apiService from '../services/api';
+import '../../styles/Doctor/Reports.css';
+import apiService from '../../services/api';
 import { 
   FaUsers, FaCalendarAlt, FaProcedures, FaClipboardList, 
   FaChartPie, FaHeartbeat, FaFemale, FaBriefcaseMedical,
   FaSyringe, FaFileMedical, FaChartArea, FaChartLine 
 } from 'react-icons/fa';
 import { MdHealthAndSafety, MdMedicalServices, MdOutlineTrendingUp } from 'react-icons/md';
-import LoadingScreen from '../components/LoadingScreen';
+import LoadingScreen from '../../components/LoadingScreen';
 import { useNavigate } from 'react-router-dom';
 import { 
   BarChart, Bar, PieChart, Pie, LineChart, Line, 

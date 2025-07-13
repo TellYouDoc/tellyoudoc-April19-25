@@ -201,8 +201,6 @@ const Home = () => {
   // Add a new state to track exit animations
   const [isExiting, setIsExiting] = useState(false);
 
-
-
   // Features data
   const features = [
     {
@@ -838,37 +836,36 @@ const Home = () => {
   // Form handling functions
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Special handling for phone number to only allow digits
-    if (name === 'phone') {
+    if (name === "phone") {
       // Remove all non-digit characters
-      const digitsOnly = value.replace(/\D/g, '');
+      const digitsOnly = value.replace(/\D/g, "");
       // Limit to 10 digits
       const limitedDigits = digitsOnly.slice(0, 10);
       setFormData({
         ...formData,
         [name]: limitedDigits,
       });
-    } 
+    }
     // Special handling for email to remove spaces and convert to lowercase
-    else if (name === 'email') {
+    else if (name === "email") {
       // Remove all spaces and convert to lowercase
-      const cleanedEmail = value.replace(/\s/g, '').toLowerCase();
+      const cleanedEmail = value.replace(/\s/g, "").toLowerCase();
       setFormData({
         ...formData,
         [name]: cleanedEmail,
       });
     }
     // Special handling for name and message to replace multiple spaces with single space
-    else if (name === 'name' || name === 'message') {
+    else if (name === "name" || name === "message") {
       // Replace multiple spaces with a single space
-      const cleanedText = value.replace(/\s+/g, ' ');
+      const cleanedText = value.replace(/\s+/g, " ");
       setFormData({
         ...formData,
         [name]: cleanedText,
       });
-    }
-    else {
+    } else {
       setFormData({
         ...formData,
         [name]: value,
@@ -1011,27 +1008,7 @@ const Home = () => {
                       display: "inline-block",
                     }}
                   >
-                    Reimagine Cancer Care with{" "}
-                    <span
-                      style={{
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "#FF7007",
-                        display: "inline",
-                      }}
-                    >
-                      tellyou
-                    </span>
-                    <span
-                      style={{
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "#05AFA4",
-                        display: "inline",
-                      }}
-                    >
-                      doc
-                    </span>
+                    Connect with Every Patient & No More Lost
                     <span
                       style={{
                         position: "absolute",
@@ -1055,13 +1032,12 @@ const Home = () => {
                       textShadow: "none",
                     }}
                   >
-                    Smart tools for breast cancer screening, chemo management,
-                    OPD workflows, and assistant-led care — all in one app.
-                    Built for doctors. Backed by clinical expertise.
+                    Designed for doctors who prefer to practice offline in
+                    non-metro cities, towns and villages.
                   </p>
                   <div className="home-hero-cta">
                     <Link
-                      to="/partner"
+                      to="https://play.google.com/store/apps/details?id=com.tellyoudoc.app" // Add the correct link here - Google Play Store Link
                       className="home-cta-button"
                       onMouseOver={(e) => {
                         e.currentTarget.style.transform = "translateY(-3px)";
@@ -1073,8 +1049,9 @@ const Home = () => {
                         e.currentTarget.style.boxShadow =
                           "0 4px 15px rgba(42, 125, 115, 0.3)";
                       }}
+                      target="_blank"
                     >
-                      Be Beta Partner
+                      Get the App Free
                     </Link>
                   </div>
                 </div>
@@ -1103,11 +1080,16 @@ const Home = () => {
                     Vision
                   </div>
                   <p>
-                    To revolutionize healthcare accessibility by bridging the
-                    gap between patients and doctors, empowering individuals
-                    with seamless, digital access to quality medical
-                    consultations, and building healthier communities across
-                    India.
+                    To become India’s most trusted digital companion for every
+                    doctor in{" "}
+                    <span style={{ color: "#000000", fontWeight: "bold" }}>
+                      Bharat's towns and villages
+                    </span>{" "}
+                    — empowering them by seamlessly connected with their
+                    patients, become easily accessible, more efficient practices
+                    using accessible technology that respects tradition,
+                    language, and local healthcare needs regardless of digital
+                    familiarity.
                   </p>
                 </div>
 
@@ -1116,13 +1098,15 @@ const Home = () => {
                     Mission
                   </div>
                   <p>
-                    Our mission is to simplify healthcare access for everyone
-                    through a user-friendly platform where patients can connect
-                    with trusted doctors, track and communicate symptoms, and
-                    receive expert medical guidance. We are committed to
-                    leveraging technology to enhance patient outcomes, support
-                    doctors in expanding their reach, and prioritize secure,
-                    efficient, and compassionate healthcare for all.
+                    Our mission is to empower offline doctors in India's Tier 2,
+                    Tier 3 cities, and rural areas with user-friendly and
+                    reliable digital tools. We simplify QR-based patient
+                    connection, multilingual platform that enables symptom-based
+                    consultation, follow-up tracking, and digital
+                    outreach—without requiring patients to be tech-savvy. We
+                    provide clear patient insights, enabling doctors to focus on
+                    delivering quality care and build lasting relationships,
+                    even with patients who are not digitally active.
                   </p>
                 </div>
               </div>
@@ -1507,18 +1491,18 @@ const Home = () => {
           <div className="home-supported-content">
             <div className="home-supported-card">
               <div className="home-supported-logo">
-                <img 
+                <img
                   src={iiitgLogo}
-                  alt="IIIT Guwahati Logo" 
+                  alt="IIIT Guwahati Logo"
                   className="home-supported-image"
                 />
               </div>
             </div>
             <div className="home-supported-card">
               <div className="home-supported-logo">
-                <img 
+                <img
                   src={drishtiLogo}
-                  alt="Drishti CPS Logo" 
+                  alt="Drishti CPS Logo"
                   className="home-supported-image"
                 />
               </div>

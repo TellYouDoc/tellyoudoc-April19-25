@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import LoadingScreen from "../components/LoadingScreen";
-import { apiService } from "../services/api";
-import "../styles/Patients.css";
+import LoadingScreen from "../../components/LoadingScreen";
+import { apiService } from "../../services/api";
+import "../../styles/Doctor/Patients.css";
 
 function Patients() {
   const [activeTab, setActiveTab] = useState("all");

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/Auth.css";
-import "../../styles/AdminLogin.css";
+import "../../styles/Administrator/AdminLogin.css";
 import tellyouDocLogo from "../../assets/tellyoudoc.png";
 
 import { getCookie } from "../../utils/cookieUtils";

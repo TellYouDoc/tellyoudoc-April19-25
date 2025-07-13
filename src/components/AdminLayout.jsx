@@ -21,7 +21,7 @@ import {
   FaHistory
 } from 'react-icons/fa';
 import tellyouDocLogo from '../assets/tellyoudoc.png';
-import '../styles/AdminLayout.css';
+import '../styles/Administrator/AdminLayout.css';
 
 const extraStyles = {
   searchResultsDropdown: {

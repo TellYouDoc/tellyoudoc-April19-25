@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaUser, FaGraduationCap, FaHospital, FaEdit, FaSave, FaCamera, FaTimes } from 'react-icons/fa';
-import '../styles/Profile.css';
-import { fetchAddressByPincode } from '../utils/pincodeApi';
-import apiService from '../services/api';
-import LoadingScreen from '../components/LoadingScreen';
+import '../../styles/Doctor/Profile.css';
+import { fetchAddressByPincode } from '../../utils/pincodeApi';
+import apiService from '../../services/api';
+import LoadingScreen from '../../components/LoadingScreen';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 

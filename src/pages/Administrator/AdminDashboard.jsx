@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AdminLayout from "../../components/AdminLayout";
-import "../../styles/AdminDashboard.css";
+import "../../styles/Administrator/AdminDashboard.css";
 import {
   FaUserMd,
   FaArrowLeft,
