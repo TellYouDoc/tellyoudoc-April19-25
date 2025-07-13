@@ -80,13 +80,13 @@ function DeleteAccount() {
       }
     } else {
       // Mobile validation - only numeric input
-      if (name === 'mobile') {
+      if (name === "mobile") {
         if (value && !/^\d*$/.test(value)) {
           // Don't update state if non-numeric characters are entered
           return;
         }
       }
-      
+
       setFormData({
         ...formData,
         [name]: value,
@@ -194,7 +194,7 @@ function DeleteAccount() {
 
   return (
     <div className="delete-account-page">
-      <Welcome_Navbar />
+      <Welcome_Navbar showLinks={false} linksActive={false} />
       <div className="delete-account-container">
         <div className={`delete-account-content ${isVisible ? "visible" : ""}`}>
           <div className="delete-account-header">
@@ -233,7 +233,7 @@ function DeleteAccount() {
                 <p>
                   This action is <strong>permanent and irreversible</strong>.
                   Please ensure you have downloaded any important data before
-                  proceeding. If you're having issues with your account,
+                  proceeding. If you&apos;re having issues with your account,
                   consider contacting our support team first.
                 </p>
               </div>
@@ -416,15 +416,6 @@ function DeleteAccount() {
             </button>
           </form>
 
-          <div className="action-links">
-            <Link to="/dashboard" className="btn-secondary">
-              Cancel & Return to Dashboard
-            </Link>
-            <Link to="/settings" className="btn-secondary">
-              Account Settings
-            </Link>
-          </div>
-
           {/* Contact Information */}
           <div className="contact-info">
             <p>
@@ -434,7 +425,7 @@ function DeleteAccount() {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
