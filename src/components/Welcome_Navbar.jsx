@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getCookie } from '../utils/cookieUtils';
+import { getCookie } from "../utils/cookieUtils";
 
 import "../styles/welcome_Navbar.css";
 import logoImage from "../assets/tellyoudoc.png";
 
-const Welcome_Navbar = () => {
+const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -48,33 +48,33 @@ const Welcome_Navbar = () => {
     }
   };
   const isUserAuthenticated = () => {
-    const accessToken = getCookie('AccessToken');
-    const refreshToken = getCookie('RefreshToken');
+    const accessToken = getCookie("AccessToken");
+    const refreshToken = getCookie("RefreshToken");
     return !!(accessToken && refreshToken);
   };
 
-   // Determine where the Doctors Zone link should go
-   const doctorsZoneTarget = isUserAuthenticated() ? '/dashboard' : '/login';
-// Add this handling for the Doctor Zone link
-const handleDoctorZoneClick = (e) => {
-  e.preventDefault();
-  
-  // If already on login page, don't open in new tab
-  if (location.pathname === '/login' && !isUserAuthenticated()) {
-    // Just close menu if we're already on login page
+  // Determine where the Doctors Zone link should go
+  const doctorsZoneTarget = isUserAuthenticated() ? "/dashboard" : "/login";
+  // Add this handling for the Doctor Zone link
+  const handleDoctorZoneClick = (e) => {
+    e.preventDefault();
+
+    // If already on login page, don't open in new tab
+    if (location.pathname === "/login" && !isUserAuthenticated()) {
+      // Just close menu if we're already on login page
+      closeMenu();
+      return;
+    }
+
+    // Otherwise navigate normally
+    if (isUserAuthenticated()) {
+      window.open("/dashboard", "_blank", "noopener,noreferrer");
+    } else {
+      window.open("/login", "_blank", "noopener,noreferrer");
+    }
+
     closeMenu();
-    return;
-  }
-  
-  // Otherwise navigate normally
-  if (isUserAuthenticated()) {
-    window.open('/dashboard', '_blank', 'noopener,noreferrer');
-  } else {
-    window.open('/login', '_blank', 'noopener,noreferrer');
-  }
-  
-  closeMenu();
-};
+  };
 
   // Handle scrolling to section after navigation to homepage
   useEffect(() => {
@@ -118,9 +118,13 @@ const handleDoctorZoneClick = (e) => {
   return (
     <nav className={`navbar ${scrolled ? "scrolled" : ""}`}>
       <div className="logo">
-        <Link to="/" onClick={closeMenu}>
+        {linksActive ? (
+          <Link to="/" onClick={closeMenu}>
+            <img src={logoImage} alt="tellYouDoc Logo" className="logo-image" />
+          </Link>
+        ) : (
           <img src={logoImage} alt="tellYouDoc Logo" className="logo-image" />
-        </Link>
+        )}
       </div>
 
       <div
@@ -132,66 +136,61 @@ const handleDoctorZoneClick = (e) => {
         <span></span>
       </div>
 
-      <div className={`nav-links ${menuOpen ? "active" : ""}`}>
-        <a
-          href="/#home-container"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection("home-container");
-          }}
-        >
-          Home
-        </a>
-        <a
-          href="/#about"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection("about");
-          }}
-        >
-          About Us
-        </a>
-        <a
-          href="/#product"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection("product");
-          }}
-        >
-          Offerings
-        </a>
-        <a
-          href="/#founders"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection("founders");
-          }}
-        >
-          Team
-        </a>
-        <a
-          href="/partner"
-          onClick={handleJoinBeta}
-        >
-          Join Beta
-        </a>
-        <a
-          href={doctorsZoneTarget}
-          onClick={handleDoctorZoneClick}
-        >
-          Doctor Zone
-        </a>
-        <a
-          href="/#contact"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToSection("contact");
-          }}
-        >
-          Contact
-        </a>
-        
-      </div>
+      {showLinks && (
+        <div className={`nav-links ${menuOpen ? "active" : ""}`}>
+          <a
+            href="/#home-container"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("home-container");
+            }}
+          >
+            Home
+          </a>
+          <a
+            href="/#about"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("about");
+            }}
+          >
+            About Us
+          </a>
+          <a
+            href="/#product"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("product");
+            }}
+          >
+            Offerings
+          </a>
+          <a
+            href="/#founders"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("founders");
+            }}
+          >
+            Team
+          </a>
+          <a href="/partner" onClick={handleJoinBeta}>
+            Join Beta
+          </a>
+          <a href={doctorsZoneTarget} onClick={handleDoctorZoneClick}>
+            Doctor Zone
+          </a>
+          <a
+            href="/#contact"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("contact");
+            }}
+          >
+            Contact
+          </a>
+        </div>
+      )}
 
       {/* Overlay for mobile menu */}
       {menuOpen && <div className="menu-overlay" onClick={closeMenu}></div>}

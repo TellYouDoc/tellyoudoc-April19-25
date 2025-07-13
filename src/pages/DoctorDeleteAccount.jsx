@@ -152,7 +152,7 @@ function DoctorDeleteAccount() {
 
   return (
     <div className="delete-account-page">
-      <Welcome_Navbar />
+      <Welcome_Navbar showLinks={false} linksActive={false} />
       <div className="delete-account-container">
         <div className={`delete-account-content ${isVisible ? "visible" : ""}`}>
           <div className="delete-account-header">
@@ -267,15 +267,6 @@ function DoctorDeleteAccount() {
             </button>
           </form>
 
-          <div className="action-links">
-            <Link to="/dashboard" className="btn-secondary">
-              Cancel & Return to Dashboard
-            </Link>
-            <Link to="/settings" className="btn-secondary">
-              Account Settings
-            </Link>
-          </div>
-
           {/* Contact Information */}
           <div className="contact-info">
             <p>
@@ -285,7 +276,7 @@ function DoctorDeleteAccount() {
           </div>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
