@@ -46,6 +46,9 @@ import { getCookie, removeCookie } from "./utils/cookieUtils";
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 
+// Routes List Page
+const RoutesList = lazy(() => import("./pages/RoutesList"));
+
 // Doctor Dashboard Pages
 const Login = lazy(() => import("./pages/Login"));
 const Dashboard = lazy(() => import("./pages/Doctor/Dashboard"));
@@ -192,6 +195,7 @@ function AppRoutes() {
           />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/routes" element={<RoutesList />} />
           <Route
             path="/login"
             element={

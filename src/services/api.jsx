@@ -142,6 +142,13 @@ const authService = {
   },
 };
 
+// Homepage Service
+const homePageService = {
+  contactUs: async (data) => {
+    return api.post("/contact-us", data);
+  }
+}
+
 // OTP send and verify service
 const betaRegistration = {
   initialRegistration: async (data) => {
@@ -333,6 +340,7 @@ const AdministratorService = {
 // Create the API service object
 const apiService = {
   authService,
+  homePageService,
   doctorService,
   betaRegistration,
   patientDoctorService,
