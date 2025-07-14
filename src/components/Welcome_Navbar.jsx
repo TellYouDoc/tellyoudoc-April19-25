@@ -11,6 +11,7 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === "/" || location.pathname === "/home";
+  const [productDropdownOpen, setProductDropdownOpen] = useState(false);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -159,51 +160,82 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
           >
             About Us
           </a>
-          <a
-            href="/#product"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("product");
-            }}
+          {/* Product Dropdown */}
+          <div
+            className={`dropdown ${productDropdownOpen ? "open" : ""}`}
+            onMouseEnter={() => setProductDropdownOpen(true)}
+            onMouseLeave={() => setProductDropdownOpen(false)}
           >
-            Features
-          </a>
-          <a
-            href="/#benefits"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("benefits");
-            }}
-          >
-            Benefits
-          </a>
-          <a
-            href="/#how-it-works"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("how-it-works");
-            }}
-          >
-            How It Works
-          </a>
-          <a
-            href="/#faq"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("faq");
-            }}
-          >
-            FAQs
-          </a>
-          <a
-            href="/#who-can-use"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("who-can-use");
-            }}
-          >
-            Who can use?
-          </a>
+            <button
+              className="dropdown-toggle"
+              onClick={(e) => {
+                e.preventDefault();
+                setProductDropdownOpen((open) => !open);
+              }}
+              aria-haspopup="true"
+              aria-expanded={productDropdownOpen}
+            >
+              Product
+              <span className={`caret${productDropdownOpen ? " open" : ""}`}>
+                ▼
+              </span>
+            </button>
+            <div
+              className={`dropdown-menu${productDropdownOpen ? " show" : ""}`}
+            >
+              <a
+                href="/#product"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("product");
+                  setProductDropdownOpen(false);
+                }}
+              >
+                Features
+              </a>
+              <a
+                href="/#benefits"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("benefits");
+                  setProductDropdownOpen(false);
+                }}
+              >
+                Benefits
+              </a>
+              <a
+                href="/#how-it-works"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("how-it-works");
+                  setProductDropdownOpen(false);
+                }}
+              >
+                How It Works
+              </a>
+              <a
+                href="/#who-can-use"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("who-can-use");
+                  setProductDropdownOpen(false);
+                }}
+              >
+                Who can use?
+              </a>
+              <a
+                href="/#faq"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection("faq");
+                  setProductDropdownOpen(false);
+                }}
+              >
+                FAQs
+              </a>
+            </div>
+          </div>
+          {/* End Product Dropdown */}
           <a
             href="/#founders"
             onClick={(e) => {
@@ -221,11 +253,6 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
             }}
           >
             Contact Us
-          </a>
-
-          {/* Action Buttons */}
-          <a href={doctorsZoneTarget} onClick={handleDoctorZoneClick}>
-            Doctor Zone
           </a>
         </div>
       )}

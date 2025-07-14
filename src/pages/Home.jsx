@@ -47,6 +47,23 @@ const Home = () => {
   // State for Patient modal
   const [patientModalVisible, setPatientModalVisible] = useState(false);
 
+  // State for doctor form data in WhatsApp modal
+  const [doctorFormData, setDoctorFormData] = useState({
+    doctorName: "",
+    licenseNumber: "",
+    whatsappNumber: "",
+  });
+
+  // State for doctor form validation errors
+  const [doctorFormErrors, setDoctorFormErrors] = useState({});
+
+  // State for doctor form submission
+  const [doctorFormStatus, setDoctorFormStatus] = useState({
+    isSubmitting: false,
+    isSubmitted: false,
+    isError: false,
+  });
+
   // State for FAQ expansion
   const [expandedFAQs, setExpandedFAQs] = useState({});
 
@@ -228,6 +245,18 @@ const Home = () => {
 
   const handleWhatsappModalClose = () => {
     setWhatsappModalVisible(false);
+    // Reset form when modal closes
+    setDoctorFormData({
+      doctorName: "",
+      licenseNumber: "",
+      whatsappNumber: "",
+    });
+    setDoctorFormErrors({});
+    setDoctorFormStatus({
+      isSubmitting: false,
+      isSubmitted: false,
+      isError: false,
+    });
   };
 
   // Patient modal functions
@@ -237,6 +266,134 @@ const Home = () => {
 
   const handlePatientModalClose = () => {
     setPatientModalVisible(false);
+  };
+
+  // Doctor form handling functions
+  const handleDoctorFormChange = (e) => {
+    const { name, value } = e.target;
+
+    // Special handling for WhatsApp number to only allow digits
+    if (name === "whatsappNumber") {
+      // Remove all non-digit characters
+      const digitsOnly = value.replace(/\D/g, "");
+      // Limit to 10 digits
+      const limitedDigits = digitsOnly.slice(0, 10);
+      setDoctorFormData({
+        ...doctorFormData,
+        [name]: limitedDigits,
+      });
+    }
+    // Special handling for doctor name to replace multiple spaces with single space
+    else if (name === "doctorName") {
+      const cleanedText = value.replace(/\s+/g, " ");
+      setDoctorFormData({
+        ...doctorFormData,
+        [name]: cleanedText,
+      });
+    }
+    // License number handling - convert to uppercase and remove extra spaces
+    else if (name === "licenseNumber") {
+      const cleanedLicense = value.replace(/\s+/g, " ").toUpperCase();
+      setDoctorFormData({
+        ...doctorFormData,
+        [name]: cleanedLicense,
+      });
+    } else {
+      setDoctorFormData({
+        ...doctorFormData,
+        [name]: value,
+      });
+    }
+
+    // Clear error when user starts typing
+    if (doctorFormErrors[name]) {
+      setDoctorFormErrors({
+        ...doctorFormErrors,
+        [name]: null,
+      });
+    }
+  };
+
+  // Validate doctor form data
+  const validateDoctorForm = () => {
+    const newErrors = {};
+
+    // Doctor name validation
+    if (!doctorFormData.doctorName.trim()) {
+      newErrors.doctorName = "Doctor name is required";
+    } else if (doctorFormData.doctorName.trim().length < 2) {
+      newErrors.doctorName = "Doctor name must be at least 2 characters";
+    }
+
+    // License number validation
+    if (!doctorFormData.licenseNumber.trim()) {
+      newErrors.licenseNumber = "Medical license number is required";
+    } else if (doctorFormData.licenseNumber.trim().length < 3) {
+      newErrors.licenseNumber = "Please enter a valid license number";
+    }
+
+    // WhatsApp number validation
+    if (!doctorFormData.whatsappNumber.trim()) {
+      newErrors.whatsappNumber = "WhatsApp number is required";
+    } else if (!/^\d{10}$/.test(doctorFormData.whatsappNumber.trim())) {
+      newErrors.whatsappNumber =
+        "Please enter a valid 10-digit WhatsApp number";
+    }
+
+    setDoctorFormErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleDoctorFormSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validate form
+    if (!validateDoctorForm()) {
+      return;
+    }
+
+    setDoctorFormStatus({
+      isSubmitting: true,
+      isSubmitted: false,
+      isError: false,
+    });
+
+    try {
+      // TODO: Implement API call to backend
+      const response = await apiService.doctorService.requestApp({
+        doctorName: doctorFormData.doctorName.trim(),
+        licenseNumber: doctorFormData.licenseNumber.trim(),
+        whatsappNumber: doctorFormData.whatsappNumber.trim(),
+      });
+
+      // Simulate API call for now
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setDoctorFormStatus({
+        isSubmitting: false,
+        isSubmitted: true,
+        isError: false,
+      });
+
+      message.success(
+        "Thank you! We'll contact you soon with app download details."
+      );
+
+      // Close modal after successful submission
+      setTimeout(() => {
+        handleWhatsappModalClose();
+      }, 2000);
+    } catch (error) {
+      console.error("Error submitting doctor form:", error);
+      setDoctorFormStatus({
+        isSubmitting: false,
+        isSubmitted: false,
+        isError: true,
+      });
+      message.error(
+        "There was an error submitting your request. Please try again."
+      );
+    }
   };
 
   return (
@@ -351,21 +508,6 @@ const Home = () => {
                       }}
                     >
                       Patient
-                      <span
-                        style={{
-                          position: "absolute",
-                          top: "3px",
-                          right: "8px",
-                          background: "#ff4757",
-                          color: "white",
-                          fontSize: "10px",
-                          padding: "2px 6px",
-                          borderRadius: "10px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        NEW
-                      </span>
                     </button>
                   </div>
 
@@ -394,7 +536,7 @@ const Home = () => {
         </section>
 
         {/* About Us Section */}
-        <section id="about" className="about-section">
+        <section id="about" className="about-section" style={{padding: "2rem 0"}}>
           <div className="home-section-header">
             <h2
               style={{
@@ -477,7 +619,7 @@ const Home = () => {
           style={{
             background:
               "linear-gradient(135deg, #f0f8ff 0%, #ffffff 50%, #f8f9fa 100%)",
-            padding: "100px 0",
+            padding: "2rem 0",
             position: "relative",
             overflow: "hidden",
           }}
@@ -506,12 +648,15 @@ const Home = () => {
             <p
               style={{
                 fontSize: "1.3rem",
-                color: "#666",
+                // Orange color
+                color: "#3b6baa",
                 textAlign: "center",
                 maxWidth: "600px",
                 margin: "1rem auto 3rem auto",
                 lineHeight: "1.6",
+                fontStyle: "italic",
                 fontFamily: "Montserrat, sans-serif",
+                fontWeight: "600",
               }}
             >
               Everything You Need, Nothing You Don't
@@ -533,9 +678,7 @@ const Home = () => {
               className="features-grid"
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
                 gap: "3rem",
-                marginBottom: "4rem",
               }}
             >
               {/* Feature 1 */}
@@ -561,15 +704,15 @@ const Home = () => {
                   }}
                 >
                   <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                    <path d="M3,11 L3,13 L10.5,13 L8.5,15 L15,9 L8.5,3 L10.5,5 L3,5 L3,7 M12,2 A10,10 0 0,1 22,12 A10,10 0 0,1 12,22 A10,10 0 0,1 2,12 A10,10 0 0,1 12,2 Z" />
+                    <path d="M3,3 L3,9 L9,9 L9,3 L3,3 M5,5 L7,5 L7,7 L5,7 L5,5 M15,3 L15,9 L21,9 L21,3 L15,3 M17,5 L19,5 L19,7 L17,7 L17,5 M3,15 L3,21 L9,21 L9,15 L3,15 M5,17 L7,17 L7,19 L5,19 L5,17 M11,3 L11,5 L13,5 L13,7 L11,7 L11,9 L13,9 L13,11 L15,11 L15,13 L17,13 L17,11 L19,11 L19,9 L21,9 L21,11 L19,11 L19,13 L21,13 L21,15 L19,15 L19,17 L17,17 L17,15 L15,15 L15,13 L13,13 L13,15 L11,15 L11,13 L13,13 L13,11 L11,11 L11,9 L13,9 L13,7 L15,7 L15,5 L13,5 L13,3 L11,3 M11,17 L11,19 L13,19 L13,21 L15,21 L15,19 L17,19 L17,21 L19,21 L19,19 L21,19 L21,17 L19,17 L19,15 L17,15 L17,17 L15,17 L15,15 L13,15 L13,17 L11,17 Z" />
                   </svg>
                 </div>
                 <div>
                   <h4
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
                       fontFamily: "Montserrat, sans-serif",
@@ -620,9 +763,9 @@ const Home = () => {
                 <div>
                   <h4
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
                       fontFamily: "Montserrat, sans-serif",
@@ -673,9 +816,9 @@ const Home = () => {
                 <div>
                   <h4
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
                       fontFamily: "Montserrat, sans-serif",
@@ -726,9 +869,9 @@ const Home = () => {
                 <div>
                   <h4
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
                       fontFamily: "Montserrat, sans-serif",
@@ -760,7 +903,7 @@ const Home = () => {
           style={{
             background:
               "linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #f0f8ff 100%)",
-            padding: "100px 0",
+            padding: "2rem 0 0 0",
             position: "relative",
             overflow: "hidden",
           }}
@@ -790,12 +933,14 @@ const Home = () => {
             <p
               style={{
                 fontSize: "1.3rem",
-                color: "#666",
+                color: "#3b6baa",
                 textAlign: "center",
                 maxWidth: "600px",
                 margin: "1rem auto 3rem auto",
                 lineHeight: "1.6",
                 fontFamily: "Montserrat, sans-serif",
+                fontWeight: "600",
+                fontStyle: "italic",
               }}
             >
               Know Every Patient Who Is Looking for You
@@ -876,19 +1021,21 @@ const Home = () => {
                       viewBox="0 0 24 24"
                       fill="white"
                     >
-                      <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                      <polyline points="16,6 12,2 8,6" />
+                      <line x1="12" y1="2" x2="12" y2="15" />
                     </svg>
                   </div>
                   <h4
                     style={{
                       fontSize: "1.2rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "1rem",
                       lineHeight: "1.3",
                     }}
                   >
-                    Expand Your Reach Through Social Media
+                    Expand Reach Through Social Media
                   </h4>
                   <p
                     style={{
@@ -937,12 +1084,12 @@ const Home = () => {
                     style={{
                       fontSize: "1.2rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "1rem",
                       lineHeight: "1.3",
                     }}
                   >
-                    Reduce No-Shows and Improve Patient Retention
+                    Reduce No-Shows & Improve Patient Retention
                   </h4>
                   <p
                     style={{
@@ -991,12 +1138,12 @@ const Home = () => {
                     style={{
                       fontSize: "1.2rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "1rem",
                       lineHeight: "1.3",
                     }}
                   >
-                    Improve Patient Satisfaction and Gain Loyalty
+                    Improve Patient Satisfaction & Gain Loyalty
                   </h4>
                   <p
                     style={{
@@ -1044,12 +1191,12 @@ const Home = () => {
                     style={{
                       fontSize: "1.2rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "1rem",
                       lineHeight: "1.3",
                     }}
                   >
-                    Gain Deeper Insights into Patient Engagement
+                    Gain Patient Engagement Deeper Insights
                   </h4>
                   <p
                     style={{
@@ -1074,7 +1221,7 @@ const Home = () => {
           style={{
             background:
               "linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f0f8ff 100%)",
-            padding: "100px 0",
+            padding: "2rem 0 0 0",
             position: "relative",
             overflow: "hidden",
           }}
@@ -1103,16 +1250,17 @@ const Home = () => {
             <p
               style={{
                 fontSize: "1.3rem",
-                color: "#666",
+                color: "#3b6baa",
                 textAlign: "center",
                 maxWidth: "600px",
                 margin: "1rem auto 3rem auto",
                 lineHeight: "1.6",
                 fontFamily: "Montserrat, sans-serif",
+                fontWeight: "600",
+                fontStyle: "italic",
               }}
             >
-              A simple 4-step process that connects you with patients without
-              any complexity
+              Simple 4-step process to connect the patient with you
             </p>
             <div
               style={{
@@ -1128,7 +1276,6 @@ const Home = () => {
             style={{
               maxWidth: "1000px",
               margin: "0 auto",
-              padding: "0 40px",
               position: "relative",
               zIndex: 1,
             }}
@@ -1182,15 +1329,15 @@ const Home = () => {
                 <div>
                   <h4
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
                       fontFamily: "Montserrat, sans-serif",
                     }}
                   >
-                    Put Your QR in the Clinic
+                    Show Your QR to Patients
                   </h4>
                   <p
                     style={{
@@ -1200,8 +1347,7 @@ const Home = () => {
                       margin: 0,
                     }}
                   >
-                    Get a printed and shareable QR that patients can scan. You
-                    will see every patient who searched for you.
+                    Get a printed & shareable QR that patients can scan.
                   </p>
                 </div>
               </div>
@@ -1245,9 +1391,9 @@ const Home = () => {
                 <div>
                   <h4
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
                       fontFamily: "Montserrat, sans-serif",
@@ -1263,8 +1409,8 @@ const Home = () => {
                       margin: 0,
                     }}
                   >
-                    Patients scan your QR and describe their symptoms before
-                    meeting you for better preparation.
+                    Patients scan the QR & describe their symptoms before
+                    meeting you.
                   </p>
                 </div>
               </div>
@@ -1308,9 +1454,9 @@ const Home = () => {
                 <div>
                   <h4
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
                       fontFamily: "Montserrat, sans-serif",
@@ -1326,8 +1472,8 @@ const Home = () => {
                       margin: 0,
                     }}
                   >
-                    You decide who to treat, when, and where. Complete control
-                    over your practice schedule.
+                    You decide who, when & where to treat as per over your
+                    schedule.
                   </p>
                 </div>
               </div>
@@ -1339,7 +1485,6 @@ const Home = () => {
                   display: "flex",
                   alignItems: "flex-start",
                   gap: "1.2rem",
-
                   maxWidth: "700px",
                   width: "100%",
                 }}
@@ -1371,9 +1516,9 @@ const Home = () => {
                 <div>
                   <h4
                     style={{
-                      fontSize: "1.4rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
                       fontFamily: "Montserrat, sans-serif",
@@ -1389,40 +1534,11 @@ const Home = () => {
                       margin: 0,
                     }}
                   >
-                    See new symptoms, reply with treatment notes, and send
-                    follow-up instructions digitally.
+                    See & reply with treatment notes, and send follow-up
+                    instructions.
                   </p>
                 </div>
               </div>
-            </div>
-
-            {/* Bottom Message */}
-            <div
-              style={{
-                textAlign: "center",
-                padding: "2rem",
-                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
-                borderRadius: "20px",
-                color: "white",
-                boxShadow: "0 10px 25px rgba(42, 125, 115, 0.2)",
-                position: "relative",
-                overflow: "hidden",
-              }}
-            >
-              <p
-                style={{
-                  fontSize: "1.2rem",
-                  fontWeight: "400",
-                  margin: 0,
-                  lineHeight: "1.5",
-                  color: "#ffffff",
-                  fontStyle: "italic",
-                  fontFamily: "Montserrat, sans-serif",
-                }}
-              >
-                No website, no listing, no tech clutter. Just your offline
-                practice — made smarter.
-              </p>
             </div>
           </div>
         </section>
@@ -1434,7 +1550,7 @@ const Home = () => {
           style={{
             background:
               "linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f0f8ff 100%)",
-            padding: "100px 0",
+            padding: "2rem 0",
             position: "relative",
             overflow: "hidden",
           }}
@@ -1459,20 +1575,23 @@ const Home = () => {
                 marginBottom: "1rem",
               }}
             >
-              Frequently Asked Questions
+              FAQ
             </h2>
             <p
               style={{
-                fontSize: "1.3rem",
+                fontSize: "1.4rem",
                 color: "#666",
                 textAlign: "center",
                 maxWidth: "600px",
                 margin: "1rem auto 3rem auto",
                 lineHeight: "1.6",
                 fontFamily: "Montserrat, sans-serif",
+                color: "#3b6baa",
+                fontWeight: "600",
+                fontStyle: "italic",
               }}
             >
-              Find answers to common questions about our platform
+              Answers to common asks about our platform
             </p>
           </div>
 
@@ -1528,9 +1647,9 @@ const Home = () => {
                 >
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.2rem",
                       fontWeight: "600",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       margin: 0,
                       lineHeight: "1.4",
                     }}
@@ -1568,14 +1687,14 @@ const Home = () => {
                   >
                     <p
                       style={{
-                        fontSize: "1rem",
+                        fontSize: "1.2rem",
                         color: "#666",
                         lineHeight: "1.6",
                         margin: 0,
                         paddingTop: "1rem",
                       }}
                     >
-                      They scan your QR and get connected.
+                      Patients scan your QR and get connected.
                     </p>
                   </div>
                 )}
@@ -1611,13 +1730,100 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
+                  onClick={() => toggleFAQ(6)}
+                >
+                  <h4
+                    style={{
+                      fontSize: "1.2rem",
+                      fontWeight: "600",
+                      color: "rgba(0, 0, 0, 0.65)",
+                      margin: 0,
+                      lineHeight: "1.4",
+                    }}
+                  >
+                    Can I use this with my paper prescription?
+                  </h4>
+                  <div
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "white",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      transition: "transform 0.3s ease",
+                      transform: expandedFAQs[1]
+                        ? "rotate(45deg)"
+                        : "rotate(0deg)",
+                    }}
+                  >
+                    +
+                  </div>
+                </div>
+                {expandedFAQs[6] && (
+                  <div
+                    style={{
+                      padding: "0 1.5rem 1.5rem 1.5rem",
+                      borderTop: "1px solid rgba(42, 125, 115, 0.1)",
+                      animation: "fadeIn 0.3s ease",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: "1.2rem",
+                        color: "#666",
+                        lineHeight: "1.6",
+                        margin: 0,
+                        paddingTop: "1rem",
+                      }}
+                    >
+                      Yes, no need to change your current practice style.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* FAQ Item 3 */}
+              <div
+                className="faq-item"
+                style={{
+                  background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
+                  borderRadius: "15px",
+                  boxShadow: "0 8px 25px rgba(0, 0, 0, 0.06)",
+                  border: "1px solid rgba(42, 125, 115, 0.1)",
+                  transition: "all 0.3s ease",
+                  overflow: "hidden",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow =
+                    "0 12px 30px rgba(42, 125, 115, 0.12)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow =
+                    "0 8px 25px rgba(0, 0, 0, 0.06)";
+                }}
+              >
+                <div
+                  style={{
+                    padding: "1.5rem",
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
                   onClick={() => toggleFAQ(2)}
                 >
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.2rem",
                       fontWeight: "600",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       margin: 0,
                       lineHeight: "1.4",
                     }}
@@ -1655,101 +1861,14 @@ const Home = () => {
                   >
                     <p
                       style={{
-                        fontSize: "1rem",
+                        fontSize: "1.2rem",
                         color: "#666",
                         lineHeight: "1.6",
                         margin: 0,
                         paddingTop: "1rem",
                       }}
                     >
-                      Yes. You will know if anyone scans your QR.
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* FAQ Item 3 */}
-              <div
-                className="faq-item"
-                style={{
-                  background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                  borderRadius: "15px",
-                  boxShadow: "0 8px 25px rgba(0, 0, 0, 0.06)",
-                  border: "1px solid rgba(42, 125, 115, 0.1)",
-                  transition: "all 0.3s ease",
-                  overflow: "hidden",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 12px 30px rgba(42, 125, 115, 0.12)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 25px rgba(0, 0, 0, 0.06)";
-                }}
-              >
-                <div
-                  style={{
-                    padding: "1.5rem",
-                    cursor: "pointer",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                  onClick={() => toggleFAQ(3)}
-                >
-                  <h4
-                    style={{
-                      fontSize: "1.1rem",
-                      fontWeight: "600",
-                      color: "#1a1a1a",
-                      margin: 0,
-                      lineHeight: "1.4",
-                    }}
-                  >
-                    Do I need to teach patients?
-                  </h4>
-                  <div
-                    style={{
-                      width: "24px",
-                      height: "24px",
-                      background: "linear-gradient(135deg, #05A1A4, #2a7d73)",
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "white",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      transition: "transform 0.3s ease",
-                      transform: expandedFAQs[3]
-                        ? "rotate(45deg)"
-                        : "rotate(0deg)",
-                    }}
-                  >
-                    +
-                  </div>
-                </div>
-                {expandedFAQs[3] && (
-                  <div
-                    style={{
-                      padding: "0 1.5rem 1.5rem 1.5rem",
-                      borderTop: "1px solid rgba(42, 125, 115, 0.1)",
-                      animation: "fadeIn 0.3s ease",
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontSize: "1rem",
-                        color: "#666",
-                        lineHeight: "1.6",
-                        margin: 0,
-                        paddingTop: "1rem",
-                      }}
-                    >
-                      No, the app is super simple.
+                      Yes. You will know if anyone new scans your QR.
                     </p>
                   </div>
                 )}
@@ -1785,24 +1904,24 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
-                  onClick={() => toggleFAQ(4)}
+                  onClick={() => toggleFAQ(3)}
                 >
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.2rem",
                       fontWeight: "600",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       margin: 0,
                       lineHeight: "1.4",
                     }}
                   >
-                    What if I can't accept new patients?
+                    Do I need to teach patients?
                   </h4>
                   <div
                     style={{
                       width: "24px",
                       height: "24px",
-                      background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
+                      background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
                       borderRadius: "50%",
                       display: "flex",
                       alignItems: "center",
@@ -1811,7 +1930,7 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
-                      transform: expandedFAQs[4]
+                      transform: expandedFAQs[1]
                         ? "rotate(45deg)"
                         : "rotate(0deg)",
                     }}
@@ -1819,7 +1938,7 @@ const Home = () => {
                     +
                   </div>
                 </div>
-                {expandedFAQs[4] && (
+                {expandedFAQs[3] && (
                   <div
                     style={{
                       padding: "0 1.5rem 1.5rem 1.5rem",
@@ -1829,14 +1948,14 @@ const Home = () => {
                   >
                     <p
                       style={{
-                        fontSize: "1rem",
+                        fontSize: "1.2rem",
                         color: "#666",
                         lineHeight: "1.6",
                         margin: 0,
                         paddingTop: "1rem",
                       }}
                     >
-                      You can decline or suggest later dates.
+                      No, the app is self-explanatory.
                     </p>
                   </div>
                 )}
@@ -1872,24 +1991,24 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
-                  onClick={() => toggleFAQ(5)}
+                  onClick={() => toggleFAQ(4)}
                 >
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.2rem",
                       fontWeight: "600",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       margin: 0,
                       lineHeight: "1.4",
                     }}
                   >
-                    Do I need a receptionist or PC?
+                    What if I can't accept new patients?
                   </h4>
                   <div
                     style={{
                       width: "24px",
                       height: "24px",
-                      background: "linear-gradient(135deg, #8E24AA, #4CAF50)",
+                      background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
                       borderRadius: "50%",
                       display: "flex",
                       alignItems: "center",
@@ -1898,7 +2017,7 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
-                      transform: expandedFAQs[5]
+                      transform: expandedFAQs[1]
                         ? "rotate(45deg)"
                         : "rotate(0deg)",
                     }}
@@ -1906,7 +2025,7 @@ const Home = () => {
                     +
                   </div>
                 </div>
-                {expandedFAQs[5] && (
+                {expandedFAQs[4] && (
                   <div
                     style={{
                       padding: "0 1.5rem 1.5rem 1.5rem",
@@ -1916,14 +2035,14 @@ const Home = () => {
                   >
                     <p
                       style={{
-                        fontSize: "1rem",
+                        fontSize: "1.2rem",
                         color: "#666",
                         lineHeight: "1.6",
                         margin: 0,
                         paddingTop: "1rem",
                       }}
                     >
-                      Not at all—your phone is enough.
+                      You can decline or suggest later dates.
                     </p>
                   </div>
                 )}
@@ -1959,24 +2078,24 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
-                  onClick={() => toggleFAQ(6)}
+                  onClick={() => toggleFAQ(5)}
                 >
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.2rem",
                       fontWeight: "600",
-                      color: "#1a1a1a",
+                      color: "rgba(0, 0, 0, 0.65)",
                       margin: 0,
                       lineHeight: "1.4",
                     }}
                   >
-                    Can I use this with my paper prescription?
+                    Do I need a receptionist or PC?
                   </h4>
                   <div
                     style={{
                       width: "24px",
                       height: "24px",
-                      background: "linear-gradient(135deg, #FF9800, #8E24AA)",
+                      background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
                       borderRadius: "50%",
                       display: "flex",
                       alignItems: "center",
@@ -1985,7 +2104,7 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
-                      transform: expandedFAQs[6]
+                      transform: expandedFAQs[1]
                         ? "rotate(45deg)"
                         : "rotate(0deg)",
                     }}
@@ -1993,7 +2112,7 @@ const Home = () => {
                     +
                   </div>
                 </div>
-                {expandedFAQs[6] && (
+                {expandedFAQs[5] && (
                   <div
                     style={{
                       padding: "0 1.5rem 1.5rem 1.5rem",
@@ -2003,14 +2122,14 @@ const Home = () => {
                   >
                     <p
                       style={{
-                        fontSize: "1rem",
+                        fontSize: "1.2rem",
                         color: "#666",
                         lineHeight: "1.6",
                         margin: 0,
                         paddingTop: "1rem",
                       }}
                     >
-                      Yes, no need to change your current practice style.
+                      Not at all—your phone is enough.
                     </p>
                   </div>
                 )}
@@ -2020,7 +2139,7 @@ const Home = () => {
         </section>
 
         {/* Who can use */}
-        <section id="who-can-use" className="home-who-can-use-section">
+        <section id="who-can-use" className="home-who-can-use-section" style={{padding: "2rem 0"}}>
           <div className="bubble-1"></div>
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
@@ -2044,67 +2163,141 @@ const Home = () => {
               <div className="who-can-use-intro">
                 <p
                   style={{
-                    fontSize: "1.2rem",
+                    fontSize: "1.4rem",
                     color: "#666",
                     textAlign: "center",
                     fontWeight: "400",
                     lineHeight: "1.6",
-                    marginBottom: "-1.5rem",
+                    marginTop: "1rem",
+                    marginBottom: "-2.8rem",
                     fontFamily: "Montserrat, sans-serif",
+                    fontStyle: "italic",
+                    color: "#3b6baa",
+                    fontWeight: "600",
                   }}
                 >
-                  The tellyoudoc is built for real doctors running real
-                  clinics—not just big hospitals or tech-savvy cities where
-                  advanced digital tools often feel out of reach. Whether you
-                  work alone, run a small chamber, or serve patients in
-                  semi-urban or rural areas, tellyoudoc helps you digitize your
-                  care, one patient at a time.
+                  Built for doctors consulting one patient at a time in clinics,
+                  whether working alone, running a chamber.
                 </p>
               </div>
               <div className="who-can-use-list">
-                <div className="who-can-use-item">
+                <div
+                  className="who-can-use-item"
+                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                >
                   <div className="who-can-use-icon">
-                    <span>🏥</span>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M3 21h18" />
+                      <path d="M5 21V7l8-4v18" />
+                      <path d="M19 21V11l-4-2" />
+                      <circle cx="9" cy="9" r="1" />
+                      <circle cx="15" cy="15" r="1" />
+                    </svg>
                   </div>
-                  <p>
+                  <p style={{ margin: 0, flex: 1 }}>
                     Run a physical clinic or practice in semi-urban, towns, or
                     rural areas across India.
                   </p>
                 </div>
-                <div className="who-can-use-item">
+                <div
+                  className="who-can-use-item"
+                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                >
                   <div className="who-can-use-icon">
-                    <span>🤝</span>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
                   </div>
-                  <p>
+                  <p style={{ margin: 0, flex: 1 }}>
                     Wish to connect easily with their patients who prefer
                     in-person interactions.
                   </p>
                 </div>
-                <div className="who-can-use-item">
+                <div
+                  className="who-can-use-item"
+                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                >
                   <div className="who-can-use-icon">
-                    <span>📈</span>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M3 3v18h18" />
+                      <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                    </svg>
                   </div>
-                  <p>
+                  <p style={{ margin: 0, flex: 1 }}>
                     Want to grow their practice ensuring patients' easy reach
                     without complex apps.
                   </p>
                 </div>
-                <div className="who-can-use-item">
+                <div
+                  className="who-can-use-item"
+                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                >
                   <div className="who-can-use-icon">
-                    <span>📋</span>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14,2 14,8 20,8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                      <polyline points="10,9 9,9 8,9" />
+                    </svg>
                   </div>
-                  <p>
+                  <p style={{ margin: 0, flex: 1 }}>
                     Find challenging to keep track of patient visits, follow-up
                     and retention.
                   </p>
                 </div>
-                <div className="who-can-use-item">
+                <div
+                  className="who-can-use-item"
+                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                >
                   <div className="who-can-use-icon">
-                    <span>💡</span>
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                      <path d="M12 17h.01" />
+                    </svg>
                   </div>
-                  <p>
-                    Looking for a reliable, easy-to-use digital solution that
-                    respects the traditional doctor-patient relationship.
+                  <p style={{ margin: 0, flex: 1 }}>
+                    Looking for a reliable, easy-to-use application that
+                    respects the traditional doctor-patient relationship
                   </p>
                 </div>
               </div>
@@ -2113,7 +2306,7 @@ const Home = () => {
         </section>
 
         {/* Founders Section */}
-        <section id="founders" className="home-founders-section">
+        <section id="founders" className="home-founders-section" style={{padding: "2rem 0"}}>
           <div className="bubble-1"></div>
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
@@ -2246,7 +2439,7 @@ const Home = () => {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="contact-section">
+        <section id="contact" className="contact-section" style={{padding: "2rem 0 0 0"}}>
           <div className="bubble-1"></div>
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
@@ -2410,8 +2603,53 @@ const Home = () => {
               )}
             </div>
           </div>
-          <div className="home-supported-content">
-            <div className="home-supported-card">
+        </section>
+
+        {/* Supported By Section */}
+        <section
+          className="supported-by-section"
+          style={{
+            backgroundColor: "#ffffff",
+            padding: "2rem 0",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          <div className="bubble-1"></div>
+          <div className="bubble-2"></div>
+          <div className="bubble-3"></div>
+          <div
+            className="home-section-header"
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            <h2
+              style={{
+                fontSize: "3rem",
+                fontWeight: "800",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Supported by
+            </h2>
+          </div>
+          <div
+            className="home-supported-content"
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            <div
+              className="home-supported-card"
+              style={{
+                boxShadow:
+                  "0 8px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
+                border: "1px solid rgba(0, 0, 0, 0.05)",
+                borderRadius: "12px",
+                backgroundColor: "#ffffff",
+              }}
+            >
               <div className="home-supported-logo">
                 <img
                   src={iiitgLogo}
@@ -2420,7 +2658,16 @@ const Home = () => {
                 />
               </div>
             </div>
-            <div className="home-supported-card">
+            <div
+              className="home-supported-card"
+              style={{
+                boxShadow:
+                  "0 8px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)",
+                border: "1px solid rgba(0, 0, 0, 0.05)",
+                borderRadius: "12px",
+                backgroundColor: "#ffffff",
+              }}
+            >
               <div className="home-supported-logo">
                 <img
                   src={drishtiLogo}
@@ -2460,57 +2707,325 @@ const Home = () => {
         onCancel={handleWhatsappModalClose}
         footer={null}
         centered
-        width={450}
+        width={500}
         className="whatsapp-modal"
       >
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          <h4 style={{ color: "#2a7d73", margin: "0 0 10px 0" }}>
-            Connect with us on WhatsApp
-          </h4>
-          <p style={{ color: "#666", fontSize: "14px", margin: "0 0 20px 0" }}>
-            Choose how you'd like to get in touch
-          </p>
-        </div>
+        <div style={{ padding: "10px 0" }}>
+          <div style={{ textAlign: "center", marginBottom: "15px" }}>
+            <h4
+              style={{
+                color: "#2a7d73",
+                margin: "0 0 5px 0",
+                fontSize: "18px",
+              }}
+            >
+              Request Doctor App Access
+            </h4>
+            <p style={{ color: "#666", fontSize: "14px", margin: "0" }}>
+              Fill in your details and we'll send you the app download link
+            </p>
+          </div>
 
-        {/* Direct WhatsApp Link */}
-        <div style={{ marginBottom: "25px", textAlign: "center" }}>
-          <a
-            href="https://wa.me/918099002939?text=Hi! I'm interested in getting the tellyoudoc app. Can you please provide me with more information?"
-            target="_blank"
-            rel="noopener noreferrer"
+          {!doctorFormStatus.isSubmitted ? (
+            <form onSubmit={handleDoctorFormSubmit}>
+              {/* Doctor Name Field */}
+              <div style={{ marginBottom: "15px" }}>
+                <label
+                  htmlFor="doctorName"
+                  style={{
+                    display: "block",
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Doctor Name *
+                </label>
+                <input
+                  type="text"
+                  id="doctorName"
+                  name="doctorName"
+                  value={doctorFormData.doctorName}
+                  onChange={handleDoctorFormChange}
+                  placeholder="Enter your full name"
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: doctorFormErrors.doctorName
+                      ? "2px solid #e74c3c"
+                      : "2px solid #e1e8ed",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    transition: "all 0.3s ease",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    if (!doctorFormErrors.doctorName) {
+                      e.target.style.borderColor = "#2a7d73";
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (!doctorFormErrors.doctorName) {
+                      e.target.style.borderColor = "#e1e8ed";
+                    }
+                  }}
+                />
+                {doctorFormErrors.doctorName && (
+                  <div style={errorMessageStyle}>
+                    {doctorFormErrors.doctorName}
+                  </div>
+                )}
+              </div>
+
+              {/* Medical License Number Field */}
+              <div style={{ marginBottom: "15px" }}>
+                <label
+                  htmlFor="licenseNumber"
+                  style={{
+                    display: "block",
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Medical License Number *
+                </label>
+                <input
+                  type="text"
+                  id="licenseNumber"
+                  name="licenseNumber"
+                  value={doctorFormData.licenseNumber}
+                  onChange={handleDoctorFormChange}
+                  placeholder="Enter your medical license number"
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: doctorFormErrors.licenseNumber
+                      ? "2px solid #e74c3c"
+                      : "2px solid #e1e8ed",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    transition: "all 0.3s ease",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    if (!doctorFormErrors.licenseNumber) {
+                      e.target.style.borderColor = "#2a7d73";
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (!doctorFormErrors.licenseNumber) {
+                      e.target.style.borderColor = "#e1e8ed";
+                    }
+                  }}
+                />
+                {doctorFormErrors.licenseNumber && (
+                  <div style={errorMessageStyle}>
+                    {doctorFormErrors.licenseNumber}
+                  </div>
+                )}
+              </div>
+
+              {/* WhatsApp Number Field */}
+              <div style={{ marginBottom: "20px" }}>
+                <label
+                  htmlFor="whatsappNumber"
+                  style={{
+                    display: "block",
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  WhatsApp Number *
+                </label>
+                <input
+                  type="tel"
+                  id="whatsappNumber"
+                  name="whatsappNumber"
+                  value={doctorFormData.whatsappNumber}
+                  onChange={handleDoctorFormChange}
+                  placeholder="Enter 10-digit WhatsApp number"
+                  maxLength="10"
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: doctorFormErrors.whatsappNumber
+                      ? "2px solid #e74c3c"
+                      : "2px solid #e1e8ed",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    transition: "all 0.3s ease",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    if (!doctorFormErrors.whatsappNumber) {
+                      e.target.style.borderColor = "#2a7d73";
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (!doctorFormErrors.whatsappNumber) {
+                      e.target.style.borderColor = "#e1e8ed";
+                    }
+                  }}
+                />
+                {doctorFormErrors.whatsappNumber && (
+                  <div style={errorMessageStyle}>
+                    {doctorFormErrors.whatsappNumber}
+                  </div>
+                )}
+              </div>
+
+              {/* Submit Button */}
+              <div style={{ textAlign: "center" }}>
+                <button
+                  type="submit"
+                  disabled={doctorFormStatus.isSubmitting}
+                  style={{
+                    background: doctorFormStatus.isSubmitting
+                      ? "#cccccc"
+                      : "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                    color: "white",
+                    padding: "12px 35px",
+                    border: "none",
+                    borderRadius: "6px",
+                    fontSize: "15px",
+                    fontWeight: "600",
+                    cursor: doctorFormStatus.isSubmitting
+                      ? "not-allowed"
+                      : "pointer",
+                    transition: "all 0.3s ease",
+                    boxShadow: doctorFormStatus.isSubmitting
+                      ? "none"
+                      : "0 4px 12px rgba(42, 125, 115, 0.3)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                  onMouseOver={(e) => {
+                    if (!doctorFormStatus.isSubmitting) {
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.boxShadow =
+                        "0 6px 16px rgba(42, 125, 115, 0.4)";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!doctorFormStatus.isSubmitting) {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow =
+                        "0 4px 12px rgba(42, 125, 115, 0.3)";
+                    }
+                  }}
+                >
+                  {doctorFormStatus.isSubmitting ? (
+                    <>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        style={{ animation: "spin 1s linear infinite" }}
+                      >
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          strokeDasharray="32"
+                          strokeDashoffset="32"
+                        />
+                      </svg>
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                      </svg>
+                      Request App Access
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div style={{ textAlign: "center", padding: "25px 15px" }}>
+              <div
+                style={{
+                  background: "#d4edda",
+                  border: "1px solid #c3e6cb",
+                  borderRadius: "10px",
+                  padding: "20px",
+                  marginBottom: "15px",
+                }}
+              >
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="#155724"
+                  style={{ marginBottom: "10px" }}
+                >
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                </svg>
+                <h4
+                  style={{
+                    color: "#155724",
+                    margin: "0 0 8px 0",
+                    fontSize: "16px",
+                  }}
+                >
+                  Request Submitted Successfully!
+                </h4>
+                <p
+                  style={{
+                    color: "#155724",
+                    fontSize: "13px",
+                    margin: "0",
+                    lineHeight: "1.4",
+                  }}
+                >
+                  Thank you for your interest! We'll contact you on WhatsApp
+                  with the app download details within 24 hours.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Information Note */}
+          <div
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "10px",
-              backgroundColor: "#25D366",
-              color: "white",
-              padding: "12px 24px",
-              borderRadius: "8px",
-              textDecoration: "none",
-              fontWeight: "600",
-              fontSize: "16px",
-              transition: "all 0.3s ease",
-              boxShadow: "0 4px 12px rgba(37, 211, 102, 0.3)",
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow =
-                "0 6px 16px rgba(37, 211, 102, 0.4)";
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow =
-                "0 4px 12px rgba(37, 211, 102, 0.3)";
+              background: "#f8f9fa",
+              border: "1px solid #dee2e6",
+              borderRadius: "6px",
+              padding: "10px",
+              marginTop: "15px",
+              textAlign: "center",
             }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
-            </svg>
-            Chat on WhatsApp
-          </a>
-          <p style={{ color: "#666", fontSize: "12px", margin: "8px 0 0 0" }}>
-            +91 8099002939
-          </p>
+            <p
+              style={{
+                color: "#6c757d",
+                fontSize: "11px",
+                margin: "0",
+                lineHeight: "1.3",
+              }}
+            >
+              🔒 Your information is secure and will only be used to provide you
+              with app access.
+              <br />
+              📱 Compatible with Android devices. iOS version coming soon.
+            </p>
+          </div>
         </div>
       </Modal>
 

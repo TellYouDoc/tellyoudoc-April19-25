@@ -1,8 +1,10 @@
 import axios from "axios";
 
 // Environment configuration
-const DEV_URL = "https://staging.api.tellyoudoc.com/api/v1"; // Using relative URL for dev to work with the proxy
-const PROD_URL = "https://staging.api.tellyoudoc.com/api/v1";
+// const DEV_URL = "https://staging.api.tellyoudoc.com/api/v1"; // Using relative URL for dev to work with the proxy
+const DEV_URL = "http://172.16.14.99:3050/api/v1";
+// const PROD_URL = "https://staging.api.tellyoudoc.com/api/v1";
+const PROD_URL = "http://172.16.14.99:3050/api/v1";
 
 // Determine if we're in development mode based on the environment
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -192,6 +194,8 @@ const doctorService = {
     api.patch(`/doctor/update-practice/${id}`, data),
   addPracticeInfo: (data) => api.post("/doctor/add-practice", data),
   deletePracticeInfo: (id) => api.delete(`/doctor/remove-practice/${id}`),
+
+  requestApp: (data) => api.post("/request-app", data)
 };
 
 // Patient-Doctor Connection Service

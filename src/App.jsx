@@ -197,7 +197,7 @@ function AppRoutes() {
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/routes" element={<RoutesList />} />
-          <Route path="/deeplink" element={<Deeplink />} />
+          <Route path="/connect" element={<Deeplink />} />
           <Route
             path="/login"
             element={

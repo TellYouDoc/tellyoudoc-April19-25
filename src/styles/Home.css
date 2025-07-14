@@ -2,6 +2,14 @@
 
 /* Global Styles are for the Breakpoint 768px to 1024px */
 
+/* 
+SECTION SPACING STANDARDIZATION:
+- Desktop (>1024px): 100px top/bottom padding for all sections
+- Tablet (768px-1024px): 80px top/bottom padding (80% of desktop)
+- Mobile (480px-768px): 60px top/bottom padding (60% of desktop)
+- Small Mobile (<480px): 50px top/bottom padding (50% of desktop)
+*/
+
 /* Simple Feature Styles */
 .simple-feature {
   transition: all 0.3s ease;
@@ -30,10 +38,10 @@
   box-shadow: 0 6px 20px rgba(42, 125, 115, 0.3);
 }
 
-/* Features Grid Responsive */
+/* Features Grid Responsive - Single Column Layout */
 .features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 3rem;
   margin-bottom: 4rem;
 }
@@ -55,8 +63,8 @@
   align-items: center;
 }
 
+/* Basic responsive rules for steps (features rules are handled separately below) */
 @media (max-width: 768px) {
-  .features-grid,
   .steps-grid,
   .steps-container {
     grid-template-columns: 1fr;
@@ -69,7 +77,6 @@
 }
 
 @media (max-width: 480px) {
-  .features-grid,
   .steps-grid,
   .steps-container {
     gap: 1.5rem;
@@ -205,7 +212,7 @@
   border: 2px solid #2a7d73;
   color: #2a7d73;
   padding: 10px 20px;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
   font-weight: 600;
   border-radius: 25px;
   cursor: pointer;
@@ -267,7 +274,7 @@
   z-index: 2;
   max-width: 1143px;
   gap: 1rem;
-  margin: 68px auto;
+  margin: 0 auto;
 }
 
 .home-about-section-about-item-label {
@@ -302,7 +309,7 @@
 }
 
 .home-founders-section {
-  padding: 4rem 0;
+  padding: 100px 0; /* Standardized section padding */
   background-color: #f9f9f9;
   position: relative;
   overflow: hidden;
@@ -310,7 +317,7 @@
 
 /* Product Section */
 .product-section {
-  padding: 3rem 0;
+  padding: 100px 0; /* Standardized section padding */
   background-color: #f9f9f9;
   position: relative;
   overflow: hidden;
@@ -394,668 +401,327 @@
   background-color: #079fa4;
 }
 
-/* Small mobile */
-@media (max-width: 320px) {
-  /* Simple feature responsive styles */
-  .simple-feature,
-  .simple-step {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    gap: 0.8rem !important;
-    padding: 1rem 0 !important;
-  }
+/* ===== FEATURES SECTION RESPONSIVE STYLES ===== */
 
-  .simple-feature > div:first-child,
-  .simple-step > div:first-child {
-    width: 45px !important;
-    height: 45px !important;
-  }
+/* Desktop styles (>1024px) - Default styles are already in place */
 
-  .simple-feature h4,
-  .simple-step h4 {
-    font-size: 1.1rem !important;
-  }
-
-  .simple-feature p,
-  .simple-step p {
-    font-size: 0.85rem !important;
-  }
-
-  .home-hero-title {
-    margin-top: 1.5rem;
-    font-size: 2rem;
-  }
-
-  .home-about-images-grid {
-    width: 100%;
-    height: fit-content;
-  }
-
-  .home-about-section-image {
-    margin-top: 17px;
-    width: 100%;
-  }
-
-  .home-hero-description {
-    font-size: 1rem;
-  }
-
-  .home-hero-content-wrapper {
-    margin-top: 1rem;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .home-hero-cta .home-cta-button {
-    padding: 10px 35px;
-    font-size: 0.96rem;
-  }
-
-  .home-hero-feature-buttons {
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .home-feature-button {
-    padding: 8px 16px;
-    font-size: 0.85rem;
-  }
-
-  .home-about-section-content {
-    max-width: 100%;
-    margin: 0 1rem;
-    justify-content: center;
-  }
-
-  .home-about-section-about-item-label {
-    font-size: 1.3rem;
-    margin-top: 30px;
-  }
-
-  .home-founders-section {
-    padding: 4rem 0;
-    background-color: #f9f9f9;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .home-founder-header {
-    display: flex;
-    margin-bottom: 1rem;
-    padding-top: 0.8rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    align-items: baseline;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 18px;
-  }
-
-  .founder-title-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 13px;
-    margin: auto;
-  }
-
-  .founder-title-group h3 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-top: 25px;
-  }
-
-  .contact-section {
-    padding: 2rem 0;
-    background-color: #f9f9f9;
-    position: relative;
-    overflow: hidden;
-  }
-
+/* Tablet landscape (901px to 1024px) */
+@media (min-width: 901px) and (max-width: 1024px) {
   .product-section {
-    padding: 2rem 0 1rem 0;
+    padding: 80px 0; /* 80% of desktop padding */
   }
-
-  .feature-animation.active .about-item-label {
-    transform: translateY(0);
-    opacity: 1;
-    transition-delay: 0s; /* No delay, appear immediately when parent is active */
-    font-size: 1.3rem;
-    text-align: left;
+  
+  .product-content {
+    padding: 0 30px !important;
+    max-width: 900px !important;
   }
-
-  .tellyoudoc-offers-content .product-images-grid {
-    margin: auto;
-    width: 270px;
-    height: 270px;
-    max-width: 270px;
-    margin-bottom: 30px;
+  
+  .features-grid {
+    gap: 2.5rem;
+    margin-bottom: 3rem;
   }
-
-  .tellyoudoc-offers-content .feature-animation,
-  .tellyoudoc-offers-content .subfeature-animation {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    width: 270px;
-    margin: auto;
+  
+  .product-section h2 {
+    font-size: 2.5rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+  
+  .product-section p {
+    font-size: 1.2rem !important;
+    max-width: 500px !important;
+    margin: 0.8rem auto 2.5rem auto !important;
+  }
+  
+  .simple-feature {
+    gap: 1rem !important;
+    padding: 1.5rem;
+    margin: 0 auto;
+    max-width: 700px;
+  }
+  
+  .simple-feature > div:first-child {
+    width: 55px !important;
+    height: 55px !important;
+  }
+  
+  .simple-feature h4 {
+    font-size: 1.4rem !important;
+    margin-bottom: 0.6rem !important;
+  }
+  
+  .simple-feature p {
+    font-size: 0.95rem !important;
+    margin: 0 !important;
   }
 }
 
-/* Medium mobile */
-@media (min-width: 321px) and (max-width: 375.2px) {
-  /* Simple feature responsive styles */
-  .simple-feature,
-  .simple-step {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center !important;
-    gap: 1rem !important;
-    padding: 1rem 0 !important;
+/* Tablet portrait (769px to 900px) */
+@media (min-width: 769px) and (max-width: 900px) {
+  .product-section {
+    padding: 70px 0;
   }
-
-  .simple-feature > div:first-child,
-  .simple-step > div:first-child {
+  
+  .product-content {
+    padding: 0 25px !important;
+    max-width: 100% !important;
+  }
+  
+  .features-grid {
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .product-section h2 {
+    font-size: 2.3rem !important;
+    margin-bottom: 0.7rem !important;
+  }
+  
+  .product-section p {
+    font-size: 1.1rem !important;
+    max-width: 450px !important;
+    margin: 0.7rem auto 2rem auto !important;
+  }
+  
+  .simple-feature {
+    gap: 1rem !important;
+    padding: 1.3rem;
+    margin: 0 auto;
+    max-width: 650px;
+  }
+  
+  .simple-feature > div:first-child {
     width: 50px !important;
     height: 50px !important;
   }
-
-  .simple-feature h4,
-  .simple-step h4 {
-    font-size: 1.2rem !important;
+  
+  .simple-feature h4 {
+    font-size: 1.3rem !important;
+    margin-bottom: 0.5rem !important;
   }
-
-  .simple-feature p,
-  .simple-step p {
+  
+  .simple-feature p {
     font-size: 0.9rem !important;
+    margin: 0 !important;
   }
+}
 
+/* Large mobile/small tablet (481px to 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
   .product-section {
-    padding: 2rem 0 1rem 0;
+    padding: 60px 0; /* 60% of desktop padding */
   }
-
-  .home-hero-title {
-    margin-top: 1.5rem;
-    font-size: 2.4rem;
+  
+  .product-content {
+    padding: 0 20px !important;
+    max-width: 100% !important;
   }
-
-  .home-hero-description {
-    font-size: 1rem;
+  
+  .features-grid {
+    gap: 1.8rem;
+    margin-bottom: 2rem;
   }
-
-  .home-hero-content-wrapper {
-    margin-top: 1rem;
-    margin-left: 0;
-    width: 100%;
+  
+  .product-section h2 {
+    font-size: 2rem !important;
+    margin-bottom: 0.6rem !important;
   }
-
-  .home-hero-cta .home-cta-button {
-    padding: 10px 35px;
-    font-size: 0.94rem;
+  
+  .product-section p {
+    font-size: 1rem !important;
+    max-width: 400px !important;
+    margin: 0.6rem auto 1.8rem auto !important;
   }
+  
+  .simple-feature {
+    gap: 1rem !important;
+    padding: 1.2rem;
+    margin: 0 auto;
+    max-width: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .simple-feature > div:first-child {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  
+  .simple-feature h4 {
+    font-size: 1.3rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .simple-feature p {
+    font-size: 0.95rem !important;
+    margin: 0 !important;
+  }
+}
 
-  .home-hero-feature-buttons {
-    gap: 0.6rem;
+/* Medium mobile (376px to 480px) */
+@media (min-width: 376px) and (max-width: 480px) {
+  .product-section {
+    padding: 50px 0; /* 50% of desktop padding */
+  }
+  
+  .product-content {
+    padding: 0 15px !important;
+  }
+  
+  .features-grid {
+    gap: 1.5rem;
     margin-bottom: 1.5rem;
   }
-
-  .home-feature-button {
-    padding: 8px 18px;
-    font-size: 0.9rem;
+  
+  .product-section h2 {
+    font-size: 1.8rem !important;
+    margin-bottom: 0.5rem !important;
   }
-
-  .home-about-images-grid {
-    margin-bottom: 35px;
+  
+  .product-section p {
+    font-size: 0.95rem !important;
+    max-width: 350px !important;
+    margin: 0.5rem auto 1.5rem auto !important;
+  }
+  
+  .simple-feature {
+    padding: 1rem;
     margin: 0 auto;
-    height: fit-content;
-  }
-
-  .home-about-section-image {
-    width: 100%;
-    margin: 20px 0;
-  }
-
-  .home-about-section-content {
-    max-width: 100%;
-    margin: 0 1rem;
-    justify-content: center;
-  }
-
-  .home-founders-section {
-    padding: 4rem 0;
-    background-color: #f9f9f9;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .home-founder-header {
-    display: flex;
-    margin-bottom: 1rem;
-    padding-top: 0.8rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    align-items: baseline;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 18px;
-  }
-
-  .founder-title-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 13px;
-    margin: auto;
-  }
-
-  .founder-title-group h3 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-top: 25px;
-  }
-
-  .feature-animation.active .about-item-label {
-    transform: translateY(0);
-    opacity: 1;
-    transition-delay: 0s; /* No delay, appear immediately when parent is active */
-    font-size: 1.3rem;
-    text-align: left;
-  }
-
-  .tellyoudoc-offers-content .product-images-grid {
-    margin: auto;
-    width: 340px;
-    height: 340px;
-    max-width: 340px;
-    margin-bottom: 30px;
-  }
-
-  .tellyoudoc-offers-content .feature-animation,
-  .tellyoudoc-offers-content .subfeature-animation {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    width: 350px;
-    margin: auto;
-  }
-}
-
-/* Large mobile */
-@media (min-width: 375.3px) and (max-width: 425.59px) {
-  .product-section {
-    padding: 2rem 0 1rem 0;
-  }
-
-  .home-hero-title {
-    margin-top: 1.5rem;
-    font-size: 2.705rem;
-  }
-
-  .home-about-images-grid {
-    margin-bottom: 35px;
-  }
-
-  .home-about-section-image {
-    margin-top: 17px;
-    width: 100%;
-  }
-
-  .home-hero-description {
-    font-size: 1.05rem;
-  }
-
-  .home-hero-content-wrapper {
-    margin-top: 1rem;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .home-hero-cta .home-cta-button {
-    padding: 10px 30px;
-    font-size: 0.99rem;
-  }
-
-  .home-about-section-content {
-    max-width: 100%;
-    margin: 0 1rem;
-    justify-content: center;
-  }
-
-  .home-founders-section {
-    padding: 4rem 0;
-    background-color: #f9f9f9;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .home-founder-header {
-    display: flex;
-    margin-bottom: 1rem;
-    padding-top: 0.8rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    align-items: baseline;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 18px;
-  }
-
-  .founder-title-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 13px;
-    margin: auto;
-  }
-
-  .founder-title-group h3 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-top: 25px;
-  }
-
-  .feature-animation.active .about-item-label {
-    transform: translateY(0);
-    opacity: 1;
-    transition-delay: 0s; /* No delay, appear immediately when parent is active */
-    font-size: 1.3rem;
-    text-align: left;
-  }
-
-  .tellyoudoc-offers-content .product-images-grid {
-    margin: auto;
-    width: 380px;
-    height: 380px;
-    max-width: 380px;
-    margin-bottom: 30px;
-  }
-
-  .product-content {
-    flex-direction: column-reverse;
-  }
-
-  .tellyoudoc-offers-content .feature-animation,
-  .tellyoudoc-offers-content .subfeature-animation {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    width: 380px;
-    margin: auto;
-  }
-}
-
-/* Custom Breakpoint for Large Mobile size */
-@media (min-width: 426px) and (max-width: 498px) {
-  .home-hero-title {
-    max-width: 376px;
-  }
-
-  .home-hero-description {
-    max-width: 491px;
-  }
-}
-
-/* Tablet */
-@media (min-width: 425.6px) and (max-width: 768px) {
-  .home-hero-title {
-    margin-top: 1rem;
-    font-size: 2.705rem;
-  }
-
-  .home-hero-description {
-    font-size: 1.05rem;
-  }
-
-  .home-hero-content-wrapper {
-    margin-top: 1rem;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .home-hero-cta .home-cta-button {
-    padding: 10px 50px;
-    font-size: 0.99rem;
-  }
-
-  .home-hero-feature-buttons {
-    gap: 0.8rem;
-    margin-bottom: 1.8rem;
-  }
-
-  .home-feature-button {
-    padding: 10px 20px;
-    font-size: 0.95rem;
-  }
-
-  .home-about-images-grid {
-    margin-bottom: 35px;
-    margin: 0 auto;
-    height: fit-content;
-  }
-
-  .home-about-section-image {
-    width: 100%;
-    margin-bottom: 20px;
-    margin-top: 20px;
-  }
-  .home-about-section-content {
-    max-width: 100%;
-    margin: 0 1rem;
-    justify-content: center;
-  }
-
-  .home-founders-section {
-    padding: 4rem 5%;
-    background-color: #f9f9f9;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .feature-animation.active .about-item-label {
-    transform: translateY(0);
-    opacity: 1;
-    transition-delay: 0s; /* No delay, appear immediately when parent is active */
-    font-size: 1.3rem;
-    text-align: left;
-  }
-
-  .tellyoudoc-offers-content .product-images-grid {
-    margin: auto;
-    width: 450px;
-    height: 450px;
-    max-width: 450px;
-    margin-bottom: 30px;
-  }
-
-  .product-content {
-    flex-direction: column-reverse;
-  }
-
-  .tellyoudoc-offers-content .feature-animation,
-  .tellyoudoc-offers-content .subfeature-animation {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    width: 450px;
-    margin: auto;
-  }
-}
-
-/* Custom Breakpoint for Tablet size */
-@media (min-width: 530px) {
-  .home-hero-title {
-    max-width: 490px;
-    margin: 16px 0 24px;
-  }
-
-  .home-hero-text {
-    padding-left: 50px;
-  }
-
-  .home-hero-description {
-    margin: 0px 0px 32px;
-    max-width: 491px;
-  }
-}
-
-/* Custom Breakpoint for Tablet size */
-@media (min-width: 582px) and (max-width: 1024px) {
-  .home-about-section-about-content {
-    max-width: 550px;
-  }
-}
-
-/* Laptop */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .home-hero-title {
-    margin-top: 1rem;
-    font-size: 2.705rem;
-  }
-
-  .home-hero-description {
-    font-size: 1.05rem;
-  }
-
-  .home-hero-content-wrapper {
-    margin-top: 1rem;
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .home-hero-cta .home-cta-button {
-    padding: 10px 60px;
-    font-size: 0.99rem;
-  }
-
-  .home-about-images-grid {
-    margin-bottom: 35px;
-    margin: 0 auto;
-    height: fit-content;
-  }
-
-  .home-about-section-image {
-    width: 100%;
-    margin: 20px 0;
-  }
-
-  .home-about-section-content {
-    max-width: 100%;
-    margin: 0 1rem;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .home-about-section-about-content {
-    max-width: 550px;
-    margin: 0 auto;
-  }
-
-  .home-founders-section {
-    padding: 4rem 5%;
-    background-color: #f9f9f9;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .tellyoudoc-offers-content .product-images-grid {
-    margin: auto;
-    width: 450px;
-    height: 450px;
-    max-width: 450px;
-    margin-bottom: 30px;
-  }
-
-  .tellyoudoc-offers-content .feature-animation,
-  .tellyoudoc-offers-content .subfeature-animation {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    width: 450px;
-    margin: auto;
-  }
-
-  .about-info {
-    margin: 0 7rem;
-    width: 100%;
-  }
-}
-
-/* Desktop  or Large Laptop */
-@media (min-width: 1025px) and (max-width: 1440px) {
-  .product-content {
-    flex-direction: row;
-  }
-
-  .home-hero-title {
-    margin-top: 1rem;
-    font-size: 2.705rem;
-  }
-
-  .home-hero-description {
-    font-size: 1.08rem;
-  }
-
-  .home-hero-content-wrapper {
-    margin-top: 1rem;
-    margin-left: 0;
-    width: 100%;
-    margin-left: 60px;
-  }
-
-  .home-hero-cta .home-cta-button {
-    padding: 10px 75px;
-    font-size: 0.99rem;
-  }
-
-  .home-about-section-content {
-    max-width: 1143px;
-    gap: 1rem;
-    margin: 68px auto;
-  }
-
-  .home-about-images-grid {
-    height: 400px;
-    max-width: 100%;
-    margin: 0;
-    margin-bottom: auto;
-  }
-
-  .home-about-section-image {
-    width: 100%;
-    margin-left: auto;
-    height: 100%;
+    gap: 0.8rem !important;
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .simple-feature > div:first-child {
+    width: 45px !important;
+    height: 45px !important;
+  }
+  
+  .simple-feature h4 {
+    font-size: 1.2rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+  
+  .simple-feature p {
+    font-size: 0.9rem !important;
+    margin: 0 !important;
   }
 }
 
-@media (min-width: 1441px) and (max-width: 2560px) {
+/* Small mobile (320px to 375px) */
+@media (min-width: 320px) and (max-width: 375px) {
+  .product-section {
+    padding: 40px 0;
+  }
+  
   .product-content {
-    flex-direction: row;
+    padding: 0 12px !important;
   }
-
-  .home-hero-title {
-    margin-top: 1rem;
-    font-size: 3.2rem;
-    max-width: 700px;
+  
+  .features-grid {
+    gap: 1.2rem;
+    margin-bottom: 1.2rem;
   }
-
-  .home-hero-description {
-    font-size: 1.3rem;
-    max-width: 750px;
+  
+  .product-section h2 {
+    font-size: 1.6rem !important;
+    margin-bottom: 0.4rem !important;
   }
-
-  .home-hero-content-wrapper {
-    margin-top: 1rem;
-    margin-left: 0;
-    width: 100%;
-    margin-left: 60px;
+  
+  .product-section p {
+    font-size: 0.9rem !important;
+    max-width: 300px !important;
+    margin: 0.4rem auto 1.2rem auto !important;
   }
-
-  .home-hero-cta .home-cta-button {
-    padding: 10px 55px;
-    font-size: 1.4rem;
+  
+  .simple-feature {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 0.8rem;
+    gap: 0.6rem !important;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+  
+  .simple-feature > div:first-child {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  
+  .simple-feature h4 {
+    font-size: 1.1rem !important;
+    text-align: center !important;
+    margin-bottom: 0.3rem !important;
+  }
+  
+  .simple-feature p {
+    font-size: 0.85rem !important;
+    text-align: center !important;
+    margin: 0 !important;
   }
 }
+
+/* Extra small mobile (<320px) */
+@media (max-width: 319px) {
+  .product-section {
+    padding: 35px 0;
+  }
+  
+  .product-content {
+    padding: 0 8px !important;
+  }
+  
+  .features-grid {
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .product-section h2 {
+    font-size: 1.4rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+  
+  .product-section p {
+    font-size: 0.85rem !important;
+    max-width: 280px !important;
+    margin: 0.3rem auto 1rem auto !important;
+  }
+  
+  .simple-feature {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 0.6rem;
+    gap: 0.4rem !important;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .simple-feature > div:first-child {
+    width: 35px !important;
+    height: 35px !important;
+  }
+  
+  .simple-feature h4 {
+    font-size: 1rem !important;
+    text-align: center !important;
+    margin-bottom: 0.2rem !important;
+  }
+  
+  .simple-feature p {
+    font-size: 0.8rem !important;
+    text-align: center !important;
+    margin: 0 !important;
+  }
+}
+
+/* ===== END FEATURES SECTION RESPONSIVE STYLES ===== */
 
 .home-container .home-hero-section .hero-title::after {
   content: "";
@@ -1125,7 +791,7 @@
   width: 100%;
   position: relative;
   background-color: #f9f9f9;
-  padding: 3rem 0; /* Reduced from 5rem */
+  padding: 100px 0; /* Standardized section padding */
   overflow: hidden;
 }
 
@@ -1267,7 +933,6 @@
   animation: fadeInDown 1s ease forwards;
   text-align: center;
   max-width: 100%;
-  margin-bottom: 1rem;
 }
 
 .home-section-header h2::after {
@@ -1390,7 +1055,7 @@
 
 /* Contact Section */
 .contact-section {
-  padding: 2rem 0;
+  padding: 100px 0; /* Standardized section padding */
   background-color: #f9f9f9;
   position: relative;
   overflow: hidden;
@@ -1483,6 +1148,9 @@
   margin-left: auto;
   margin-right: auto;
   line-height: 1.6;
+  animation: fadeInUp 1s ease 0.2s forwards;
+  opacity: 0;
+  text-transform: uppercase;
 }
 
 /* Contact Information Section */
@@ -1756,7 +1424,7 @@
 
 @media (max-width: 480px) {
   .contact-section {
-    padding: 1.5rem 0;
+    padding: 50px 0; /* Consistent small mobile padding: 50% of desktop */
   }
 
   .contact-main-section {
@@ -2955,6 +2623,28 @@ img:hover {
 .about-beautiful-item:hover {
   background: rgba(42, 125, 115, 0.04);
 }
+/* Media query for 901px to 1024px - Vision & Mission top and bottom layout */
+@media (min-width: 901px) and (max-width: 1024px) {
+  .about-beautiful-flex {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 1.5rem;
+  }
+  .about-beautiful-item:not(:last-child) {
+    border-right: none;
+    border-bottom: 1.5px solid #dbe7ee;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .about-beautiful-item {
+    padding: 0 1rem;
+  }
+  /* Hide the vertical divider in this view */
+  .about-beautiful-flex > div[style*="width: 1px"] {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   .about-beautiful-flex {
     flex-direction: column;
@@ -2970,11 +2660,15 @@ img:hover {
   .about-beautiful-item {
     padding: 0;
   }
+  /* Hide the vertical divider in mobile view */
+  .about-beautiful-flex > div[style*="width: 1px"] {
+    display: none;
+  }
 }
 
 /* Who Can Use Section */
 .home-who-can-use-section {
-  padding: 4rem 0;
+  padding: 100px 0; /* Standardized section padding */
   background-color: #f9f9f9;
   position: relative;
   overflow: hidden;
@@ -3062,7 +2756,7 @@ img:hover {
 }
 
 .who-can-use-item {
-  max-width: 600px;
+  max-width: 900px;
   width: 100%;
 }
 
@@ -3102,7 +2796,7 @@ img:hover {
 }
 
 .who-can-use-item p {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #2c3e50;
   line-height: 1.6;
   margin: 0;
@@ -3125,7 +2819,7 @@ img:hover {
   }
 
   .home-who-can-use-section {
-    padding: 3rem 0;
+    padding: 60px 0; /* Consistent mobile padding: 60% of desktop */
   }
 }
 
@@ -3346,5 +3040,109 @@ img:hover {
 
   .patient-modal .ant-modal-title {
     font-size: 18px;
+  }
+}
+
+/* Spinner animation for loading states */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Benefits Section Responsive Styles */
+.benefits-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.benefits-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.unified-benefits-card {
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 25px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(42, 125, 115, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+/* Desktop and larger screens - 2x2 Grid Layout */
+@media (min-width: 769px) {
+  .benefits-content {
+    padding: 0 40px;
+  }
+  
+  .unified-benefits-card {
+    padding: 3rem;
+  }
+  
+  .unified-benefits-card > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0;
+    height: 100%;
+  }
+}
+
+/* Tablet and mobile screens - Single column layout with no gaps */
+@media (max-width: 768px) {
+  .benefits-content {
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+  }
+  
+  .unified-benefits-card {
+    border-radius: 0;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+    background: #ffffff;
+  }
+  
+  .unified-benefits-card > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .unified-benefits-card > div > div {
+    padding: 2rem 1.5rem !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(42, 125, 115, 0.15) !important;
+    border-left: none;
+    border-top: none;
+  }
+  
+  .unified-benefits-card > div > div:last-child {
+    border-bottom: none !important;
+  }
+}
+
+/* Small mobile screens - Reduce padding further */
+@media (max-width: 480px) {
+  .unified-benefits-card > div > div {
+    padding: 1.5rem 1rem !important;
+  }
+  
+  .unified-benefits-card h4 {
+    font-size: 1.1rem !important;
+  }
+  
+  .unified-benefits-card p {
+    font-size: 0.9rem !important;
   }
 }
