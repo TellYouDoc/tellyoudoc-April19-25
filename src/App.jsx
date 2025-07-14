@@ -32,9 +32,7 @@ const MammoList = lazy(() => import("./pages/MammoList"));
 const Notifications = lazy(() => import("./pages/Notifications"));
 const MammoProfile = lazy(() => import("./pages/MammoProfile"));
 const DoctorDeleteAccount = lazy(() => import("./pages/DoctorDeleteAccount"));
-const PatientDeleteAccount = lazy(() =>
-  import("./pages/PatientDeleteAccount")
-);
+const PatientDeleteAccount = lazy(() => import("./pages/PatientDeleteAccount"));
 
 // Admin Login Pages
 const AdminLogin = lazy(() => import("./pages/Administrator/AdminLogin"));
@@ -94,6 +92,7 @@ const OrganizationScreenings = lazy(() =>
 
 const Home = lazy(() => import("./pages/Home"));
 const Partner = lazy(() => import("./pages/Partner"));
+const Deeplink = lazy(() => import("./pages/Deeplink"));
 
 // App component with routes
 function AppRoutes() {
@@ -276,6 +275,7 @@ function AppRoutes() {
 
           <Route path="/partner" element={<Partner />} />
           <Route path="/Home" element={<Home />} />
+          <Route path="/deeplink" element={<Deeplink />} />
           <Route
             path="/doctor/delete-account"
             element={<DoctorDeleteAccount />}
