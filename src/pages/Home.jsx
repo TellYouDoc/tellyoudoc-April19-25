@@ -515,7 +515,7 @@ const Home = () => {
         {/* About Us Section */}
         <section
           id="about"
-          className="about-section"
+          className="about-section home-founders-section"
           style={{ padding: "2rem 0" }}
         >
           <div className="home-section-header">
