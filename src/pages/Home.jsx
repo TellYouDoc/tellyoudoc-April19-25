@@ -628,7 +628,7 @@ const Home = () => {
             </h2>
             <p
               style={{
-                fontSize: "1.3rem",
+                fontSize: "1.7rem",
                 // Orange color
                 color: "#3b6baa",
                 textAlign: "center",
@@ -660,6 +660,7 @@ const Home = () => {
               style={{
                 display: "grid",
                 gap: "3rem",
+                // margin: "0",
               }}
             >
               {/* Feature 1 */}
@@ -913,10 +914,10 @@ const Home = () => {
             </h2>
             <p
               style={{
-                fontSize: "1.3rem",
+                fontSize: "1.7rem",
                 color: "#3b6baa",
                 textAlign: "center",
-                maxWidth: "600px",
+                maxWidth: "650px",
                 margin: "1rem auto 3rem auto",
                 lineHeight: "1.6",
                 fontFamily: "Montserrat, sans-serif",
@@ -1129,11 +1130,10 @@ const Home = () => {
         {/* How it Works Section */}
         <section
           id="how-it-works"
-          className="how-it-works-section"
           style={{
             background:
               "linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f0f8ff 100%)",
-            padding: "2rem 0 0 0",
+            padding: "4rem 0 0 0",
             position: "relative",
             overflow: "hidden",
           }}
@@ -1161,10 +1161,10 @@ const Home = () => {
             </h2>
             <p
               style={{
-                fontSize: "1.3rem",
+                fontSize: "1.7rem",
                 color: "#3b6baa",
                 textAlign: "center",
-                maxWidth: "600px",
+                maxWidth: "800px",
                 margin: "1rem auto 3rem auto",
                 lineHeight: "1.6",
                 fontFamily: "Montserrat, sans-serif",
@@ -1491,10 +1491,10 @@ const Home = () => {
             </h2>
             <p
               style={{
-                fontSize: "1.4rem",
+                fontSize: "1.7rem",
                 color: "#666",
                 textAlign: "center",
-                maxWidth: "600px",
+                maxWidth: "650px",
                 margin: "1rem auto 3rem auto",
                 lineHeight: "1.6",
                 fontFamily: "Montserrat, sans-serif",
@@ -2079,7 +2079,7 @@ const Home = () => {
               <div className="who-can-use-intro">
                 <p
                   style={{
-                    fontSize: "1.4rem",
+                    fontSize: "1.7rem",
                     color: "#666",
                     textAlign: "center",
                     fontWeight: "400",
@@ -2653,7 +2653,7 @@ const Home = () => {
                 fontWeight: "400",
               }}
             >
-              Fill in your details and we'll send you the app download link
+              Fill in your details and we'll share the app with you.
             </p>
             <p
               style={{
@@ -2665,8 +2665,7 @@ const Home = () => {
                 opacity: "0.9",
               }}
             >
-              🔒 Your information is secure and will only be used to provide you
-              with app access.
+              🔒 Your information is secured and confidential.
             </p>
             <p
               style={{
