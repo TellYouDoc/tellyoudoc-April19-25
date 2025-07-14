@@ -37,11 +37,11 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .faq-section {
-    padding: 60px 20px !important;
+    /* padding: 60px 20px !important; */
   }
   
   .faq-content {
-    padding: 0 20px !important;
+    padding: 0 !important;
   }
   
   .faq-item h4 {
