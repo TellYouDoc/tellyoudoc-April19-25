@@ -1510,7 +1510,7 @@ const Home = () => {
           <div
             className="faq-content"
             style={{
-              maxWidth: "800px",
+              maxWidth: "1000px",
               margin: "0 auto",
               padding: "0 40px",
               position: "relative",
@@ -1527,7 +1527,6 @@ const Home = () => {
             >
               {/* FAQ Item 1 */}
               <div
-                className="faq-item"
                 style={{
                   background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
                   borderRadius: "15px",
@@ -2079,7 +2078,7 @@ const Home = () => {
               <div className="who-can-use-intro">
                 <p
                   style={{
-                    fontSize: "1.7rem",
+                    fontSize: "1.4rem",
                     color: "#666",
                     textAlign: "center",
                     fontWeight: "400",
