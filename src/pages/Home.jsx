@@ -49,7 +49,7 @@ const Home = () => {
 
   // State for doctor form data in WhatsApp modal
   const [doctorFormData, setDoctorFormData] = useState({
-    doctorName: "",
+    doctorName: "Dr. ",
     licenseNumber: "",
     whatsappNumber: "",
   });
@@ -407,22 +407,7 @@ const Home = () => {
             <div className="home-about-content home-hero-text">
               <div>
                 <div className="home-hero-about-header">
-                  <h5
-                    className="home-hero-title"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, #1a5a52, #037073, #2a4f7a)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
-                      marginBottom: "1rem",
-                      fontWeight: 700,
-                      lineHeight: 1.1,
-                      letterSpacing: "-0.5px",
-                      position: "relative",
-                      display: "inline-block",
-                    }}
-                  >
+                  <h5 className="home-hero-title">
                     Connect with Every Patient & No More Lost
                     <span
                       style={{
@@ -438,15 +423,7 @@ const Home = () => {
                   </h5>
                 </div>
                 <div className="home-hero-about-info">
-                  <p
-                    className="home-hero-description"
-                    style={{
-                      marginBottom: "2rem",
-                      color: "#333",
-                      lineHeight: 1.7,
-                      textShadow: "none",
-                    }}
-                  >
+                  <p className="home-hero-description">
                     Designed for doctors who prefer to practice offline in
                     non-metro cities, towns and villages.
                   </p>
@@ -483,7 +460,7 @@ const Home = () => {
                     >
                       How it works
                     </button>
-                    <button
+                    {/* <button
                       className="home-feature-button patient-button"
                       onClick={handlePatientModalOpen}
                       style={{
@@ -508,7 +485,7 @@ const Home = () => {
                       }}
                     >
                       Patient
-                    </button>
+                    </button> */}
                   </div>
 
                   <div className="home-hero-cta">
@@ -536,7 +513,11 @@ const Home = () => {
         </section>
 
         {/* About Us Section */}
-        <section id="about" className="about-section" style={{padding: "2rem 0"}}>
+        <section
+          id="about"
+          className="about-section"
+          style={{ padding: "2rem 0" }}
+        >
           <div className="home-section-header">
             <h2
               style={{
@@ -950,259 +931,190 @@ const Home = () => {
           <div
             className="benefits-content"
             style={{
-              maxWidth: "1200px",
+              maxWidth: "1000px",
               margin: "0 auto",
               padding: "0 40px",
               position: "relative",
               zIndex: 1,
             }}
           >
-            {/* Unified Benefits Card */}
-            <div
-              className="unified-benefits-card"
-              style={{
-                background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                borderRadius: "25px",
-                padding: "3rem",
-                boxShadow: "0 15px 40px rgba(0, 0, 0, 0.1)",
-                border: "1px solid rgba(42, 125, 115, 0.1)",
-                transition: "all 0.3s ease",
-                position: "relative",
-                overflow: "hidden",
-                marginBottom: "2rem",
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = "translateY(-5px)";
-                e.currentTarget.style.boxShadow =
-                  "0 25px 50px rgba(42, 125, 115, 0.15)";
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 15px 40px rgba(0, 0, 0, 0.1)";
-              }}
-            >
-              {/* 2x2 Grid Layout */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gridTemplateRows: "1fr 1fr",
-                  gap: "0",
-                  height: "100%",
-                }}
-              >
-                {/* Benefit 1 - Top Left */}
+            {/* Benefits Layout - Simple Grid Design (like Features) */}
+            <div className="features-grid">
+              {/* Benefit 1 */}
+              <div className="simple-feature">
                 <div
                   style={{
-                    padding: "2rem",
-                    borderRight: "1px solid rgba(42, 125, 115, 0.15)",
-                    borderBottom: "1px solid rgba(42, 125, 115, 0.15)",
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
+                    borderRadius: "16px",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(59, 107, 170, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    <svg
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                      <polyline points="16,6 12,2 8,6" />
-                      <line x1="12" y1="2" x2="12" y2="15" />
-                    </svg>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                    <polyline points="16,6 12,2 8,6" />
+                    <line x1="12" y1="2" x2="12" y2="15" />
+                  </svg>
+                </div>
+                <div>
                   <h4
                     style={{
-                      fontSize: "1.2rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
                       color: "rgba(0, 0, 0, 0.65)",
-                      marginBottom: "1rem",
+                      marginBottom: "0.8rem",
                       lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Expand Reach Through Social Media
                   </h4>
                   <p
                     style={{
-                      fontSize: "0.95rem",
-                      color: "#666",
+                      fontSize: "1rem",
+                      color: "#555",
                       lineHeight: "1.6",
+                      margin: 0,
                     }}
                   >
                     Leverage digital platforms to extend your practice's
                     visibility and connect with more patients in your community.
                   </p>
                 </div>
-
-                {/* Benefit 2 - Top Right */}
+              </div>
+              {/* Benefit 2 */}
+              <div className="simple-feature">
                 <div
                   style={{
-                    padding: "2rem",
-                    borderBottom: "1px solid rgba(42, 125, 115, 0.15)",
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #05A1A4, #2a7d73)",
+                    borderRadius: "16px",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(5, 161, 164, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      background: "linear-gradient(135deg, #05A1A4, #2a7d73)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    <svg
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  </svg>
+                </div>
+                <div>
                   <h4
                     style={{
-                      fontSize: "1.2rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
                       color: "rgba(0, 0, 0, 0.65)",
-                      marginBottom: "1rem",
+                      marginBottom: "0.8rem",
                       lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Reduce No-Shows & Improve Patient Retention
                   </h4>
                   <p
                     style={{
-                      fontSize: "0.95rem",
-                      color: "#666",
+                      fontSize: "1rem",
+                      color: "#555",
                       lineHeight: "1.6",
+                      margin: 0,
                     }}
                   >
                     Minimize missed appointments and keep patients engaged with
                     your practice for better continuity of care.
                   </p>
                 </div>
-
-                {/* Benefit 3 - Bottom Left */}
+              </div>
+              {/* Benefit 3 */}
+              <div className="simple-feature">
                 <div
                   style={{
-                    padding: "2rem",
-                    borderRight: "1px solid rgba(42, 125, 115, 0.15)",
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
+                    borderRadius: "16px",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(76, 175, 80, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    <svg
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                    </svg>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
+                </div>
+                <div>
                   <h4
                     style={{
-                      fontSize: "1.2rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
                       color: "rgba(0, 0, 0, 0.65)",
-                      marginBottom: "1rem",
+                      marginBottom: "0.8rem",
                       lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Improve Patient Satisfaction & Gain Loyalty
                   </h4>
                   <p
                     style={{
-                      fontSize: "0.95rem",
-                      color: "#666",
+                      fontSize: "1rem",
+                      color: "#555",
                       lineHeight: "1.6",
+                      margin: 0,
                     }}
                   >
                     Enhance patient experience through better communication and
                     care, building lasting relationships and trust.
                   </p>
                 </div>
-
-                {/* Benefit 4 - Bottom Right */}
+              </div>
+              {/* Benefit 4 */}
+              <div className="simple-feature">
                 <div
                   style={{
-                    padding: "2rem",
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #8E24AA, #4CAF50)",
+                    borderRadius: "16px",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(142, 36, 170, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      background: "linear-gradient(135deg, #8E24AA, #4CAF50)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1.5rem",
-                    }}
-                  >
-                    <svg
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
-                    </svg>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" />
+                  </svg>
+                </div>
+                <div>
                   <h4
                     style={{
-                      fontSize: "1.2rem",
+                      fontSize: "1.6rem",
                       fontWeight: "700",
                       color: "rgba(0, 0, 0, 0.65)",
-                      marginBottom: "1rem",
+                      marginBottom: "0.8rem",
                       lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Gain Patient Engagement Deeper Insights
                   </h4>
                   <p
                     style={{
-                      fontSize: "0.95rem",
-                      color: "#666",
+                      fontSize: "1rem",
+                      color: "#555",
                       lineHeight: "1.6",
+                      margin: 0,
                     }}
                   >
                     Access valuable data and analytics to understand patient
@@ -2139,7 +2051,11 @@ const Home = () => {
         </section>
 
         {/* Who can use */}
-        <section id="who-can-use" className="home-who-can-use-section" style={{padding: "2rem 0"}}>
+        <section
+          id="who-can-use"
+          className="home-who-can-use-section"
+          style={{ padding: "2rem 0" }}
+        >
           <div className="bubble-1"></div>
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
@@ -2306,7 +2222,11 @@ const Home = () => {
         </section>
 
         {/* Founders Section */}
-        <section id="founders" className="home-founders-section" style={{padding: "2rem 0"}}>
+        <section
+          id="founders"
+          className="home-founders-section"
+          style={{ padding: "2rem 0" }}
+        >
           <div className="bubble-1"></div>
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
@@ -2439,7 +2359,11 @@ const Home = () => {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="contact-section" style={{padding: "2rem 0 0 0"}}>
+        <section
+          id="contact"
+          className="contact-section"
+          style={{ padding: "2rem 0 0 0" }}
+        >
           <div className="bubble-1"></div>
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
@@ -2702,7 +2626,6 @@ const Home = () => {
 
       {/* WhatsApp Modal */}
       <Modal
-        title="Get the App Free"
         open={whatsappModalVisible}
         onCancel={handleWhatsappModalClose}
         footer={null}
@@ -2721,8 +2644,44 @@ const Home = () => {
             >
               Request Doctor App Access
             </h4>
-            <p style={{ color: "#666", fontSize: "14px", margin: "0" }}>
+            <p
+              style={{
+                color: "#555",
+                fontSize: "15px",
+                margin: "8px 0",
+                lineHeight: "1.4",
+                fontWeight: "400",
+              }}
+            >
               Fill in your details and we'll send you the app download link
+            </p>
+            <p
+              style={{
+                color: "#777",
+                fontSize: "15px",
+                margin: "6px 0",
+                lineHeight: "1.3",
+                fontStyle: "italic",
+                opacity: "0.9",
+              }}
+            >
+              🔒 Your information is secure and will only be used to provide you
+              with app access.
+            </p>
+            <p
+              style={{
+                color: "#2E7D32",
+                fontSize: "14px",
+                margin: "10px 0 0 0",
+                fontWeight: "600",
+                backgroundColor: "#E8F5E8",
+                padding: "6px 12px",
+                borderRadius: "16px",
+                display: "inline-block",
+                border: "1px solid #A5D6A7",
+              }}
+            >
+              📱 Android version available now!
             </p>
           </div>
 
@@ -3000,32 +2959,6 @@ const Home = () => {
               </div>
             </div>
           )}
-
-          {/* Information Note */}
-          <div
-            style={{
-              background: "#f8f9fa",
-              border: "1px solid #dee2e6",
-              borderRadius: "6px",
-              padding: "10px",
-              marginTop: "15px",
-              textAlign: "center",
-            }}
-          >
-            <p
-              style={{
-                color: "#6c757d",
-                fontSize: "11px",
-                margin: "0",
-                lineHeight: "1.3",
-              }}
-            >
-              🔒 Your information is secure and will only be used to provide you
-              with app access.
-              <br />
-              📱 Compatible with Android devices. iOS version coming soon.
-            </p>
-          </div>
         </div>
       </Modal>
 

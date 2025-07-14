@@ -178,9 +178,6 @@ const Footer = () => {
                     Contact Us
                   </a>
                 </li>
-                <li>
-                  <a href="/login">Doctor Zone</a>
-                </li>
               </ul>
             </div>
           </div>
