@@ -75,13 +75,13 @@ const Footer = () => {
         </div>
 
         <div className="footer-links-container">
-          <div className="footer-links footer-links-top">
+          <div className="footer-links">
             <div className="footer-section">
               <h4>Quick Links</h4>
               <ul>
                 <li>
                   <a
-                    href="/#home"
+                    href="/#home-container"
                     onClick={(e) => {
                       e.preventDefault();
                       scrollToSection("home-container");
@@ -109,7 +109,51 @@ const Footer = () => {
                       scrollToSection("product");
                     }}
                   >
-                    Offerings
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#benefits"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("benefits");
+                    }}
+                  >
+                    Benefits
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#how-it-works"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("how-it-works");
+                    }}
+                  >
+                    How It Works
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#faq"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("faq");
+                    }}
+                  >
+                    FAQs
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/#who-can-use"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection("who-can-use");
+                    }}
+                  >
+                    Who can use?
                   </a>
                 </li>
                 <li>
@@ -124,10 +168,6 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="/partner">Join Beta</a>
-                </li>
-                <a href="/login">Doctor Zone</a>
-                <li>
                   <a
                     href="/#contact"
                     onClick={(e) => {
@@ -135,50 +175,15 @@ const Footer = () => {
                       scrollToSection("contact");
                     }}
                   >
-                    Contact
+                    Contact Us
                   </a>
+                </li>
+                <li>
+                  <a href="/login">Doctor Zone</a>
                 </li>
               </ul>
             </div>
           </div>
-
-          {/* <div className="footer-links footer-links-bottom">
-            <div className="footer-section">
-              <h4>Contact Us</h4>
-              <ul>
-                <li>
-                  <i className="facebook-icon"></i>
-                  <a
-                    href="https://www.facebook.com/people/Tellyou-Doc/pfbid0dBNAXpLe5Fg7kYkAfUNP2WWjw69pQvxCX7beiC1ULjXvs8mUgo5ddd3p4jwwiBw8l/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Facebook
-                  </a>
-                </li>
-                <li>
-                  <i className="linkedin-icon"></i>
-                  <a
-                    href="https://www.linkedin.com/in/tellyoudoc/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    LinkedIn
-                  </a>
-                </li>
-                <li>
-                  <i className="x-icon"></i>
-                  <a
-                    href="https://x.com/tellyoudoc"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    X
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div> */}
         </div>
       </div>
 
@@ -188,12 +193,6 @@ const Footer = () => {
           Limited. All rights reserved. Visuals on this website are AI
           generated.
         </p>
-        {/* <p>
-          &copy; {new Date().getFullYear()}{" "}
-          <span style={{ fontWeight: "bold", color: "orange" }}>tellYou</span>
-          <span style={{ fontWeight: "bold", color: "green" }}>Doc</span>. All
-          rights reserved.
-        </p> */}
         <div className="footer-bottom-links">
           <a href="/privacy">Privacy Policy</a>
           <a href="/terms">Terms & Conditions</a>

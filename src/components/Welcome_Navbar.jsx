@@ -47,6 +47,7 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
       closeMenu();
     }
   };
+
   const isUserAuthenticated = () => {
     const accessToken = getCookie("AccessToken");
     const refreshToken = getCookie("RefreshToken");
@@ -55,6 +56,7 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
 
   // Determine where the Doctors Zone link should go
   const doctorsZoneTarget = isUserAuthenticated() ? "/dashboard" : "/login";
+
   // Add this handling for the Doctor Zone link
   const handleDoctorZoneClick = (e) => {
     e.preventDefault();
@@ -138,6 +140,7 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
 
       {showLinks && (
         <div className={`nav-links ${menuOpen ? "active" : ""}`}>
+          {/* Main Navigation */}
           <a
             href="/#home-container"
             onClick={(e) => {
@@ -163,7 +166,43 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
               scrollToSection("product");
             }}
           >
-            Offerings
+            Features
+          </a>
+          <a
+            href="/#benefits"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("benefits");
+            }}
+          >
+            Benefits
+          </a>
+          <a
+            href="/#how-it-works"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("how-it-works");
+            }}
+          >
+            How It Works
+          </a>
+          <a
+            href="/#faq"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("faq");
+            }}
+          >
+            FAQs
+          </a>
+          <a
+            href="/#who-can-use"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("who-can-use");
+            }}
+          >
+            Who can use?
           </a>
           <a
             href="/#founders"
@@ -174,12 +213,6 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
           >
             Team
           </a>
-          <a href="/partner" onClick={handleJoinBeta}>
-            Join Beta
-          </a>
-          <a href={doctorsZoneTarget} onClick={handleDoctorZoneClick}>
-            Doctor Zone
-          </a>
           <a
             href="/#contact"
             onClick={(e) => {
@@ -187,7 +220,12 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
               scrollToSection("contact");
             }}
           >
-            Contact
+            Contact Us
+          </a>
+
+          {/* Action Buttons */}
+          <a href={doctorsZoneTarget} onClick={handleDoctorZoneClick}>
+            Doctor Zone
           </a>
         </div>
       )}

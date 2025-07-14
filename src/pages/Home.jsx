@@ -4,6 +4,7 @@ import { Modal, Form, Input, Button, message } from "antd";
 
 // Importing styles
 import "../styles/Home.css";
+import "../styles/FAQs.css";
 
 // Importing API service
 import apiService from "../services/api";
@@ -42,8 +43,20 @@ const Home = () => {
 
   // State for WhatsApp modal
   const [whatsappModalVisible, setWhatsappModalVisible] = useState(false);
-  const [whatsappForm] = Form.useForm();
-  const [whatsappSubmitting, setWhatsappSubmitting] = useState(false);
+
+  // State for Patient modal
+  const [patientModalVisible, setPatientModalVisible] = useState(false);
+
+  // State for FAQ expansion
+  const [expandedFAQs, setExpandedFAQs] = useState({});
+
+  // Toggle FAQ expansion
+  const toggleFAQ = (index) => {
+    setExpandedFAQs((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
 
   // Form handling functions
   const handleChange = (e) => {
@@ -215,24 +228,15 @@ const Home = () => {
 
   const handleWhatsappModalClose = () => {
     setWhatsappModalVisible(false);
-    whatsappForm.resetFields();
   };
 
-  const handleWhatsappSubmit = async (values) => {
-    setWhatsappSubmitting(true);
-    try {
-      // You can add API call here if needed to store the WhatsApp number
-      // For now, just show success message
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+  // Patient modal functions
+  const handlePatientModalOpen = () => {
+    setPatientModalVisible(true);
+  };
 
-      message.success("Thank you! We will get back to you on WhatsApp soon.");
-      setWhatsappModalVisible(false);
-      whatsappForm.resetFields();
-    } catch (error) {
-      message.error("Something went wrong. Please try again.");
-    } finally {
-      setWhatsappSubmitting(false);
-    }
+  const handlePatientModalClose = () => {
+    setPatientModalVisible(false);
   };
 
   return (
@@ -249,9 +253,13 @@ const Home = () => {
                   <h5
                     className="home-hero-title"
                     style={{
-                      color: "#1a1a1a",
-                      marginBottom: "1.5rem",
-                      fontWeight: 800,
+                      background:
+                        "linear-gradient(135deg, #1a5a52, #037073, #2a4f7a)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundClip: "text",
+                      marginBottom: "1rem",
+                      fontWeight: 700,
                       lineHeight: 1.1,
                       letterSpacing: "-0.5px",
                       position: "relative",
@@ -318,6 +326,47 @@ const Home = () => {
                     >
                       How it works
                     </button>
+                    <button
+                      className="home-feature-button patient-button"
+                      onClick={handlePatientModalOpen}
+                      style={{
+                        background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
+                        color: "white",
+                        border: "none",
+                        fontWeight: "600",
+                        boxShadow: "0 4px 15px rgba(59, 107, 170, 0.3)",
+                        position: "relative",
+                        overflow: "hidden",
+                        padding: "10px 50px",
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = "translateY(-2px)";
+                        e.currentTarget.style.boxShadow =
+                          "0 6px 20px rgba(59, 107, 170, 0.4)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow =
+                          "0 4px 15px rgba(59, 107, 170, 0.3)";
+                      }}
+                    >
+                      Patient
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: "3px",
+                          right: "8px",
+                          background: "#ff4757",
+                          color: "white",
+                          fontSize: "10px",
+                          padding: "2px 6px",
+                          borderRadius: "10px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        NEW
+                      </span>
+                    </button>
                   </div>
 
                   <div className="home-hero-cta">
@@ -347,17 +396,35 @@ const Home = () => {
         {/* About Us Section */}
         <section id="about" className="about-section">
           <div className="home-section-header">
-            <h2>About Us</h2>
+            <h2
+              style={{
+                fontSize: "3rem",
+                fontWeight: "800",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              About Us
+            </h2>
           </div>
           <div className="home-about-section-content">
             <div className="home-about-section-about-content">
               <div className="home-about-section-about-info about-beautiful-flex">
-                <div className="home-about-section-about-item about-beautiful-item">
-                  <div className="home-about-section-about-item-label">
+                <div
+                  className="home-about-section-about-item about-beautiful-item"
+                  style={{ borderRight: "none" }}
+                >
+                  <div
+                    className="home-about-section-about-item-label"
+                    style={{ fontWeight: "normal" }}
+                  >
                     Vision
                   </div>
                   <p>
-                    To become India’s most trusted digital companion for every
+                    To become India's most trusted digital companion for every
                     doctor in{" "}
                     <span style={{ color: "#000000", fontWeight: "bold" }}>
                       Bharat's towns and villages
@@ -369,8 +436,21 @@ const Home = () => {
                     familiarity.
                   </p>
                 </div>
+                {/* Vertical Divider */}
+                <div
+                  style={{
+                    width: "1px",
+                    minHeight: "100px",
+                    background: "linear-gradient(180deg, #b2dfdb, #3b6baa)",
+                    margin: "0 1rem",
+                    alignSelf: "stretch",
+                  }}
+                ></div>
                 <div className="home-about-section-about-item about-beautiful-item">
-                  <div className="home-about-section-about-item-label">
+                  <div
+                    className="home-about-section-about-item-label"
+                    style={{ fontWeight: "normal" }}
+                  >
                     Mission
                   </div>
                   <p>
@@ -409,7 +489,7 @@ const Home = () => {
             className="home-section-header"
             style={{ position: "relative", zIndex: 1 }}
           >
-            <p
+            <h2
               style={{
                 fontSize: "3rem",
                 fontWeight: "800",
@@ -418,317 +498,254 @@ const Home = () => {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                marginBottom: "2rem",
+                marginBottom: "1rem",
+              }}
+            >
+              Features
+            </h2>
+            <p
+              style={{
+                fontSize: "1.3rem",
+                color: "#666",
+                textAlign: "center",
+                maxWidth: "600px",
+                margin: "1rem auto 3rem auto",
+                lineHeight: "1.6",
+                fontFamily: "Montserrat, sans-serif",
               }}
             >
               Everything You Need, Nothing You Don't
             </p>
-            <div
-              style={{
-                width: "100px",
-                height: "4px",
-                background: "linear-gradient(90deg, #2a7d73, #3b6baa)",
-                margin: "0 auto 4rem auto",
-                borderRadius: "2px",
-                boxShadow: "0 2px 10px rgba(42, 125, 115, 0.3)",
-              }}
-            ></div>
           </div>
 
           <div
             className="product-content tellyoudoc-offers-content home-product-section-content"
             style={{
-              maxWidth: "1200px",
+              maxWidth: "1000px",
               margin: "0 auto",
               padding: "0 40px",
               position: "relative",
               zIndex: 1,
             }}
           >
-            {/* Features Layout - Two Column Design */}
+            {/* Features Layout - Simple Grid Design */}
             <div
+              className="features-grid"
               style={{
                 display: "grid",
-                gridTemplateColumns: "1fr auto 1fr",
-                gap: "4rem",
+                gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+                gap: "3rem",
                 marginBottom: "4rem",
-                alignItems: "start",
               }}
             >
-              {/* Left Column - 4 Compact Feature Cards */}
+              {/* Feature 1 */}
               <div
+                className="simple-feature"
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "1.5rem",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
                 }}
               >
-                {/* Feature 1 */}
                 <div
-                  className="feature-card"
                   style={{
-                    background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                    borderRadius: "15px",
-                    padding: "1.8rem",
-                    boxShadow: "0 8px 25px rgba(0, 0, 0, 0.06)",
-                    border: "1px solid rgba(42, 125, 115, 0.1)",
-                    transition: "all 0.3s ease",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 15px 35px rgba(42, 125, 115, 0.12)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 25px rgba(0, 0, 0, 0.06)";
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #2a7d73, #05A1A4)",
+                    borderRadius: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(42, 125, 115, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <svg
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M3 5h12v2H3V5zm0 4h12v2H3V9zm0 4h8v2H3v-2zm16-1.5L17 13l-2-2 1.5-1.5L18 11l3-3 1.5 1.5L19 13z" />
-                    </svg>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M3,11 L3,13 L10.5,13 L8.5,15 L15,9 L8.5,3 L10.5,5 L3,5 L3,7 M12,2 A10,10 0 0,1 22,12 A10,10 0 0,1 12,22 A10,10 0 0,1 2,12 A10,10 0 0,1 12,2 Z" />
+                  </svg>
+                </div>
+                <div>
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.4rem",
                       fontWeight: "700",
                       color: "#1a1a1a",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Personalized Practice QR
                   </h4>
                   <p
                     style={{
-                      fontSize: "0.95rem",
-                      color: "#666",
-                      lineHeight: "1.5",
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
                     }}
                   >
-                    Generate unique QR codes for instant patient connections.
+                    Generate unique QR codes for instant patient connections and
+                    seamless practice access.
                   </p>
                 </div>
+              </div>
 
-                {/* Feature 2 */}
+              {/* Feature 2 */}
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                }}
+              >
                 <div
-                  className="feature-card"
                   style={{
-                    background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                    borderRadius: "15px",
-                    padding: "1.8rem",
-                    boxShadow: "0 8px 25px rgba(0, 0, 0, 0.06)",
-                    border: "1px solid rgba(42, 125, 115, 0.1)",
-                    transition: "all 0.3s ease",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 15px 35px rgba(42, 125, 115, 0.12)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 25px rgba(0, 0, 0, 0.06)";
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
+                    borderRadius: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(59, 107, 170, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <svg
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M12,2 A10,10 0 0,0 2,12 A10,10 0 0,0 12,22 A10,10 0 0,0 22,12 A10,10 0 0,0 12,2 M16.2,9.1 L11,14.3 L7.8,11.1 L9.2,9.7 L11,11.5 L14.8,7.7 L16.2,9.1 Z" />
+                  </svg>
+                </div>
+                <div>
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.4rem",
                       fontWeight: "700",
                       color: "#1a1a1a",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Patient Visit Requests
                   </h4>
                   <p
                     style={{
-                      fontSize: "0.95rem",
-                      color: "#666",
-                      lineHeight: "1.5",
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
                     }}
                   >
-                    Manage consultation requests and patient queue efficiently.
+                    Manage consultation requests and patient queue efficiently
+                    with organized workflow.
                   </p>
                 </div>
+              </div>
 
-                {/* Feature 3 */}
+              {/* Feature 3 */}
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                }}
+              >
                 <div
-                  className="feature-card"
                   style={{
-                    background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                    borderRadius: "15px",
-                    padding: "1.8rem",
-                    boxShadow: "0 8px 25px rgba(0, 0, 0, 0.06)",
-                    border: "1px solid rgba(42, 125, 115, 0.1)",
-                    transition: "all 0.3s ease",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 15px 35px rgba(42, 125, 115, 0.12)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 25px rgba(0, 0, 0, 0.06)";
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
+                    borderRadius: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(76, 175, 80, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      background: "linear-gradient(135deg, #05A1A4, #2a7d73)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <svg
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
-                    </svg>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                  </svg>
+                </div>
+                <div>
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.4rem",
                       fontWeight: "700",
                       color: "#1a1a1a",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Symptom Pre-screening
                   </h4>
                   <p
                     style={{
-                      fontSize: "0.95rem",
-                      color: "#666",
-                      lineHeight: "1.5",
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
                     }}
                   >
-                    Review symptoms before appointments for better preparation.
+                    Review symptoms before appointments for better preparation
+                    and more focused consultations.
                   </p>
                 </div>
+              </div>
 
-                {/* Feature 4 */}
+              {/* Feature 4 */}
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                }}
+              >
                 <div
-                  className="feature-card"
                   style={{
-                    background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                    borderRadius: "15px",
-                    padding: "1.8rem",
-                    boxShadow: "0 8px 25px rgba(0, 0, 0, 0.06)",
-                    border: "1px solid rgba(42, 125, 115, 0.1)",
-                    transition: "all 0.3s ease",
-                    position: "relative",
-                    overflow: "hidden",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = "translateY(-5px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 15px 35px rgba(42, 125, 115, 0.12)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 25px rgba(0, 0, 0, 0.06)";
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #8E24AA, #4CAF50)",
+                    borderRadius: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(142, 36, 170, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "50px",
-                      height: "50px",
-                      background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <svg
-                      width="25"
-                      height="25"
-                      viewBox="0 0 24 24"
-                      fill="white"
-                    >
-                      <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h7c-.63-.84-1-1.87-1-3 0-2.76 2.24-5 5-5 .34 0 .68.03 1 .09V8l-6-6zm4 18c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" />
-                      <circle cx="18" cy="17" r="1" />
-                    </svg>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M14,17H7V15H14M17,13H7V11H17M17,9H7V7H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" />
+                  </svg>
+                </div>
+                <div>
                   <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.4rem",
                       fontWeight: "700",
                       color: "#1a1a1a",
                       marginBottom: "0.8rem",
                       lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Digital Treatment Notes
                   </h4>
                   <p
                     style={{
-                      fontSize: "0.95rem",
-                      color: "#666",
-                      lineHeight: "1.5",
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
                     }}
                   >
-                    Share prescriptions and follow-up instructions digitally.
+                    Share prescriptions and follow-up instructions digitally for
+                    better patient care continuity.
                   </p>
                 </div>
               </div>
@@ -770,17 +787,19 @@ const Home = () => {
             >
               Benefits
             </h2>
-            <h3
+            <p
               style={{
-                fontSize: "1.8rem",
-                fontWeight: "600",
+                fontSize: "1.3rem",
+                color: "#666",
                 textAlign: "center",
-                color: "#333",
-                marginBottom: "2rem",
+                maxWidth: "600px",
+                margin: "1rem auto 3rem auto",
+                lineHeight: "1.6",
+                fontFamily: "Montserrat, sans-serif",
               }}
             >
               Know Every Patient Who Is Looking for You
-            </h3>
+            </p>
           </div>
 
           <div
@@ -1077,16 +1096,29 @@ const Home = () => {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                marginBottom: "2rem",
               }}
             >
               How it Works
             </h2>
+            <p
+              style={{
+                fontSize: "1.3rem",
+                color: "#666",
+                textAlign: "center",
+                maxWidth: "600px",
+                margin: "1rem auto 3rem auto",
+                lineHeight: "1.6",
+                fontFamily: "Montserrat, sans-serif",
+              }}
+            >
+              A simple 4-step process that connects you with patients without
+              any complexity
+            </p>
             <div
               style={{
                 width: "100px",
                 height: "4px",
-                margin: "0 auto 4rem auto",
+                margin: "0 auto 2rem auto",
               }}
             ></div>
           </div>
@@ -1094,315 +1126,273 @@ const Home = () => {
           <div
             className="how-it-works-content"
             style={{
-              maxWidth: "1200px",
+              maxWidth: "1000px",
               margin: "0 auto",
               padding: "0 40px",
               position: "relative",
               zIndex: 1,
             }}
           >
-            {/* Steps Container */}
+            {/* Steps Container - Single Line Design */}
             <div
+              className="steps-container"
               style={{
                 display: "flex",
                 flexDirection: "column",
-                gap: "2rem",
-                marginBottom: "2rem",
+                gap: "2.5rem",
                 alignItems: "center",
               }}
             >
               {/* Step 1 */}
               <div
-                className="step-card"
+                className="simple-step"
                 style={{
-                  background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                  borderRadius: "15px",
-                  padding: "1.5rem",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.08)",
-                  border: "1px solid rgba(42, 125, 115, 0.1)",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  overflow: "hidden",
-                  maxWidth: "600px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+
+                  maxWidth: "700px",
                   width: "100%",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 15px 30px rgba(42, 125, 115, 0.15)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 10px 25px rgba(0, 0, 0, 0.08)";
                 }}
               >
                 <div
                   style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                    borderRadius: "16px",
                     display: "flex",
                     alignItems: "center",
-                    gap: "1rem",
-                    marginBottom: "1rem",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(42, 125, 115, 0.2)",
                   }}
                 >
-                  <div
+                  <span
                     style={{
-                      width: "45px",
-                      height: "45px",
-                      background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
                       color: "white",
-                      fontSize: "1.2rem",
+                      fontSize: "1.5rem",
                       fontWeight: "bold",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     1
-                  </div>
-                  <h3
+                  </span>
+                </div>
+                <div>
+                  <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.4rem",
                       fontWeight: "700",
                       color: "#1a1a1a",
-                      margin: 0,
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Put Your QR in the Clinic
-                  </h3>
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    Get a printed and shareable QR that patients can scan. You
+                    will see every patient who searched for you.
+                  </p>
                 </div>
-                <p
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "#666",
-                    lineHeight: "1.5",
-                    marginLeft: "56px",
-                  }}
-                >
-                  Get a printed and Shareable QR that patients can scan (You
-                  will see every patient who searched you.)
-                </p>
               </div>
 
               {/* Step 2 */}
               <div
-                className="step-card"
+                className="simple-step"
                 style={{
-                  background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                  borderRadius: "15px",
-                  padding: "1.5rem",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.08)",
-                  border: "1px solid rgba(42, 125, 115, 0.1)",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  overflow: "hidden",
-                  maxWidth: "600px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+
+                  maxWidth: "700px",
                   width: "100%",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 15px 30px rgba(42, 125, 115, 0.15)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 10px 25px rgba(0, 0, 0, 0.08)";
                 }}
               >
                 <div
                   style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #3b6baa, #05A1A4)",
+                    borderRadius: "16px",
                     display: "flex",
                     alignItems: "center",
-                    gap: "1rem",
-                    marginBottom: "1rem",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(59, 107, 170, 0.2)",
                   }}
                 >
-                  <div
+                  <span
                     style={{
-                      width: "45px",
-                      height: "45px",
-                      background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
                       color: "white",
-                      fontSize: "1.2rem",
+                      fontSize: "1.5rem",
                       fontWeight: "bold",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     2
-                  </div>
-                  <h3
+                  </span>
+                </div>
+                <div>
+                  <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.4rem",
                       fontWeight: "700",
                       color: "#1a1a1a",
-                      margin: 0,
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Patient Sends Visit Request
-                  </h3>
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    Patients scan your QR and describe their symptoms before
+                    meeting you for better preparation.
+                  </p>
                 </div>
-                <p
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "#666",
-                    lineHeight: "1.5",
-                    marginLeft: "56px",
-                  }}
-                >
-                  Patients scan and describe symptoms before meeting you.
-                </p>
               </div>
 
               {/* Step 3 */}
               <div
-                className="step-card"
+                className="simple-step"
                 style={{
-                  background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                  borderRadius: "15px",
-                  padding: "1.5rem",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.08)",
-                  border: "1px solid rgba(42, 125, 115, 0.1)",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  overflow: "hidden",
-                  maxWidth: "600px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+
+                  maxWidth: "700px",
                   width: "100%",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 15px 30px rgba(42, 125, 115, 0.15)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 10px 25px rgba(0, 0, 0, 0.08)";
                 }}
               >
                 <div
                   style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #05A1A4, #4CAF50)",
+                    borderRadius: "16px",
                     display: "flex",
                     alignItems: "center",
-                    gap: "1rem",
-                    marginBottom: "1rem",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(5, 161, 164, 0.2)",
                   }}
                 >
-                  <div
+                  <span
                     style={{
-                      width: "45px",
-                      height: "45px",
-                      background: "linear-gradient(135deg, #05A1A4, #2a7d73)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
                       color: "white",
-                      fontSize: "1.2rem",
+                      fontSize: "1.5rem",
                       fontWeight: "bold",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     3
-                  </div>
-                  <h3
+                  </span>
+                </div>
+                <div>
+                  <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.4rem",
                       fontWeight: "700",
                       color: "#1a1a1a",
-                      margin: 0,
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     You Accept or Decline
-                  </h3>
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    You decide who to treat, when, and where. Complete control
+                    over your practice schedule.
+                  </p>
                 </div>
-                <p
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "#666",
-                    lineHeight: "1.5",
-                    marginLeft: "56px",
-                  }}
-                >
-                  You decide who to treat, when, and where.
-                </p>
               </div>
 
               {/* Step 4 */}
               <div
-                className="step-card"
+                className="simple-step"
                 style={{
-                  background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
-                  borderRadius: "15px",
-                  padding: "1.5rem",
-                  boxShadow: "0 10px 25px rgba(0, 0, 0, 0.08)",
-                  border: "1px solid rgba(42, 125, 115, 0.1)",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  overflow: "hidden",
-                  maxWidth: "600px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+
+                  maxWidth: "700px",
                   width: "100%",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 15px 30px rgba(42, 125, 115, 0.15)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow =
-                    "0 10px 25px rgba(0, 0, 0, 0.08)";
                 }}
               >
                 <div
                   style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #4CAF50, #8E24AA)",
+                    borderRadius: "16px",
                     display: "flex",
                     alignItems: "center",
-                    gap: "1rem",
-                    marginBottom: "1rem",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(76, 175, 80, 0.2)",
                   }}
                 >
-                  <div
+                  <span
                     style={{
-                      width: "45px",
-                      height: "45px",
-                      background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
-                      borderRadius: "12px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
                       color: "white",
-                      fontSize: "1.2rem",
+                      fontSize: "1.5rem",
                       fontWeight: "bold",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     4
-                  </div>
-                  <h3
+                  </span>
+                </div>
+                <div>
+                  <h4
                     style={{
-                      fontSize: "1.1rem",
+                      fontSize: "1.4rem",
                       fontWeight: "700",
                       color: "#1a1a1a",
-                      margin: 0,
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
                     Track Ongoing Cases
-                  </h3>
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    See new symptoms, reply with treatment notes, and send
+                    follow-up instructions digitally.
+                  </p>
                 </div>
-                <p
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "#666",
-                    lineHeight: "1.5",
-                    marginLeft: "56px",
-                  }}
-                >
-                  See new symptoms, reply with treatment notes, send follow-up
-                  instructions.
-                </p>
               </div>
             </div>
 
@@ -1410,41 +1400,28 @@ const Home = () => {
             <div
               style={{
                 textAlign: "center",
-                padding: "1.8rem",
+                padding: "2rem",
                 background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
-                borderRadius: "15px",
+                borderRadius: "20px",
                 color: "white",
                 boxShadow: "0 10px 25px rgba(42, 125, 115, 0.2)",
                 position: "relative",
                 overflow: "hidden",
               }}
             >
-              {/* Background overlay for better text contrast */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: "rgba(0, 0, 0, 0.1)",
-                  zIndex: 0,
-                }}
-              ></div>
               <p
                 style={{
-                  fontSize: "1.1rem",
-                  fontWeight: "700",
+                  fontSize: "1.2rem",
+                  fontWeight: "400",
                   margin: 0,
                   lineHeight: "1.5",
-                  textShadow: "0 3px 15px rgba(0, 0, 0, 0.5)",
                   color: "#ffffff",
-                  position: "relative",
-                  zIndex: 1,
+                  fontStyle: "italic",
+                  fontFamily: "Montserrat, sans-serif",
                 }}
               >
                 No website, no listing, no tech clutter. Just your offline
-                practice —made smarter.
+                practice — made smarter.
               </p>
             </div>
           </div>
@@ -1479,21 +1456,24 @@ const Home = () => {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
-                marginBottom: "2rem",
+                marginBottom: "1rem",
               }}
             >
               Frequently Asked Questions
             </h2>
-            <div
+            <p
               style={{
-                width: "100px",
-                height: "4px",
-                background: "linear-gradient(90deg, #2a7d73, #3b6baa)",
-                margin: "0 auto 4rem auto",
-                borderRadius: "2px",
-                boxShadow: "0 2px 10px rgba(42, 125, 115, 0.3)",
+                fontSize: "1.3rem",
+                color: "#666",
+                textAlign: "center",
+                maxWidth: "600px",
+                margin: "1rem auto 3rem auto",
+                lineHeight: "1.6",
+                fontFamily: "Montserrat, sans-serif",
               }}
-            ></div>
+            >
+              Find answers to common questions about our platform
+            </p>
           </div>
 
           <div
@@ -1544,6 +1524,7 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
+                  onClick={() => toggleFAQ(1)}
                 >
                   <h4
                     style={{
@@ -1569,29 +1550,35 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
+                      transform: expandedFAQs[1]
+                        ? "rotate(45deg)"
+                        : "rotate(0deg)",
                     }}
                   >
                     +
                   </div>
                 </div>
-                <div
-                  style={{
-                    padding: "0 1.5rem 1.5rem 1.5rem",
-                    borderTop: "1px solid rgba(42, 125, 115, 0.1)",
-                  }}
-                >
-                  <p
+                {expandedFAQs[1] && (
+                  <div
                     style={{
-                      fontSize: "1rem",
-                      color: "#666",
-                      lineHeight: "1.6",
-                      margin: 0,
-                      paddingTop: "1rem",
+                      padding: "0 1.5rem 1.5rem 1.5rem",
+                      borderTop: "1px solid rgba(42, 125, 115, 0.1)",
+                      animation: "fadeIn 0.3s ease",
                     }}
                   >
-                    They scan your QR and get connected.
-                  </p>
-                </div>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#666",
+                        lineHeight: "1.6",
+                        margin: 0,
+                        paddingTop: "1rem",
+                      }}
+                    >
+                      They scan your QR and get connected.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* FAQ Item 2 */}
@@ -1624,6 +1611,7 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
+                  onClick={() => toggleFAQ(2)}
                 >
                   <h4
                     style={{
@@ -1649,29 +1637,35 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
+                      transform: expandedFAQs[2]
+                        ? "rotate(45deg)"
+                        : "rotate(0deg)",
                     }}
                   >
                     +
                   </div>
                 </div>
-                <div
-                  style={{
-                    padding: "0 1.5rem 1.5rem 1.5rem",
-                    borderTop: "1px solid rgba(42, 125, 115, 0.1)",
-                  }}
-                >
-                  <p
+                {expandedFAQs[2] && (
+                  <div
                     style={{
-                      fontSize: "1rem",
-                      color: "#666",
-                      lineHeight: "1.6",
-                      margin: 0,
-                      paddingTop: "1rem",
+                      padding: "0 1.5rem 1.5rem 1.5rem",
+                      borderTop: "1px solid rgba(42, 125, 115, 0.1)",
+                      animation: "fadeIn 0.3s ease",
                     }}
                   >
-                    Yes. You will know if anyone scans your QR.
-                  </p>
-                </div>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#666",
+                        lineHeight: "1.6",
+                        margin: 0,
+                        paddingTop: "1rem",
+                      }}
+                    >
+                      Yes. You will know if anyone scans your QR.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* FAQ Item 3 */}
@@ -1704,6 +1698,7 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
+                  onClick={() => toggleFAQ(3)}
                 >
                   <h4
                     style={{
@@ -1729,29 +1724,35 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
+                      transform: expandedFAQs[3]
+                        ? "rotate(45deg)"
+                        : "rotate(0deg)",
                     }}
                   >
                     +
                   </div>
                 </div>
-                <div
-                  style={{
-                    padding: "0 1.5rem 1.5rem 1.5rem",
-                    borderTop: "1px solid rgba(42, 125, 115, 0.1)",
-                  }}
-                >
-                  <p
+                {expandedFAQs[3] && (
+                  <div
                     style={{
-                      fontSize: "1rem",
-                      color: "#666",
-                      lineHeight: "1.6",
-                      margin: 0,
-                      paddingTop: "1rem",
+                      padding: "0 1.5rem 1.5rem 1.5rem",
+                      borderTop: "1px solid rgba(42, 125, 115, 0.1)",
+                      animation: "fadeIn 0.3s ease",
                     }}
                   >
-                    No, the app is super simple.
-                  </p>
-                </div>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#666",
+                        lineHeight: "1.6",
+                        margin: 0,
+                        paddingTop: "1rem",
+                      }}
+                    >
+                      No, the app is super simple.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* FAQ Item 4 */}
@@ -1784,6 +1785,7 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
+                  onClick={() => toggleFAQ(4)}
                 >
                   <h4
                     style={{
@@ -1809,29 +1811,35 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
+                      transform: expandedFAQs[4]
+                        ? "rotate(45deg)"
+                        : "rotate(0deg)",
                     }}
                   >
                     +
                   </div>
                 </div>
-                <div
-                  style={{
-                    padding: "0 1.5rem 1.5rem 1.5rem",
-                    borderTop: "1px solid rgba(42, 125, 115, 0.1)",
-                  }}
-                >
-                  <p
+                {expandedFAQs[4] && (
+                  <div
                     style={{
-                      fontSize: "1rem",
-                      color: "#666",
-                      lineHeight: "1.6",
-                      margin: 0,
-                      paddingTop: "1rem",
+                      padding: "0 1.5rem 1.5rem 1.5rem",
+                      borderTop: "1px solid rgba(42, 125, 115, 0.1)",
+                      animation: "fadeIn 0.3s ease",
                     }}
                   >
-                    You can decline or suggest later dates.
-                  </p>
-                </div>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#666",
+                        lineHeight: "1.6",
+                        margin: 0,
+                        paddingTop: "1rem",
+                      }}
+                    >
+                      You can decline or suggest later dates.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* FAQ Item 5 */}
@@ -1864,6 +1872,7 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
+                  onClick={() => toggleFAQ(5)}
                 >
                   <h4
                     style={{
@@ -1889,29 +1898,35 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
+                      transform: expandedFAQs[5]
+                        ? "rotate(45deg)"
+                        : "rotate(0deg)",
                     }}
                   >
                     +
                   </div>
                 </div>
-                <div
-                  style={{
-                    padding: "0 1.5rem 1.5rem 1.5rem",
-                    borderTop: "1px solid rgba(42, 125, 115, 0.1)",
-                  }}
-                >
-                  <p
+                {expandedFAQs[5] && (
+                  <div
                     style={{
-                      fontSize: "1rem",
-                      color: "#666",
-                      lineHeight: "1.6",
-                      margin: 0,
-                      paddingTop: "1rem",
+                      padding: "0 1.5rem 1.5rem 1.5rem",
+                      borderTop: "1px solid rgba(42, 125, 115, 0.1)",
+                      animation: "fadeIn 0.3s ease",
                     }}
                   >
-                    Not at all—your phone is enough.
-                  </p>
-                </div>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#666",
+                        lineHeight: "1.6",
+                        margin: 0,
+                        paddingTop: "1rem",
+                      }}
+                    >
+                      Not at all—your phone is enough.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* FAQ Item 6 */}
@@ -1944,6 +1959,7 @@ const Home = () => {
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
+                  onClick={() => toggleFAQ(6)}
                 >
                   <h4
                     style={{
@@ -1969,29 +1985,35 @@ const Home = () => {
                       fontSize: "14px",
                       fontWeight: "bold",
                       transition: "transform 0.3s ease",
+                      transform: expandedFAQs[6]
+                        ? "rotate(45deg)"
+                        : "rotate(0deg)",
                     }}
                   >
                     +
                   </div>
                 </div>
-                <div
-                  style={{
-                    padding: "0 1.5rem 1.5rem 1.5rem",
-                    borderTop: "1px solid rgba(42, 125, 115, 0.1)",
-                  }}
-                >
-                  <p
+                {expandedFAQs[6] && (
+                  <div
                     style={{
-                      fontSize: "1rem",
-                      color: "#666",
-                      lineHeight: "1.6",
-                      margin: 0,
-                      paddingTop: "1rem",
+                      padding: "0 1.5rem 1.5rem 1.5rem",
+                      borderTop: "1px solid rgba(42, 125, 115, 0.1)",
+                      animation: "fadeIn 0.3s ease",
                     }}
                   >
-                    Yes, no need to change your current practice style.
-                  </p>
-                </div>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#666",
+                        lineHeight: "1.6",
+                        margin: 0,
+                        paddingTop: "1rem",
+                      }}
+                    >
+                      Yes, no need to change your current practice style.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -2003,12 +2025,34 @@ const Home = () => {
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
           <div className="home-section-header">
-            <h2>Who Can Use</h2>
+            <h2
+              style={{
+                fontSize: "3rem",
+                fontWeight: "800",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Who Can Use
+            </h2>
           </div>
           <div className="who-can-use-container">
             <div className="who-can-use-content">
               <div className="who-can-use-intro">
-                <p>
+                <p
+                  style={{
+                    fontSize: "1.2rem",
+                    color: "#666",
+                    textAlign: "center",
+                    fontWeight: "400",
+                    lineHeight: "1.6",
+                    marginBottom: "-1.5rem",
+                    fontFamily: "Montserrat, sans-serif",
+                  }}
+                >
                   The tellyoudoc is built for real doctors running real
                   clinics—not just big hospitals or tech-savvy cities where
                   advanced digital tools often feel out of reach. Whether you
@@ -2074,7 +2118,19 @@ const Home = () => {
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
           <div className="home-section-header">
-            <h2>Core Team</h2>
+            <h2
+              style={{
+                fontSize: "3rem",
+                fontWeight: "800",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Core Team
+            </h2>
           </div>
           <div className="founders-container">
             <div className="founder-card">
@@ -2195,7 +2251,19 @@ const Home = () => {
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
           <div className="home-section-header">
-            <h2>Contact Us</h2>
+            <h2
+              style={{
+                fontSize: "3rem",
+                fontWeight: "800",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Contact Us
+            </h2>
           </div>
 
           {/* Map and Form Section */}
@@ -2342,13 +2410,6 @@ const Home = () => {
               )}
             </div>
           </div>
-        </section>
-
-        {/* Supported By Section */}
-        <section className="home-supported-section">
-          <div className="home-section-header">
-            <h2>Supported By</h2>
-          </div>
           <div className="home-supported-content">
             <div className="home-supported-card">
               <div className="home-supported-logo">
@@ -2399,60 +2460,259 @@ const Home = () => {
         onCancel={handleWhatsappModalClose}
         footer={null}
         centered
-        width={400}
+        width={450}
         className="whatsapp-modal"
       >
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
           <h4 style={{ color: "#2a7d73", margin: "0 0 10px 0" }}>
-            Give your WhatsApp number, we will get back to you!
+            Connect with us on WhatsApp
           </h4>
+          <p style={{ color: "#666", fontSize: "14px", margin: "0 0 20px 0" }}>
+            Choose how you'd like to get in touch
+          </p>
         </div>
 
-        <Form
-          form={whatsappForm}
-          onFinish={handleWhatsappSubmit}
-          layout="vertical"
-        >
-          <Form.Item
-            label="WhatsApp Number"
-            name="whatsappNumber"
-            rules={[
-              { required: true, message: "Please enter your WhatsApp number!" },
-              {
-                pattern: /^[0-9]{10}$/,
-                message: "Please enter a valid 10-digit phone number!",
-              },
-            ]}
+        {/* Direct WhatsApp Link */}
+        <div style={{ marginBottom: "25px", textAlign: "center" }}>
+          <a
+            href="https://wa.me/918099002939?text=Hi! I'm interested in getting the tellyoudoc app. Can you please provide me with more information?"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "10px",
+              backgroundColor: "#25D366",
+              color: "white",
+              padding: "12px 24px",
+              borderRadius: "8px",
+              textDecoration: "none",
+              fontWeight: "600",
+              fontSize: "16px",
+              transition: "all 0.3s ease",
+              boxShadow: "0 4px 12px rgba(37, 211, 102, 0.3)",
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow =
+                "0 6px 16px rgba(37, 211, 102, 0.4)";
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(37, 211, 102, 0.3)";
+            }}
           >
-            <Input
-              placeholder="Enter your 10-digit WhatsApp number"
-              maxLength={10}
-              onChange={(e) => {
-                // Only allow digits
-                const value = e.target.value.replace(/\D/g, "");
-                whatsappForm.setFieldsValue({ whatsappNumber: value });
-              }}
-              style={{ padding: "10px" }}
-            />
-          </Form.Item>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488" />
+            </svg>
+            Chat on WhatsApp
+          </a>
+          <p style={{ color: "#666", fontSize: "12px", margin: "8px 0 0 0" }}>
+            +91 8099002939
+          </p>
+        </div>
+      </Modal>
 
-          <Form.Item style={{ marginBottom: 0, textAlign: "center" }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={whatsappSubmitting}
+      {/* Patient Modal */}
+      <Modal
+        open={patientModalVisible}
+        onCancel={handlePatientModalClose}
+        footer={null}
+        centered
+        width={500}
+        className="patient-modal"
+      >
+        <div style={{ textAlign: "center", padding: "20px 0 0 0" }}>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #f8f9fa, #e9ecef)",
+              border: "2px solid #3b6baa",
+              borderRadius: "12px",
+              padding: "25px",
+              position: "relative",
+            }}
+          >
+            <div
               style={{
-                backgroundColor: "#2a7d73",
-                borderColor: "#2a7d73",
-                width: "100%",
-                padding: "10px",
-                height: "auto",
+                position: "absolute",
+                top: "-12px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                background: "#3b6baa",
+                color: "white",
+                padding: "5px 15px",
+                borderRadius: "15px",
+                fontSize: "12px",
+                fontWeight: "600",
               }}
             >
-              {whatsappSubmitting ? "Submitting..." : "Submit"}
-            </Button>
-          </Form.Item>
-        </Form>
+              DOWNLOAD NOW
+            </div>
+
+            <p
+              style={{
+                color: "#333",
+                fontSize: "16px",
+                margin: "15px 0 25px 0",
+                lineHeight: "1.6",
+              }}
+            >
+              Get the TellYouDoc Patient App for seamless healthcare management
+            </p>
+
+            {/* Download Link Button */}
+            <a
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "12px",
+                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                color: "white",
+                padding: "15px 30px",
+                borderRadius: "10px",
+                textDecoration: "none",
+                fontWeight: "600",
+                fontSize: "16px",
+                transition: "all 0.3s ease",
+                boxShadow: "0 6px 20px rgba(42, 125, 115, 0.3)",
+                border: "none",
+                cursor: "pointer",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = "translateY(-3px)";
+                e.currentTarget.style.boxShadow =
+                  "0 8px 25px rgba(42, 125, 115, 0.4)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow =
+                  "0 6px 20px rgba(42, 125, 115, 0.3)";
+              }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+              </svg>
+              Download APK
+            </a>
+          </div>
+
+          {/* Approved by Doctors Badge */}
+          <div
+            style={{
+              display: "inline-block",
+              background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: "20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              boxShadow: "0 4px 12px rgba(42, 125, 115, 0.3)",
+              marginTop: "20px",
+            }}
+          >
+            ✓ Approved by Doctors
+          </div>
+
+          {/* Store Information */}
+          <div
+            style={{
+              background: "#fff3cd",
+              border: "1px solid #ffeaa7",
+              borderRadius: "8px",
+              padding: "15px",
+              margin: "20px 0",
+              textAlign: "left",
+            }}
+          >
+            <h4
+              style={{
+                color: "#856404",
+                margin: "0 0 10px 0",
+                fontSize: "16px",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+              </svg>
+              Coming Soon to Google Play Store
+            </h4>
+            <p
+              style={{
+                color: "#856404",
+                fontSize: "14px",
+                margin: "0",
+                lineHeight: "1.5",
+              }}
+            >
+              The app will soon be available for download on the Google Play
+              Store for easier access.
+            </p>
+          </div>
+
+          {/* Platform Information */}
+          <div
+            style={{
+              background: "#d1ecf1",
+              border: "1px solid #bee5eb",
+              borderRadius: "8px",
+              padding: "15px",
+              textAlign: "left",
+            }}
+          >
+            <h4
+              style={{
+                color: "#0c5460",
+                margin: "0 0 10px 0",
+                fontSize: "16px",
+                fontWeight: "600",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.9 1 3 1.9 3 3V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V9M19 21H5V3H13V9H19V21Z" />
+              </svg>
+              Platform Compatibility
+            </h4>
+            <p
+              style={{
+                color: "#0c5460",
+                fontSize: "14px",
+                margin: "0",
+                lineHeight: "1.5",
+              }}
+            >
+              <strong>Android:</strong> Available now for download
+              <br />
+              <strong>iOS:</strong> Coming soon - will be available in the near
+              future
+            </p>
+          </div>
+        </div>
       </Modal>
 
       <Footer />

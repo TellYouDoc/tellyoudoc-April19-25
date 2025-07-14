@@ -2,6 +2,80 @@
 
 /* Global Styles are for the Breakpoint 768px to 1024px */
 
+/* Simple Feature Styles */
+.simple-feature {
+  transition: all 0.3s ease;
+}
+
+.simple-feature:hover {
+  transform: translateY(-5px);
+}
+
+.simple-feature:hover > div:first-child {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(42, 125, 115, 0.3);
+}
+
+/* Simple Step Styles */
+.simple-step {
+  transition: all 0.3s ease;
+}
+
+.simple-step:hover {
+  transform: translateY(-5px);
+}
+
+.simple-step:hover > div:first-child {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(42, 125, 115, 0.3);
+}
+
+/* Features Grid Responsive */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+/* Steps Grid Responsive */
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+/* Steps Container for Single Line Layout */
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  margin-bottom: 4rem;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .features-grid,
+  .steps-grid,
+  .steps-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .steps-container {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .features-grid,
+  .steps-grid,
+  .steps-container {
+    gap: 1.5rem;
+  }
+}
+
 .home-home-container {
   width: 100%;
   max-width: 100%;
@@ -24,7 +98,7 @@
 
 /* Hero Section */
 .home-hero-section {
-  min-height: 100vh;
+  min-height: 80vh;
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -54,7 +128,11 @@
   top: 0;
   left: 0;
   z-index: 1;
-  background: linear-gradient(to right, rgba(255, 245, 247, 0.92), rgba(255, 240, 245, 0.85));
+  background: linear-gradient(
+    to right,
+    rgba(255, 245, 247, 0.7),
+    rgba(255, 240, 245, 0.6)
+  );
 }
 
 .home-hero-content-wrapper {
@@ -76,8 +154,8 @@
   width: 50%;
 }
 
-.hero-title {
-  color: #1a1a1a;
+.home-hero-title {
+  color: #FF7007;
   font-size: 3.8rem;
   margin-bottom: 1.5rem;
   font-weight: 800;
@@ -101,7 +179,7 @@
 }
 
 .home-hero-cta .home-cta-button {
-  background-color: #ff7007;
+  background: linear-gradient(135deg, #2a7d73, #05a1a4);
   border: none;
   color: white;
   padding: 14px 40px;
@@ -318,6 +396,32 @@
 
 /* Small mobile */
 @media (max-width: 320px) {
+  /* Simple feature responsive styles */
+  .simple-feature,
+  .simple-step {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 0.8rem !important;
+    padding: 1rem 0 !important;
+  }
+
+  .simple-feature > div:first-child,
+  .simple-step > div:first-child {
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  .simple-feature h4,
+  .simple-step h4 {
+    font-size: 1.1rem !important;
+  }
+
+  .simple-feature p,
+  .simple-step p {
+    font-size: 0.85rem !important;
+  }
+
   .home-hero-title {
     margin-top: 1.5rem;
     font-size: 2rem;
@@ -441,6 +545,32 @@
 
 /* Medium mobile */
 @media (min-width: 321px) and (max-width: 375.2px) {
+  /* Simple feature responsive styles */
+  .simple-feature,
+  .simple-step {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 1rem !important;
+    padding: 1rem 0 !important;
+  }
+
+  .simple-feature > div:first-child,
+  .simple-step > div:first-child {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .simple-feature h4,
+  .simple-step h4 {
+    font-size: 1.2rem !important;
+  }
+
+  .simple-feature p,
+  .simple-step p {
+    font-size: 0.9rem !important;
+  }
+
   .product-section {
     padding: 2rem 0 1rem 0;
   }
@@ -668,7 +798,6 @@
 
 /* Tablet */
 @media (min-width: 425.6px) and (max-width: 768px) {
-
   .home-hero-title {
     margin-top: 1rem;
     font-size: 2.705rem;
@@ -778,10 +907,6 @@
 
 /* Laptop */
 @media (min-width: 768px) and (max-width: 1024px) {
-  .product-content {
-    /* flex-direction: column-reverse; */
-  }
-
   .home-hero-title {
     margin-top: 1rem;
     font-size: 2.705rem;
@@ -839,10 +964,6 @@
     height: 450px;
     max-width: 450px;
     margin-bottom: 30px;
-  }
-
-  .product-content {
-    /* flex-direction: column-reverse; */
   }
 
   .tellyoudoc-offers-content .feature-animation,
@@ -2993,16 +3114,16 @@ img:hover {
   .who-can-use-container {
     padding: 0 1rem;
   }
-  
+
   .who-can-use-item {
     padding: 1.25rem;
     max-width: 100%;
   }
-  
+
   .who-can-use-intro p {
     font-size: 1rem;
   }
-  
+
   .home-who-can-use-section {
     padding: 3rem 0;
   }
@@ -3053,7 +3174,7 @@ img:hover {
     width: 45px;
     height: 45px;
   }
-  
+
   .scroll-to-top-button svg {
     width: 20px;
     height: 20px;
@@ -3067,7 +3188,7 @@ img:hover {
     width: 40px;
     height: 40px;
   }
-  
+
   .scroll-to-top-button svg {
     width: 18px;
     height: 18px;
@@ -3133,8 +3254,97 @@ img:hover {
   .whatsapp-modal {
     margin: 20px;
   }
-  
+
   .whatsapp-modal .ant-modal {
     max-width: calc(100vw - 40px);
+  }
+}
+
+/* Patient Modal Styles */
+.patient-modal .ant-modal-content {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(42, 125, 115, 0.15);
+}
+
+.patient-modal .ant-modal-header {
+  background: linear-gradient(135deg, #2a7d73, #3b6baa);
+  border-bottom: none;
+  padding: 20px 24px;
+}
+
+.patient-modal .ant-modal-title {
+  color: white;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+}
+
+.patient-modal .ant-modal-body {
+  padding: 0;
+  background: #fafbfc;
+}
+
+.patient-modal .ant-modal-close {
+  color: #333;
+  font-size: 18px;
+}
+
+.patient-modal .ant-modal-close:hover {
+  color: #000;
+}
+
+/* Patient Button Specific Styles */
+.patient-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.patient-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.patient-button:hover::before {
+  left: 100%;
+}
+
+@media (max-width: 768px) {
+  .patient-modal {
+    margin: 20px;
+  }
+
+  .patient-modal .ant-modal {
+    max-width: calc(100vw - 40px);
+  }
+
+  .patient-button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .patient-modal .ant-modal-content {
+    border-radius: 12px;
+  }
+
+  .patient-modal .ant-modal-header {
+    padding: 16px 20px;
+  }
+
+  .patient-modal .ant-modal-title {
+    font-size: 18px;
   }
 }

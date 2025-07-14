@@ -1,0 +1,54 @@
+/* FAQ Animation Styles */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* FAQ item hover effects */
+.faq-item {
+  transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(42, 125, 115, 0.12);
+}
+
+/* FAQ icon rotation */
+.faq-icon {
+  transition: transform 0.3s ease;
+}
+
+.faq-icon.expanded {
+  transform: rotate(45deg);
+}
+
+/* FAQ content animation */
+.faq-content {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .faq-section {
+    padding: 60px 20px !important;
+  }
+  
+  .faq-content {
+    padding: 0 20px !important;
+  }
+  
+  .faq-item h4 {
+    font-size: 1rem !important;
+  }
+  
+  .faq-item p {
+    font-size: 0.9rem !important;
+  }
+}
