@@ -885,7 +885,7 @@ const Home = () => {
           style={{
             background:
               "linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #f0f8ff 100%)",
-            padding: "2rem 0 0 0",
+            padding: "2rem 0",
             position: "relative",
             overflow: "hidden",
           }}
@@ -1185,34 +1185,30 @@ const Home = () => {
           </div>
 
           <div
-            className="how-it-works-content"
+            className="product-content how-it-works-content"
             style={{
               maxWidth: "1000px",
               margin: "0 auto",
+              padding: "0 40px",
               position: "relative",
               zIndex: 1,
             }}
           >
-            {/* Steps Container - Single Line Design */}
+            {/* Steps Layout - Use Features Grid Design */}
             <div
-              className="steps-container"
+              className="features-grid"
               style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "2.5rem",
-                alignItems: "center",
+                display: "grid",
+                gap: "3rem",
               }}
             >
               {/* Step 1 */}
               <div
-                className="simple-step"
+                className="simple-feature"
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
                   gap: "1.2rem",
-
-                  maxWidth: "700px",
-                  width: "100%",
                 }}
               >
                 <div
@@ -1267,14 +1263,11 @@ const Home = () => {
 
               {/* Step 2 */}
               <div
-                className="simple-step"
+                className="simple-feature"
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
                   gap: "1.2rem",
-
-                  maxWidth: "700px",
-                  width: "100%",
                 }}
               >
                 <div
@@ -1330,14 +1323,11 @@ const Home = () => {
 
               {/* Step 3 */}
               <div
-                className="simple-step"
+                className="simple-feature"
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
                   gap: "1.2rem",
-
-                  maxWidth: "700px",
-                  width: "100%",
                 }}
               >
                 <div
@@ -1393,13 +1383,11 @@ const Home = () => {
 
               {/* Step 4 */}
               <div
-                className="simple-step"
+                className="simple-feature"
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
                   gap: "1.2rem",
-                  maxWidth: "700px",
-                  width: "100%",
                 }}
               >
                 <div
@@ -2074,42 +2062,66 @@ const Home = () => {
               Who Can Use
             </h2>
           </div>
-          <div className="who-can-use-container">
-            <div className="who-can-use-content">
-              <div className="who-can-use-intro">
-                <p
+          <div
+            className="product-content who-can-use-content"
+            style={{
+              maxWidth: "1000px",
+              margin: "0 auto",
+              padding: "0 40px",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            <div className="who-can-use-intro">
+              <p
+                style={{
+                  fontSize: "1.7rem",
+                  color: "#3b6baa",
+                  textAlign: "center",
+                  fontWeight: "600",
+                  lineHeight: "1.6",
+                  marginTop: "1rem",
+                  marginBottom: "3rem",
+                  fontFamily: "Montserrat, sans-serif",
+                  fontStyle: "italic",
+                  maxWidth: "800px",
+                  margin: "1rem auto 3rem auto",
+                }}
+              >
+                Built for doctors consulting one patient at a time in clinics,
+                whether working alone, running a chamber.
+              </p>
+            </div>
+            {/* Who Can Use Layout - Use Features Grid Design */}
+            <div
+              className="features-grid"
+              style={{
+                display: "grid",
+                gap: "3rem",
+              }}
+            >
+                <div
+                  className="simple-feature"
                   style={{
-                    fontSize: "1.4rem",
-                    color: "#666",
-                    textAlign: "center",
-                    fontWeight: "400",
-                    lineHeight: "1.6",
-                    marginTop: "1rem",
-                    marginBottom: "-2.8rem",
-                    fontFamily: "Montserrat, sans-serif",
-                    fontStyle: "italic",
-                    color: "#3b6baa",
-                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "1.2rem",
                   }}
                 >
-                  Built for doctors consulting one patient at a time in clinics,
-                  whether working alone, running a chamber.
-                </p>
-              </div>
-              <div className="who-can-use-list">
-                <div
-                  className="who-can-use-item"
-                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
-                >
-                  <div className="who-can-use-icon">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
+                  <div
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      background: "linear-gradient(135deg, #2a7d73, #05A1A4)",
+                      borderRadius: "16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      boxShadow: "0 4px 12px rgba(42, 125, 115, 0.2)",
+                    }}
+                  >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
                       <path d="M3 21h18" />
                       <path d="M5 21V7l8-4v18" />
                       <path d="M19 21V11l-4-2" />
@@ -2117,70 +2129,160 @@ const Home = () => {
                       <circle cx="15" cy="15" r="1" />
                     </svg>
                   </div>
-                  <p style={{ margin: 0, flex: 1 }}>
-                    Run a physical clinic or practice in semi-urban, towns, or
-                    rural areas across India.
-                  </p>
+                  <div>
+                    <h4
+                      style={{
+                        fontSize: "1.6rem",
+                        fontWeight: "700",
+                        color: "rgba(0, 0, 0, 0.65)",
+                        marginBottom: "0.8rem",
+                        lineHeight: "1.3",
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      Physical Clinic Practice
+                    </h4>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#555",
+                        lineHeight: "1.6",
+                        margin: 0,
+                      }}
+                    >
+                      Run a physical clinic or practice in semi-urban, towns, or
+                      rural areas across India.
+                    </p>
+                  </div>
                 </div>
                 <div
-                  className="who-can-use-item"
-                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                  className="simple-feature"
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "1.2rem",
+                  }}
                 >
-                  <div className="who-can-use-icon">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
+                  <div
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
+                      borderRadius: "16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      boxShadow: "0 4px 12px rgba(59, 107, 170, 0.2)",
+                    }}
+                  >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
                       <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                       <circle cx="9" cy="7" r="4" />
                       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg>
                   </div>
-                  <p style={{ margin: 0, flex: 1 }}>
-                    Wish to connect easily with their patients who prefer
-                    in-person interactions.
-                  </p>
+                  <div>
+                    <h4
+                      style={{
+                        fontSize: "1.6rem",
+                        fontWeight: "700",
+                        color: "rgba(0, 0, 0, 0.65)",
+                        marginBottom: "0.8rem",
+                        lineHeight: "1.3",
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      Patient Connection Focus
+                    </h4>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#555",
+                        lineHeight: "1.6",
+                        margin: 0,
+                      }}
+                    >
+                      Wish to connect easily with their patients who prefer
+                      in-person interactions.
+                    </p>
+                  </div>
                 </div>
                 <div
-                  className="who-can-use-item"
-                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                  className="simple-feature"
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "1.2rem",
+                  }}
                 >
-                  <div className="who-can-use-icon">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
+                  <div
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
+                      borderRadius: "16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      boxShadow: "0 4px 12px rgba(76, 175, 80, 0.2)",
+                    }}
+                  >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
                       <path d="M3 3v18h18" />
                       <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
                     </svg>
                   </div>
-                  <p style={{ margin: 0, flex: 1 }}>
-                    Want to grow their practice ensuring patients' easy reach
-                    without complex apps.
-                  </p>
+                  <div>
+                    <h4
+                      style={{
+                        fontSize: "1.6rem",
+                        fontWeight: "700",
+                        color: "rgba(0, 0, 0, 0.65)",
+                        marginBottom: "0.8rem",
+                        lineHeight: "1.3",
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      Practice Growth
+                    </h4>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#555",
+                        lineHeight: "1.6",
+                        margin: 0,
+                      }}
+                    >
+                      Want to grow their practice ensuring patients' easy reach
+                      without complex apps.
+                    </p>
+                  </div>
                 </div>
                 <div
-                  className="who-can-use-item"
-                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                  className="simple-feature"
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "1.2rem",
+                  }}
                 >
-                  <div className="who-can-use-icon">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
+                  <div
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      background: "linear-gradient(135deg, #8E24AA, #4CAF50)",
+                      borderRadius: "16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      boxShadow: "0 4px 12px rgba(142, 36, 170, 0.2)",
+                    }}
+                  >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                       <polyline points="14,2 14,8 20,8" />
                       <line x1="16" y1="13" x2="8" y2="13" />
@@ -2188,37 +2290,87 @@ const Home = () => {
                       <polyline points="10,9 9,9 8,9" />
                     </svg>
                   </div>
-                  <p style={{ margin: 0, flex: 1 }}>
-                    Find challenging to keep track of patient visits, follow-up
-                    and retention.
-                  </p>
+                  <div>
+                    <h4
+                      style={{
+                        fontSize: "1.6rem",
+                        fontWeight: "700",
+                        color: "rgba(0, 0, 0, 0.65)",
+                        marginBottom: "0.8rem",
+                        lineHeight: "1.3",
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      Patient Tracking
+                    </h4>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#555",
+                        lineHeight: "1.6",
+                        margin: 0,
+                      }}
+                    >
+                      Find challenging to keep track of patient visits, follow-up
+                      and retention.
+                    </p>
+                  </div>
                 </div>
                 <div
-                  className="who-can-use-item"
-                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+                  className="simple-feature"
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "1.2rem",
+                  }}
                 >
-                  <div className="who-can-use-icon">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
+                  <div
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      background: "linear-gradient(135deg, #FF6B6B, #8E24AA)",
+                      borderRadius: "16px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      boxShadow: "0 4px 12px rgba(255, 107, 107, 0.2)",
+                    }}
+                  >
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
                       <circle cx="12" cy="12" r="10" />
                       <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
                       <path d="M12 17h.01" />
                     </svg>
                   </div>
-                  <p style={{ margin: 0, flex: 1 }}>
-                    Looking for a reliable, easy-to-use application that
-                    respects the traditional doctor-patient relationship
-                  </p>
+                  <div>
+                    <h4
+                      style={{
+                        fontSize: "1.6rem",
+                        fontWeight: "700",
+                        color: "rgba(0, 0, 0, 0.65)",
+                        marginBottom: "0.8rem",
+                        lineHeight: "1.3",
+                        fontFamily: "Montserrat, sans-serif",
+                      }}
+                    >
+                      Traditional Relationship Focus
+                    </h4>
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        color: "#555",
+                        lineHeight: "1.6",
+                        margin: 0,
+                      }}
+                    >
+                      Looking for a reliable, easy-to-use application that
+                      respects the traditional doctor-patient relationship.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
         </section>
 
         {/* Founders Section */}
