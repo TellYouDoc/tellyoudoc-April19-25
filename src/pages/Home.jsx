@@ -1134,7 +1134,7 @@ const Home = () => {
           style={{
             background:
               "linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f0f8ff 100%)",
-            padding: "4rem 0 0 0",
+            padding: "2rem 0",
             position: "relative",
             overflow: "hidden",
           }}
