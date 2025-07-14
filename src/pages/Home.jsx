@@ -609,7 +609,7 @@ const Home = () => {
           <div className="bubble-2"></div>
           <div className="bubble-3"></div>
           <div
-            className="home-section-header"
+            // className="home-section-header"
             style={{ position: "relative", zIndex: 1 }}
           >
             <h2
@@ -881,7 +881,7 @@ const Home = () => {
         {/* Benefits Section */}
         <section
           id="benefits"
-          className="benefits-section"
+          className="product-section"
           style={{
             background:
               "linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #f0f8ff 100%)",
@@ -1130,6 +1130,7 @@ const Home = () => {
         {/* How it Works Section */}
         <section
           id="how-it-works"
+          className="product-section"
           style={{
             background:
               "linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f0f8ff 100%)",
@@ -1458,7 +1459,7 @@ const Home = () => {
         {/* FAQ Section */}
         <section
           id="faq"
-          className="faq-section"
+          className="product-section"
           style={{
             background:
               "linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f0f8ff 100%)",
@@ -2052,7 +2053,7 @@ const Home = () => {
         {/* Who can use */}
         <section
           id="who-can-use"
-          className="home-who-can-use-section"
+          className="product-section"
           style={{ padding: "2rem 0" }}
         >
           <div className="bubble-1"></div>
@@ -2360,7 +2361,7 @@ const Home = () => {
         {/* Contact Section */}
         <section
           id="contact"
-          className="contact-section"
+          className="contact-section product-section"
           style={{ padding: "2rem 0 0 0" }}
         >
           <div className="bubble-1"></div>
@@ -2530,7 +2531,7 @@ const Home = () => {
 
         {/* Supported By Section */}
         <section
-          className="supported-by-section"
+          className="supported-by-section product-section"
           style={{
             backgroundColor: "#ffffff",
             padding: "2rem 0",
