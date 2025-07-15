@@ -52,6 +52,8 @@ const Home = () => {
     doctorName: "Dr. ",
     licenseNumber: "",
     whatsappNumber: "",
+    medicalCouncil: "",
+    registrationYear: "",
   });
 
   // State for doctor form validation errors
@@ -250,6 +252,8 @@ const Home = () => {
       doctorName: "",
       licenseNumber: "",
       whatsappNumber: "",
+      medicalCouncil: "",
+      registrationYear: "",
     });
     setDoctorFormErrors({});
     setDoctorFormStatus({
@@ -298,6 +302,14 @@ const Home = () => {
         ...doctorFormData,
         [name]: cleanedLicense,
       });
+    }
+    // Registration year - only allow digits, max 4
+    else if (name === "registrationYear") {
+      const digitsOnly = value.replace(/\D/g, "").slice(0, 4);
+      setDoctorFormData({
+        ...doctorFormData,
+        [name]: digitsOnly,
+      });
     } else {
       setDoctorFormData({
         ...doctorFormData,
@@ -340,6 +352,24 @@ const Home = () => {
         "Please enter a valid 10-digit WhatsApp number";
     }
 
+    // Medical Council validation
+    if (!doctorFormData.medicalCouncil.trim()) {
+      newErrors.medicalCouncil = "Medical Council is required";
+    }
+
+    // Registration Year validation
+    const year = parseInt(doctorFormData.registrationYear, 10);
+    const currentYear = new Date().getFullYear();
+    if (!doctorFormData.registrationYear.trim()) {
+      newErrors.registrationYear = "Registration Year is required";
+    } else if (
+      !/^\d{4}$/.test(doctorFormData.registrationYear.trim()) ||
+      year < 1950 ||
+      year > currentYear
+    ) {
+      newErrors.registrationYear = `Enter a valid year (1950-${currentYear})`;
+    }
+
     setDoctorFormErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -363,11 +393,14 @@ const Home = () => {
       const response = await apiService.doctorService.requestApp({
         doctorName: doctorFormData.doctorName.trim(),
         licenseNumber: doctorFormData.licenseNumber.trim(),
+        medicalCouncil: doctorFormData.medicalCouncil.trim(),
+        registrationYear: doctorFormData.registrationYear.trim(),
         whatsappNumber: doctorFormData.whatsappNumber.trim(),
       });
 
-      // Simulate API call for now
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (response.status !== 201 && response.status !== 200) {
+        throw new Error("Failed to submit doctor form");
+      }
 
       setDoctorFormStatus({
         isSubmitting: false,
@@ -458,7 +491,7 @@ const Home = () => {
                           ?.scrollIntoView({ behavior: "smooth" })
                       }
                     >
-                      How it works
+                      How it work
                     </button>
                     {/* <button
                       className="home-feature-button patient-button"
@@ -934,15 +967,29 @@ const Home = () => {
             style={{
               maxWidth: "1000px",
               margin: "0 auto",
-              padding: "0 40px",
+              padding: "0 20px",
               position: "relative",
               zIndex: 1,
             }}
           >
             {/* Benefits Layout - Simple Grid Design (like Features) */}
-            <div className="features-grid">
+            <div
+              className="features-grid"
+              style={{
+                display: "grid",
+                gap: "3rem",
+              }}
+            >
               {/* Benefit 1 */}
-              <div className="simple-feature">
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                  width: "100%",
+                }}
+              >
                 <div
                   style={{
                     width: "60px",
@@ -989,7 +1036,15 @@ const Home = () => {
                 </div>
               </div>
               {/* Benefit 2 */}
-              <div className="simple-feature">
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                  width: "100%",
+                }}
+              >
                 <div
                   style={{
                     width: "60px",
@@ -1034,7 +1089,15 @@ const Home = () => {
                 </div>
               </div>
               {/* Benefit 3 */}
-              <div className="simple-feature">
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                  width: "100%",
+                }}
+              >
                 <div
                   style={{
                     width: "60px",
@@ -1079,7 +1142,15 @@ const Home = () => {
                 </div>
               </div>
               {/* Benefit 4 */}
-              <div className="simple-feature">
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                  width: "100%",
+                }}
+              >
                 <div
                   style={{
                     width: "60px",
@@ -1158,7 +1229,7 @@ const Home = () => {
                 backgroundClip: "text",
               }}
             >
-              How it Works
+              How it Work
             </h2>
             <p
               style={{
@@ -1481,13 +1552,12 @@ const Home = () => {
             <p
               style={{
                 fontSize: "1.7rem",
-                color: "#666",
+                color: "#3b6baa",
                 textAlign: "center",
                 maxWidth: "650px",
                 margin: "1rem auto 3rem auto",
                 lineHeight: "1.6",
                 fontFamily: "Montserrat, sans-serif",
-                color: "#3b6baa",
                 fontWeight: "600",
                 fontStyle: "italic",
               }}
@@ -1516,6 +1586,7 @@ const Home = () => {
             >
               {/* FAQ Item 1 */}
               <div
+                className="faq-item"
                 style={{
                   background: "linear-gradient(145deg, #ffffff, #f8f9fa)",
                   borderRadius: "15px",
@@ -2100,277 +2171,277 @@ const Home = () => {
                 gap: "3rem",
               }}
             >
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                }}
+              >
                 <div
-                  className="simple-feature"
                   style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #2a7d73, #05A1A4)",
+                    borderRadius: "16px",
                     display: "flex",
-                    alignItems: "flex-start",
-                    gap: "1.2rem",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(42, 125, 115, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "60px",
-                      height: "60px",
-                      background: "linear-gradient(135deg, #2a7d73, #05A1A4)",
-                      borderRadius: "16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      boxShadow: "0 4px 12px rgba(42, 125, 115, 0.2)",
-                    }}
-                  >
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                      <path d="M3 21h18" />
-                      <path d="M5 21V7l8-4v18" />
-                      <path d="M19 21V11l-4-2" />
-                      <circle cx="9" cy="9" r="1" />
-                      <circle cx="15" cy="15" r="1" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4
-                      style={{
-                        fontSize: "1.6rem",
-                        fontWeight: "700",
-                        color: "rgba(0, 0, 0, 0.65)",
-                        marginBottom: "0.8rem",
-                        lineHeight: "1.3",
-                        fontFamily: "Montserrat, sans-serif",
-                      }}
-                    >
-                      Physical Clinic Practice
-                    </h4>
-                    <p
-                      style={{
-                        fontSize: "1rem",
-                        color: "#555",
-                        lineHeight: "1.6",
-                        margin: 0,
-                      }}
-                    >
-                      Run a physical clinic or practice in semi-urban, towns, or
-                      rural areas across India.
-                    </p>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M3 21h18" />
+                    <path d="M5 21V7l8-4v18" />
+                    <path d="M19 21V11l-4-2" />
+                    <circle cx="9" cy="9" r="1" />
+                    <circle cx="15" cy="15" r="1" />
+                  </svg>
                 </div>
-                <div
-                  className="simple-feature"
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "1.2rem",
-                  }}
-                >
-                  <div
+                <div>
+                  <h4
                     style={{
-                      width: "60px",
-                      height: "60px",
-                      background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
-                      borderRadius: "16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      boxShadow: "0 4px 12px rgba(59, 107, 170, 0.2)",
+                      fontSize: "1.6rem",
+                      fontWeight: "700",
+                      color: "rgba(0, 0, 0, 0.65)",
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                      <circle cx="9" cy="7" r="4" />
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4
-                      style={{
-                        fontSize: "1.6rem",
-                        fontWeight: "700",
-                        color: "rgba(0, 0, 0, 0.65)",
-                        marginBottom: "0.8rem",
-                        lineHeight: "1.3",
-                        fontFamily: "Montserrat, sans-serif",
-                      }}
-                    >
-                      Patient Connection Focus
-                    </h4>
-                    <p
-                      style={{
-                        fontSize: "1rem",
-                        color: "#555",
-                        lineHeight: "1.6",
-                        margin: 0,
-                      }}
-                    >
-                      Wish to connect easily with their patients who prefer
-                      in-person interactions.
-                    </p>
-                  </div>
+                    Physical Clinic Practice
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    Run a physical clinic or practice in semi-urban, towns, or
+                    rural areas across India.
+                  </p>
                 </div>
+              </div>
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                }}
+              >
                 <div
-                  className="simple-feature"
                   style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
+                    borderRadius: "16px",
                     display: "flex",
-                    alignItems: "flex-start",
-                    gap: "1.2rem",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(59, 107, 170, 0.2)",
                   }}
                 >
-                  <div
-                    style={{
-                      width: "60px",
-                      height: "60px",
-                      background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
-                      borderRadius: "16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      boxShadow: "0 4px 12px rgba(76, 175, 80, 0.2)",
-                    }}
-                  >
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                      <path d="M3 3v18h18" />
-                      <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4
-                      style={{
-                        fontSize: "1.6rem",
-                        fontWeight: "700",
-                        color: "rgba(0, 0, 0, 0.65)",
-                        marginBottom: "0.8rem",
-                        lineHeight: "1.3",
-                        fontFamily: "Montserrat, sans-serif",
-                      }}
-                    >
-                      Practice Growth
-                    </h4>
-                    <p
-                      style={{
-                        fontSize: "1rem",
-                        color: "#555",
-                        lineHeight: "1.6",
-                        margin: 0,
-                      }}
-                    >
-                      Want to grow their practice ensuring patients' easy reach
-                      without complex apps.
-                    </p>
-                  </div>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
                 </div>
-                <div
-                  className="simple-feature"
-                  style={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "1.2rem",
-                  }}
-                >
-                  <div
+                <div>
+                  <h4
                     style={{
-                      width: "60px",
-                      height: "60px",
-                      background: "linear-gradient(135deg, #8E24AA, #4CAF50)",
-                      borderRadius: "16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      boxShadow: "0 4px 12px rgba(142, 36, 170, 0.2)",
+                      fontSize: "1.6rem",
+                      fontWeight: "700",
+                      color: "rgba(0, 0, 0, 0.65)",
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14,2 14,8 20,8" />
-                      <line x1="16" y1="13" x2="8" y2="13" />
-                      <line x1="16" y1="17" x2="8" y2="17" />
-                      <polyline points="10,9 9,9 8,9" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4
-                      style={{
-                        fontSize: "1.6rem",
-                        fontWeight: "700",
-                        color: "rgba(0, 0, 0, 0.65)",
-                        marginBottom: "0.8rem",
-                        lineHeight: "1.3",
-                        fontFamily: "Montserrat, sans-serif",
-                      }}
-                    >
-                      Patient Tracking
-                    </h4>
-                    <p
-                      style={{
-                        fontSize: "1rem",
-                        color: "#555",
-                        lineHeight: "1.6",
-                        margin: 0,
-                      }}
-                    >
-                      Find challenging to keep track of patient visits, follow-up
-                      and retention.
-                    </p>
-                  </div>
+                    Patient Connection Focus
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    Wish to connect easily with their patients who prefer
+                    in-person interactions.
+                  </p>
                 </div>
+              </div>
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                }}
+              >
                 <div
-                  className="simple-feature"
                   style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #4CAF50, #05A1A4)",
+                    borderRadius: "16px",
                     display: "flex",
-                    alignItems: "flex-start",
-                    gap: "1.2rem",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(76, 175, 80, 0.2)",
                   }}
                 >
-                  <div
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M3 3v18h18" />
+                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                  </svg>
+                </div>
+                <div>
+                  <h4
                     style={{
-                      width: "60px",
-                      height: "60px",
-                      background: "linear-gradient(135deg, #FF6B6B, #8E24AA)",
-                      borderRadius: "16px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      boxShadow: "0 4px 12px rgba(255, 107, 107, 0.2)",
+                      fontSize: "1.6rem",
+                      fontWeight: "700",
+                      color: "rgba(0, 0, 0, 0.65)",
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
                     }}
                   >
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                      <path d="M12 17h.01" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4
-                      style={{
-                        fontSize: "1.6rem",
-                        fontWeight: "700",
-                        color: "rgba(0, 0, 0, 0.65)",
-                        marginBottom: "0.8rem",
-                        lineHeight: "1.3",
-                        fontFamily: "Montserrat, sans-serif",
-                      }}
-                    >
-                      Traditional Relationship Focus
-                    </h4>
-                    <p
-                      style={{
-                        fontSize: "1rem",
-                        color: "#555",
-                        lineHeight: "1.6",
-                        margin: 0,
-                      }}
-                    >
-                      Looking for a reliable, easy-to-use application that
-                      respects the traditional doctor-patient relationship.
-                    </p>
-                  </div>
+                    Practice Growth
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    Want to grow their practice ensuring patients' easy reach
+                    without complex apps.
+                  </p>
+                </div>
+              </div>
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #8E24AA, #4CAF50)",
+                    borderRadius: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(142, 36, 170, 0.2)",
+                  }}
+                >
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14,2 14,8 20,8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10,9 9,9 8,9" />
+                  </svg>
+                </div>
+                <div>
+                  <h4
+                    style={{
+                      fontSize: "1.6rem",
+                      fontWeight: "700",
+                      color: "rgba(0, 0, 0, 0.65)",
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
+                    }}
+                  >
+                    Patient Tracking
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    Find challenging to keep track of patient visits, follow-up
+                    and retention.
+                  </p>
+                </div>
+              </div>
+              <div
+                className="simple-feature"
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "1.2rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "linear-gradient(135deg, #FF6B6B, #8E24AA)",
+                    borderRadius: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                    boxShadow: "0 4px 12px rgba(255, 107, 107, 0.2)",
+                  }}
+                >
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <path d="M12 17h.01" />
+                  </svg>
+                </div>
+                <div>
+                  <h4
+                    style={{
+                      fontSize: "1.6rem",
+                      fontWeight: "700",
+                      color: "rgba(0, 0, 0, 0.65)",
+                      marginBottom: "0.8rem",
+                      lineHeight: "1.3",
+                      fontFamily: "Montserrat, sans-serif",
+                    }}
+                  >
+                    Traditional Relationship Focus
+                  </h4>
+                  <p
+                    style={{
+                      fontSize: "1rem",
+                      color: "#555",
+                      lineHeight: "1.6",
+                      margin: 0,
+                    }}
+                  >
+                    Looking for a reliable, easy-to-use application that
+                    respects the traditional doctor-patient relationship.
+                  </p>
                 </div>
               </div>
             </div>
+          </div>
         </section>
 
         {/* Founders Section */}
@@ -2934,6 +3005,107 @@ const Home = () => {
                 {doctorFormErrors.licenseNumber && (
                   <div style={errorMessageStyle}>
                     {doctorFormErrors.licenseNumber}
+                  </div>
+                )}
+              </div>
+
+              {/* Medical Council Field */}
+              <div style={{ marginBottom: "15px" }}>
+                <label
+                  htmlFor="medicalCouncil"
+                  style={{
+                    display: "block",
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Medical Council *
+                </label>
+                <input
+                  type="text"
+                  id="medicalCouncil"
+                  name="medicalCouncil"
+                  value={doctorFormData.medicalCouncil}
+                  onChange={handleDoctorFormChange}
+                  placeholder="Enter your Medical Council"
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: doctorFormErrors.medicalCouncil
+                      ? "2px solid #e74c3c"
+                      : "2px solid #e1e8ed",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    transition: "all 0.3s ease",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    if (!doctorFormErrors.medicalCouncil) {
+                      e.target.style.borderColor = "#2a7d73";
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (!doctorFormErrors.medicalCouncil) {
+                      e.target.style.borderColor = "#e1e8ed";
+                    }
+                  }}
+                />
+                {doctorFormErrors.medicalCouncil && (
+                  <div style={errorMessageStyle}>
+                    {doctorFormErrors.medicalCouncil}
+                  </div>
+                )}
+              </div>
+
+              {/* Registration Year Field */}
+              <div style={{ marginBottom: "15px" }}>
+                <label
+                  htmlFor="registrationYear"
+                  style={{
+                    display: "block",
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Registration Year *
+                </label>
+                <input
+                  type="text"
+                  id="registrationYear"
+                  name="registrationYear"
+                  value={doctorFormData.registrationYear}
+                  onChange={handleDoctorFormChange}
+                  placeholder="e.g. 2012"
+                  maxLength="4"
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: doctorFormErrors.registrationYear
+                      ? "2px solid #e74c3c"
+                      : "2px solid #e1e8ed",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    transition: "all 0.3s ease",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    if (!doctorFormErrors.registrationYear) {
+                      e.target.style.borderColor = "#2a7d73";
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (!doctorFormErrors.registrationYear) {
+                      e.target.style.borderColor = "#e1e8ed";
+                    }
+                  }}
+                />
+                {doctorFormErrors.registrationYear && (
+                  <div style={errorMessageStyle}>
+                    {doctorFormErrors.registrationYear}
                   </div>
                 )}
               </div>
