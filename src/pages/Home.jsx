@@ -2862,7 +2862,7 @@ const Home = () => {
               style={{
                 color: "#2a7d73",
                 margin: "0 0 5px 0",
-                fontSize: "18px",
+                fontSize: "25px",
               }}
             >
               Request Doctor App Access
@@ -2955,56 +2955,6 @@ const Home = () => {
                 {doctorFormErrors.doctorName && (
                   <div style={errorMessageStyle}>
                     {doctorFormErrors.doctorName}
-                  </div>
-                )}
-              </div>
-
-              {/* Medical License Number Field */}
-              <div style={{ marginBottom: "15px" }}>
-                <label
-                  htmlFor="licenseNumber"
-                  style={{
-                    display: "block",
-                    marginBottom: "5px",
-                    fontWeight: "600",
-                    color: "#333",
-                    fontSize: "14px",
-                  }}
-                >
-                  Medical License Number *
-                </label>
-                <input
-                  type="text"
-                  id="licenseNumber"
-                  name="licenseNumber"
-                  value={doctorFormData.licenseNumber}
-                  onChange={handleDoctorFormChange}
-                  placeholder="Enter your medical license number"
-                  style={{
-                    width: "100%",
-                    padding: "10px 14px",
-                    border: doctorFormErrors.licenseNumber
-                      ? "2px solid #e74c3c"
-                      : "2px solid #e1e8ed",
-                    borderRadius: "6px",
-                    fontSize: "14px",
-                    transition: "all 0.3s ease",
-                    boxSizing: "border-box",
-                  }}
-                  onFocus={(e) => {
-                    if (!doctorFormErrors.licenseNumber) {
-                      e.target.style.borderColor = "#2a7d73";
-                    }
-                  }}
-                  onBlur={(e) => {
-                    if (!doctorFormErrors.licenseNumber) {
-                      e.target.style.borderColor = "#e1e8ed";
-                    }
-                  }}
-                />
-                {doctorFormErrors.licenseNumber && (
-                  <div style={errorMessageStyle}>
-                    {doctorFormErrors.licenseNumber}
                   </div>
                 )}
               </div>
@@ -3106,6 +3056,56 @@ const Home = () => {
                 {doctorFormErrors.registrationYear && (
                   <div style={errorMessageStyle}>
                     {doctorFormErrors.registrationYear}
+                  </div>
+                )}
+              </div>
+
+              {/* Medical License Number Field */}
+              <div style={{ marginBottom: "15px" }}>
+                <label
+                  htmlFor="licenseNumber"
+                  style={{
+                    display: "block",
+                    marginBottom: "5px",
+                    fontWeight: "600",
+                    color: "#333",
+                    fontSize: "14px",
+                  }}
+                >
+                  Medical License Number *
+                </label>
+                <input
+                  type="text"
+                  id="licenseNumber"
+                  name="licenseNumber"
+                  value={doctorFormData.licenseNumber}
+                  onChange={handleDoctorFormChange}
+                  placeholder="Enter your medical license number"
+                  style={{
+                    width: "100%",
+                    padding: "10px 14px",
+                    border: doctorFormErrors.licenseNumber
+                      ? "2px solid #e74c3c"
+                      : "2px solid #e1e8ed",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                    transition: "all 0.3s ease",
+                    boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => {
+                    if (!doctorFormErrors.licenseNumber) {
+                      e.target.style.borderColor = "#2a7d73";
+                    }
+                  }}
+                  onBlur={(e) => {
+                    if (!doctorFormErrors.licenseNumber) {
+                      e.target.style.borderColor = "#e1e8ed";
+                    }
+                  }}
+                />
+                {doctorFormErrors.licenseNumber && (
+                  <div style={errorMessageStyle}>
+                    {doctorFormErrors.licenseNumber}
                   </div>
                 )}
               </div>
