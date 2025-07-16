@@ -545,87 +545,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* About Us Section */}
-        <section
-          id="about"
-          className="about-section home-founders-section"
-          style={{ padding: "2rem 0" }}
-        >
-          <div className="home-section-header">
-            <h2
-              style={{
-                fontSize: "3rem",
-                fontWeight: "800",
-                textAlign: "center",
-                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              About Us
-            </h2>
-          </div>
-          <div className="home-about-section-content">
-            <div className="home-about-section-about-content">
-              <div className="home-about-section-about-info about-beautiful-flex">
-                <div
-                  className="home-about-section-about-item about-beautiful-item"
-                  style={{ borderRight: "none" }}
-                >
-                  <div
-                    className="home-about-section-about-item-label"
-                    style={{ fontWeight: "normal" }}
-                  >
-                    Vision
-                  </div>
-                  <p>
-                    To become India's most trusted digital companion for every
-                    doctor in{" "}
-                    <span style={{ color: "#000000", fontWeight: "bold" }}>
-                      Bharat's towns and villages
-                    </span>{" "}
-                    — empowering them by seamlessly connected with their
-                    patients, become easily accessible, more efficient practices
-                    using accessible technology that respects tradition,
-                    language, and local healthcare needs regardless of digital
-                    familiarity.
-                  </p>
-                </div>
-                {/* Vertical Divider */}
-                <div
-                  style={{
-                    width: "1px",
-                    minHeight: "100px",
-                    background: "linear-gradient(180deg, #b2dfdb, #3b6baa)",
-                    margin: "0 1rem",
-                    alignSelf: "stretch",
-                  }}
-                ></div>
-                <div className="home-about-section-about-item about-beautiful-item">
-                  <div
-                    className="home-about-section-about-item-label"
-                    style={{ fontWeight: "normal" }}
-                  >
-                    Mission
-                  </div>
-                  <p>
-                    Our mission is to empower offline doctors in India's
-                    non-metro cities, towns and villages with user-friendly and
-                    reliable digital tools. We simplify QR-based patient
-                    connection, multilingual platform that enables symptom-based
-                    consultation, follow-up tracking, and digital
-                    outreach—without requiring patients to be tech-savvy. We
-                    provide clear patient insights, enabling doctors to focus on
-                    delivering quality care and build lasting relationships,
-                    even with patients who are not digitally active.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Product Section */}
         <section
           id="product"
@@ -2437,6 +2356,87 @@ const Home = () => {
                   >
                     Looking for a reliable, easy-to-use application that
                     respects the traditional doctor-patient relationship.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* About Us Section */}
+        <section
+          id="about"
+          className="about-section home-founders-section"
+          style={{ padding: "2rem 0" }}
+        >
+          <div className="home-section-header">
+            <h2
+              style={{
+                fontSize: "3rem",
+                fontWeight: "800",
+                textAlign: "center",
+                background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              About Us
+            </h2>
+          </div>
+          <div className="home-about-section-content">
+            <div className="home-about-section-about-content">
+              <div className="home-about-section-about-info about-beautiful-flex">
+                <div
+                  className="home-about-section-about-item about-beautiful-item"
+                  style={{ borderRight: "none" }}
+                >
+                  <div
+                    className="home-about-section-about-item-label"
+                    style={{ fontWeight: "normal" }}
+                  >
+                    Vision
+                  </div>
+                  <p>
+                    To become India's most trusted digital companion for every
+                    doctor in{" "}
+                    <span style={{ color: "#000000", fontWeight: "bold" }}>
+                      Bharat's towns and villages
+                    </span>{" "}
+                    — empowering them by seamlessly connected with their
+                    patients, become easily accessible, more efficient practices
+                    using accessible technology that respects tradition,
+                    language, and local healthcare needs regardless of digital
+                    familiarity.
+                  </p>
+                </div>
+                {/* Vertical Divider */}
+                <div
+                  style={{
+                    width: "1px",
+                    minHeight: "100px",
+                    background: "linear-gradient(180deg, #b2dfdb, #3b6baa)",
+                    margin: "0 1rem",
+                    alignSelf: "stretch",
+                  }}
+                ></div>
+                <div className="home-about-section-about-item about-beautiful-item">
+                  <div
+                    className="home-about-section-about-item-label"
+                    style={{ fontWeight: "normal" }}
+                  >
+                    Mission
+                  </div>
+                  <p>
+                    Our mission is to empower offline doctors in India's
+                    non-metro cities, towns and villages with user-friendly and
+                    reliable digital tools. We simplify QR-based patient
+                    connection, multilingual platform that enables symptom-based
+                    consultation, follow-up tracking, and digital
+                    outreach—without requiring patients to be tech-savvy. We
+                    provide clear patient insights, enabling doctors to focus on
+                    delivering quality care and build lasting relationships,
+                    even with patients who are not digitally active.
                   </p>
                 </div>
               </div>
