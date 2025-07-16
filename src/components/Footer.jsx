@@ -92,17 +92,6 @@ const Footer = () => {
                 </li>
                 <li>
                   <a
-                    href="/#about"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection("about");
-                    }}
-                  >
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a
                     href="/#product"
                     onClick={(e) => {
                       e.preventDefault();
@@ -156,6 +145,15 @@ const Footer = () => {
                     Who can use?
                   </a>
                 </li>
+                <a
+                  href="/#about"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("about");
+                  }}
+                >
+                  About Us
+                </a>
                 <li>
                   <a
                     href="/#founders"

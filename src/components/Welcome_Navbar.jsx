@@ -151,15 +151,6 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
           >
             Home
           </a>
-          <a
-            href="/#about"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection("about");
-            }}
-          >
-            About Us
-          </a>
           {/* Product Dropdown */}
           <div
             className={`dropdown ${productDropdownOpen ? "open" : ""}`}
@@ -235,6 +226,15 @@ const Welcome_Navbar = ({ showLinks = true, linksActive = true }) => {
               </a>
             </div>
           </div>
+          <a
+            href="/#about"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("about");
+            }}
+          >
+            About Us
+          </a>
           {/* End Product Dropdown */}
           <a
             href="/#founders"
