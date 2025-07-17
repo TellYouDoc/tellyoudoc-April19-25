@@ -441,7 +441,7 @@ const Home = () => {
               <div>
                 <div className="home-hero-about-header">
                   <h5 className="home-hero-title">
-                    Connect with Every Patient & No More Lost
+                    Connect with Every Patient
                     <span
                       style={{
                         position: "absolute",
