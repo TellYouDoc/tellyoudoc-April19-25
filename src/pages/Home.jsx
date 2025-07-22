@@ -47,6 +47,9 @@ const Home = () => {
   // State for Patient modal
   const [patientModalVisible, setPatientModalVisible] = useState(false);
 
+  // State to show download started message in Patient Modal
+  const [downloadStarted, setDownloadStarted] = useState(false);
+
   // State for doctor form data in WhatsApp modal
   const [doctorFormData, setDoctorFormData] = useState({
     doctorName: "Dr. ",
@@ -275,10 +278,12 @@ const Home = () => {
   // Patient modal functions
   const handlePatientModalOpen = () => {
     setPatientModalVisible(true);
+    setDownloadStarted(false); // Reset download started state when opening
   };
 
   const handlePatientModalClose = () => {
     setPatientModalVisible(false);
+    setDownloadStarted(false); // Reset download started state when closing
   };
 
   // Doctor form handling functions
@@ -3351,7 +3356,7 @@ const Home = () => {
                 cursor: "pointer",
               }}
               onClick={() => {
-                // Hide the link from the DOM, trigger download via JS
+                setDownloadStarted(true);
                 const url =
                   "https://tellyoudoc-prod.s3.ap-south-1.amazonaws.com/public/app-distribution/Patient/tellyoudoc_V1.0.2.apk";
                 const a = document.createElement("a");
@@ -3383,24 +3388,43 @@ const Home = () => {
               </svg>
               Download App
             </button>
-          </div>
 
-          {/* Approved by Doctors Badge */}
-          {/* <div
-            style={{
-              display: "inline-block",
-              background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
-              color: "white",
-              padding: "8px 16px",
-              borderRadius: "20px",
-              fontSize: "14px",
-              fontWeight: "600",
-              boxShadow: "0 4px 12px rgba(42, 125, 115, 0.3)",
-              marginTop: "20px",
-            }}
-          >
-            ✓ Approved by Doctors
-          </div> */}
+            {/* Download started message */}
+            {downloadStarted && (
+              <div
+                style={{
+                  background: "#e7f4e4",
+                  border: "1px solid #a5d6a7",
+                  color: "#2e7d32",
+                  borderRadius: "8px",
+                  padding: "12px 0",
+                  marginTop: "18px",
+                  fontWeight: 600,
+                  fontSize: "15px",
+                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                }}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="#2e7d32"
+                  style={{ marginRight: 6 }}
+                >
+                  <circle cx="12" cy="12" r="10" fill="#a5d6a7" />
+                  <path
+                    d="M12 17l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"
+                    fill="#2e7d32"
+                  />
+                </svg>
+                Download started!
+              </div>
+            )}
+          </div>
 
           {/* Store Information */}
           <div
@@ -3409,7 +3433,7 @@ const Home = () => {
               border: "1px solid #ffeaa7",
               borderRadius: "8px",
               padding: "15px",
-              margin: "20px 0",
+              margin: "20px 0 0 0",
               textAlign: "left",
             }}
           >
