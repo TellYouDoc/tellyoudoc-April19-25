@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Modal, Form, Input, Button, message } from "antd";
 
 // Importing styles
@@ -68,6 +68,8 @@ const Home = () => {
 
   // State for FAQ expansion
   const [expandedFAQs, setExpandedFAQs] = useState({});
+
+  const location = useLocation();
 
   // Toggle FAQ expansion
   const toggleFAQ = (index) => {
@@ -239,6 +241,13 @@ const Home = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("showPatientAppModal") === "true") {
+      setPatientModalVisible(true);
+    }
+  }, [location.search]);
 
   // WhatsApp modal functions
   const handleWhatsappModalOpen = () => {
@@ -493,32 +502,6 @@ const Home = () => {
                     >
                       How it work
                     </button>
-                    {/* <button
-                      className="home-feature-button patient-button"
-                      onClick={handlePatientModalOpen}
-                      style={{
-                        background: "linear-gradient(135deg, #3b6baa, #2a7d73)",
-                        color: "white",
-                        border: "none",
-                        fontWeight: "600",
-                        boxShadow: "0 4px 15px rgba(59, 107, 170, 0.3)",
-                        position: "relative",
-                        overflow: "hidden",
-                        padding: "10px 50px",
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.transform = "translateY(-2px)";
-                        e.currentTarget.style.boxShadow =
-                          "0 6px 20px rgba(59, 107, 170, 0.4)";
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow =
-                          "0 4px 15px rgba(59, 107, 170, 0.3)";
-                      }}
-                    >
-                      Patient
-                    </button> */}
                   </div>
 
                   <div className="home-hero-cta">
@@ -536,7 +519,23 @@ const Home = () => {
                           "0 4px 15px rgba(42, 125, 115, 0.3)";
                       }}
                     >
-                      Get the App Free
+                      Get the Doctor App Free
+                    </button>
+                    <button
+                      className="home-cta-button"
+                      onClick={handlePatientModalOpen}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = "translateY(-3px)";
+                        e.currentTarget.style.boxShadow =
+                          "0 8px 20px rgba(42, 125, 115, 0.4)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow =
+                          "0 4px 15px rgba(42, 125, 115, 0.3)";
+                      }}
+                    >
+                      Get the Patient App Free
                     </button>
                   </div>
                 </div>
@@ -3329,14 +3328,12 @@ const Home = () => {
                 lineHeight: "1.6",
               }}
             >
-              Get the TellYouDoc Patient App for seamless healthcare management
+              Get tellyoudoc Android App
             </p>
 
-            {/* Download Link Button */}
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
+            {/* Download Link Button (hidden from DOM, triggered by JS) */}
+            <button
+              type="button"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -3352,6 +3349,18 @@ const Home = () => {
                 boxShadow: "0 6px 20px rgba(42, 125, 115, 0.3)",
                 border: "none",
                 cursor: "pointer",
+              }}
+              onClick={() => {
+                // Hide the link from the DOM, trigger download via JS
+                const url =
+                  "https://tellyoudoc-prod.s3.ap-south-1.amazonaws.com/public/app-distribution/Patient/tellyoudoc_V1.0.2.apk";
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "tellyoudoc_patient_app.apk";
+                a.target = "_blank";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = "translateY(-3px)";
@@ -3372,12 +3381,12 @@ const Home = () => {
               >
                 <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
               </svg>
-              Download APK
-            </a>
+              Download App
+            </button>
           </div>
 
           {/* Approved by Doctors Badge */}
-          <div
+          {/* <div
             style={{
               display: "inline-block",
               background: "linear-gradient(135deg, #2a7d73, #3b6baa)",
@@ -3391,7 +3400,7 @@ const Home = () => {
             }}
           >
             ✓ Approved by Doctors
-          </div>
+          </div> */}
 
           {/* Store Information */}
           <div
@@ -3433,54 +3442,7 @@ const Home = () => {
                 lineHeight: "1.5",
               }}
             >
-              The app will soon be available for download on the Google Play
-              Store for easier access.
-            </p>
-          </div>
-
-          {/* Platform Information */}
-          <div
-            style={{
-              background: "#d1ecf1",
-              border: "1px solid #bee5eb",
-              borderRadius: "8px",
-              padding: "15px",
-              textAlign: "left",
-            }}
-          >
-            <h4
-              style={{
-                color: "#0c5460",
-                margin: "0 0 10px 0",
-                fontSize: "16px",
-                fontWeight: "600",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.9 1 3 1.9 3 3V21C3 22.1 3.9 23 5 23H19C20.1 23 21 22.1 21 21V9M19 21H5V3H13V9H19V21Z" />
-              </svg>
-              Platform Compatibility
-            </h4>
-            <p
-              style={{
-                color: "#0c5460",
-                fontSize: "14px",
-                margin: "0",
-                lineHeight: "1.5",
-              }}
-            >
-              <strong>Android:</strong> Available now for download
-              <br />
-              <strong>iOS:</strong> Coming soon - will be available in the near
-              future
+              The app will soon be available on the Google Play Store.
             </p>
           </div>
         </div>

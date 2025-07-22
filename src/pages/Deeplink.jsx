@@ -9,8 +9,8 @@ const Deeplink = () => {
     // 2. Your app's deep link (tellyoudoc:// is your custom scheme)
     const appLink = `tellyoudoc://connect?doctorId=${doctorId}`;
 
-    // 3. Fallback to Play Store if app not installed
-    const fallbackLink = "https://play.google.com/store/apps/details?id=com.tellyoudoc.patient";
+    // 3. Fallback to Home page with query param to trigger patient app modal
+    const fallbackLink = "/Home?showPatientAppModal=true";
 
     // 4. Try to open the app
     window.location.href = appLink;
