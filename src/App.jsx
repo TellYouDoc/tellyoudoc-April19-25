@@ -39,6 +39,7 @@ import Layout from "./components/Layout";
 import CookieConsent from "./components/CookieConsent";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { getCookie, removeCookie } from "./utils/cookieUtils";
+import { Analytics } from "@vercel/analytics/next";
 
 // Lazy load components
 
@@ -557,6 +558,7 @@ function App() {
   return (
     <BrowserRouter>
       <AppRoutes />
+      <Analytics />
     </BrowserRouter>
   );
 }
