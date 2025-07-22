@@ -39,7 +39,7 @@ import Layout from "./components/Layout";
 import CookieConsent from "./components/CookieConsent";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { getCookie, removeCookie } from "./utils/cookieUtils";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 
 // Lazy load components
 
