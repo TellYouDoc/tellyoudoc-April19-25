@@ -40,6 +40,7 @@ import CookieConsent from "./components/CookieConsent";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { getCookie, removeCookie } from "./utils/cookieUtils";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Lazy load components
 
@@ -559,6 +560,7 @@ function App() {
     <BrowserRouter>
       <AppRoutes />
       <Analytics />
+      <SpeedInsights />
     </BrowserRouter>
   );
 }
