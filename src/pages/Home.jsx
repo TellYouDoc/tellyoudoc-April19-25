@@ -526,7 +526,7 @@ const Home = () => {
                     >
                       Get the Doctor App Free
                     </button>
-                    <button
+                    {/* <button
                       className="home-cta-button"
                       onClick={handlePatientModalOpen}
                       onMouseOver={(e) => {
@@ -541,7 +541,7 @@ const Home = () => {
                       }}
                     >
                       Get the Patient App Free
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
