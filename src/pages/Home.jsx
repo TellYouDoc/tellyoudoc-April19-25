@@ -526,7 +526,7 @@ const Home = () => {
                     >
                       Get the Doctor App Free
                     </button>
-                    {/* <button
+                    <button
                       className="home-cta-button"
                       onClick={handlePatientModalOpen}
                       onMouseOver={(e) => {
@@ -541,7 +541,7 @@ const Home = () => {
                       }}
                     >
                       Get the Patient App Free
-                    </button> */}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -3358,7 +3358,7 @@ const Home = () => {
               onClick={() => {
                 setDownloadStarted(true);
                 const url =
-                  "https://tellyoudoc-prod.s3.ap-south-1.amazonaws.com/public/app-distribution/Patient/tellyoudoc_V1.0.2.apk";
+                  "https://tellyoudoc-prod.s3.ap-south-1.amazonaws.com/public/app-distribution/Patient/tellyoudoc_V2.0.0.apk";
                 const a = document.createElement("a");
                 a.href = url;
                 a.download = "tellyoudoc_patient_app.apk";
