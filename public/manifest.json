@@ -1,0 +1,35 @@
+{
+  "name": "TellYouDoc - AI-Powered Healthcare Platform",
+  "short_name": "TellYouDoc",
+  "description": "AI-powered healthcare platform connecting patients with qualified doctors",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["medical", "health", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon/tyd.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon/tyd.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/favicon/tyd.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+} 

@@ -1,0 +1,47 @@
+# Robots.txt File - Search Engine Crawler Instructions
+# This file tells search engine bots (like Googlebot) how to crawl your website
+# It's essential for SEO as it controls what gets indexed and what doesn't
+
+# User-agent: * - applies to all search engine bots
+User-agent: *
+
+# Allow: / - allows crawling of the entire website by default
+Allow: /
+
+# Sitemap location - tells search engines where to find your sitemap
+# Sitemaps help search engines discover and index all your pages efficiently
+Sitemap: https://tellyoudoc.com/sitemap.xml
+
+# Crawl-delay: 1 - adds a 1-second delay between requests
+# This prevents overwhelming your server and shows respect for server resources
+# Important for large sites or servers with limited capacity
+Crawl-delay: 1
+
+# ===== DISALLOWED AREAS =====
+# These areas should NOT be indexed by search engines
+
+# Admin areas - contains sensitive administrative functions
+Disallow: /admin/
+
+# API endpoints - contains data, not user-facing content
+Disallow: /api/
+
+# Private areas - user-specific content that shouldn't be public
+Disallow: /private/
+
+# Configuration files - technical files that aren't content
+Disallow: /_redirects
+Disallow: /manifest.json
+Disallow: /browserconfig.xml
+
+# ===== ALLOWED RESOURCES =====
+# These resources should be accessible to search engines
+
+# Favicon and branding assets - helps with brand recognition
+Allow: /favicon/
+
+# Static assets - images, CSS, JS that support the content
+Allow: /assets/
+
+# Image directories - visual content that enhances user experience
+Allow: /images/ 

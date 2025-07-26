@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Browser Configuration File for Windows Integration -->
+<!-- This file configures how your website appears when pinned to Windows Start Menu -->
+<!-- Improves user experience and brand recognition on Windows devices -->
+
+<!-- browserconfig - root element for Windows browser configuration -->
+<browserconfig>
+    <!-- msapplication - Microsoft-specific application settings -->
+    <msapplication>
+        <!-- tile - configuration for Windows tile appearance -->
+        <tile>
+            <!-- square150x150logo - 150x150 pixel logo for Windows tiles -->
+            <!-- This is the icon that appears when users pin your site to Start Menu -->
+            <square150x150logo src="/favicon/tyd.png"/>
+            
+            <!-- TileColor - background color of the Windows tile -->
+            <!-- Should match your brand colors for consistency -->
+            <TileColor>#ffffff</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig> 

@@ -1,19 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Basic HTML5 charset declaration - tells browsers this is UTF-8 encoded -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
+
+    <!-- Favicon - the small icon that appears in browser tabs and bookmarks -->
+    <link rel="icon" type="image/svg+xml" href="/favicon/tyd.png" />
+
+    <!-- Apple Touch Icon - icon used when users add your site to iOS home screen -->
     <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.svg" />
+
+    <!-- Viewport meta tag - crucial for responsive design and mobile SEO -->
+    <!-- width=device-width: makes the page width match the device width -->
+    <!-- initial-scale=1.0: sets initial zoom level -->
+    <!-- maximum-scale=5.0: allows users to zoom up to 5x -->
+    <!-- viewport-fit=cover: handles notched devices properly -->
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover"
     />
-    <title>tellyoudoc</title>
+
+    <!-- ===== PRIMARY SEO META TAGS ===== -->
+
+    <!-- Page Title - most important SEO element, appears in search results and browser tabs -->
+    <!-- Should be unique, descriptive, and include primary keywords -->
+    <title>
+      TellYouDoc - AI-Powered Healthcare Platform | Connect with Doctors
+    </title>
+
+    <!-- Meta Title - backup title for social sharing (some platforms use this instead of <title>) -->
+    <meta
+      name="title"
+      content="TellYouDoc - AI-Powered Healthcare Platform | Connect with Doctors"
+    />
+
+    <!-- Meta Description - appears in search results below the title -->
+    <!-- Should be compelling, under 160 characters, and include call-to-action -->
+    <meta
+      name="description"
+      content="TellYouDoc is an innovative AI-powered healthcare platform connecting patients with qualified doctors. Get personalized medical consultations, health monitoring, and expert care from the comfort of your home."
+    />
+
+    <!-- Keywords - historically important, now less so but still used by some search engines -->
+    <!-- Include relevant terms users might search for -->
+    <meta
+      name="keywords"
+      content="healthcare, telemedicine, AI doctor, medical consultation, online doctor, health platform, medical AI, patient care, digital health, telemedicine platform"
+    />
+
+    <!-- Author - identifies who created the content -->
+    <meta name="author" content="TellYouDoc" />
+
+    <!-- Robots - tells search engines how to crawl and index this page -->
+    <!-- index: allow indexing, follow: follow links, max-image-preview:large: show large image previews -->
+    <!-- max-snippet:-1: allow long snippets, max-video-preview:-1: allow video previews -->
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+
+    <!-- Language - specifies the primary language of the page -->
+    <meta name="language" content="English" />
+
+    <!-- Revisit After - suggests how often search engines should re-crawl the page -->
+    <meta name="revisit-after" content="7 days" />
+
+    <!-- Distribution - indicates the intended audience scope -->
+    <meta name="distribution" content="global" />
+
+    <!-- Rating - content rating for parental controls -->
+    <meta name="rating" content="general" />
+
+    <!-- Theme Color - sets the browser UI color (address bar, etc.) -->
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- ===== SECURITY AND PRIVACY META TAGS ===== -->
+
+    <!-- X-UA-Compatible - forces IE to use the latest rendering engine -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Referrer Policy - controls what referrer information is sent with requests -->
+    <!-- strict-origin-when-cross-origin: sends full URL for same-origin, origin only for cross-origin -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Format Detection - prevents automatic detection of phone numbers and emails -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Google Translate - prevents Google from automatically translating the page -->
+    <meta name="google" content="notranslate" />
+
+    <!-- ===== CANONICAL URL ===== -->
+
+    <!-- Canonical URL - prevents duplicate content issues by specifying the "official" URL -->
+    <!-- Important when the same content is accessible via multiple URLs -->
+    <link rel="canonical" href="https://tellyoudoc.com" />
+
+    <!-- ===== PROGRESSIVE WEB APP MANIFEST ===== -->
+
+    <!-- Web App Manifest - enables PWA features like "Add to Home Screen" -->
+    <!-- Improves mobile user experience and engagement metrics -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ===== OPEN GRAPH TAGS (FACEBOOK & SOCIAL MEDIA) ===== -->
+
+    <!-- OG Type - tells social platforms what type of content this is -->
+    <meta property="og:type" content="website" />
+
+    <!-- OG URL - the canonical URL for this page -->
+    <meta property="og:url" content="https://tellyoudoc.com" />
+
+    <!-- OG Title - title that appears when shared on social media -->
+    <meta
+      property="og:title"
+      content="TellYouDoc - AI-Powered Healthcare Platform | Connect with Doctors"
+    />
+
+    <!-- OG Description - description that appears in social media shares -->
+    <meta
+      property="og:description"
+      content="TellYouDoc is an innovative AI-powered healthcare platform connecting patients with qualified doctors. Get personalized medical consultations, health monitoring, and expert care from the comfort of your home."
+    />
+
+    <!-- OG Image - image that appears when shared on social media -->
+    <!-- Should be at least 1200x630 pixels for optimal display -->
+    <meta
+      property="og:image"
+      content="https://tellyoudoc.com/favicon/tyd.png"
+    />
+
+    <!-- OG Image Dimensions - helps social platforms display the image correctly -->
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- OG Site Name - your website's name for social media -->
+    <meta property="og:site_name" content="TellYouDoc" />
+
+    <!-- OG Locale - the language/locale of the content -->
+    <meta property="og:locale" content="en_US" />
+
+    <!-- ===== TWITTER CARD TAGS ===== -->
+
+    <!-- Twitter Card Type - determines how the tweet will look when shared -->
+    <!-- summary_large_image: shows large image with title and description -->
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <!-- Twitter URL - the canonical URL for Twitter -->
+    <meta property="twitter:url" content="https://tellyoudoc.com" />
+
+    <!-- Twitter Title - title that appears in Twitter cards -->
+    <meta
+      property="twitter:title"
+      content="TellYouDoc - AI-Powered Healthcare Platform | Connect with Doctors"
+    />
+
+    <!-- Twitter Description - description that appears in Twitter cards -->
+    <meta
+      property="twitter:description"
+      content="TellYouDoc is an innovative AI-powered healthcare platform connecting patients with qualified doctors. Get personalized medical consultations, health monitoring, and expert care from the comfort of your home."
+    />
+
+    <!-- Twitter Image - image that appears in Twitter cards -->
+    <meta
+      property="twitter:image"
+      content="https://tellyoudoc.com/favicon/tyd.png"
+    />
+
+    <!-- ===== ADDITIONAL SEO META TAGS ===== -->
+
+    <!-- Application Name - name used when adding to mobile home screen -->
+    <meta name="application-name" content="TellYouDoc" />
+
+    <!-- MS Application Tile Color - color of Windows tile when pinned -->
+    <meta name="msapplication-TileColor" content="#ffffff" />
+
+    <!-- MS Application Config - points to Windows-specific configuration -->
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+
+    <!-- ===== PERFORMANCE OPTIMIZATION ===== -->
+
+    <!-- Preconnect - establishes early connections to external domains -->
+    <!-- Improves loading speed by setting up connections before they're needed -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+
+    <!-- DNS Prefetch - resolves domain names early for faster resource loading -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+
+    <!-- ===== STRUCTURED DATA (SCHEMA.ORG) ===== -->
+
+    <!-- Organization Schema - helps search engines understand your business -->
+    <!-- Can trigger rich snippets in search results -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "TellYouDoc",
+        "url": "https://tellyoudoc.com",
+        "logo": "https://tellyoudoc.com/favicon/tyd.png",
+        "description": "AI-powered healthcare platform connecting patients with qualified doctors",
+        "foundingDate": "2024",
+        "sameAs": [
+          "https://www.linkedin.com/company/tellyoudoc",
+          "https://twitter.com/tellyoudoc",
+          "https://www.facebook.com/tellyoudoc"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "availableLanguage": "English"
+        }
+      }
+    </script>
+
+    <!-- Website Schema - enables site search functionality in search results -->
+    <!-- Allows users to search within your site directly from Google -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "TellYouDoc",
+        "url": "https://tellyoudoc.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://tellyoudoc.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <!-- Medical Organization Schema - healthcare-specific markup -->
+    <!-- Helps with medical-related searches and can trigger healthcare rich snippets -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "MedicalOrganization",
+        "name": "TellYouDoc",
+        "url": "https://tellyoudoc.com",
+        "description": "AI-powered healthcare platform providing telemedicine services",
+        "medicalSpecialty": "General Practice",
+        "availableService": {
+          "@type": "MedicalService",
+          "name": "Telemedicine Consultation",
+          "description": "Online medical consultations with qualified doctors"
+        }
+      }
+    </script>
+
+    <!-- Breadcrumb Schema - helps search engines understand site navigation -->
+    <!-- Can display breadcrumbs in search results -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://tellyoudoc.com"
+          }
+        ]
+      }
+    </script>
+
+    <!-- FAQ Schema - can trigger FAQ rich snippets in search results -->
+    <!-- Shows questions and answers directly in search results -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is TellYouDoc?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "TellYouDoc is an AI-powered healthcare platform that connects patients with qualified doctors for online medical consultations and health monitoring."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does TellYouDoc work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "TellYouDoc uses advanced AI technology to match patients with appropriate doctors, facilitate secure video consultations, and provide comprehensive health monitoring tools."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <!-- ===== EXTERNAL RESOURCES ===== -->
+
+    <!-- Google Fonts - Inter font family for consistent typography -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Font Awesome - icon library for UI elements -->
+    <!-- integrity and crossorigin ensure security and proper loading -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -23,7 +311,10 @@
     />
   </head>
   <body>
+    <!-- Root element where React app will be mounted -->
     <div id="root"></div>
+
+    <!-- Main JavaScript entry point for the React application -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
