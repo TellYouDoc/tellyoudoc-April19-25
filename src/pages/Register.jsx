@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import LoadingScreen from '../components/LoadingScreen';
-import {apiService} from '../services/api';
-import '../styles/Auth.css';
-import '../styles/login-methods.css';
-import '../styles/otp-input.css';
+import { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import LoadingScreen from "../components/LoadingScreen";
+import { apiService } from "../services/api";
+import "../styles/Auth.css";
+import "../styles/login-methods.css";
+import "../styles/otp-input.css";
 
 // List of specializations matching the mobile app
 const SPECIALIZATIONS = [
@@ -18,30 +18,43 @@ const SPECIALIZATIONS = [
   "Orthopedics",
   "Psychiatry",
   "General Medicine",
-  "Other"
+  "Other",
 ];
 
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    gender: '',
-    dateOfBirth: '',
-    specialization: '',
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    gender: "",
+    dateOfBirth: "",
+    specialization: "",
   });
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [showSpecializationDropdown, setShowSpecializationDropdown] = useState(false);
-  
+  const [showSpecializationDropdown, setShowSpecializationDropdown] =
+    useState(false);
+
   // Clear form errors when fields are updated
   useEffect(() => {
-    if (formData.firstName.trim() || formData.lastName.trim() || formData.gender || formData.dateOfBirth || formData.specialization) {
+    if (
+      formData.firstName.trim() ||
+      formData.lastName.trim() ||
+      formData.gender ||
+      formData.dateOfBirth ||
+      formData.specialization
+    ) {
       setFormErrors({});
     }
-  }, [formData.firstName, formData.lastName, formData.gender, formData.dateOfBirth, formData.specialization]);
+  }, [
+    formData.firstName,
+    formData.lastName,
+    formData.gender,
+    formData.dateOfBirth,
+    formData.specialization,
+  ]);
 
   useEffect(() => {
     // Trigger animations when component mounts
@@ -53,21 +66,26 @@ function Register() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Validation for name fields
-    if (['firstName', 'middleName', 'lastName'].includes(name)) {
+    if (["firstName", "middleName", "lastName"].includes(name)) {
       const nameRegex = /^[a-zA-Z]+$/;
       if (value && !nameRegex.test(value)) {
-        setFormErrors({...formErrors, [name]: `${name.charAt(0).toUpperCase() + name.slice(1)} can only contain alphabetic characters`});
+        setFormErrors({
+          ...formErrors,
+          [name]: `${
+            name.charAt(0).toUpperCase() + name.slice(1)
+          } can only contain alphabetic characters`,
+        });
         return;
       } else {
         // Clear error for this field
-        const newErrors = {...formErrors};
+        const newErrors = { ...formErrors };
         delete newErrors[name];
         setFormErrors(newErrors);
       }
     }
-    
+
     setFormData({
       ...formData,
       [name]: value,
@@ -77,11 +95,11 @@ function Register() {
   const handleGenderSelect = (gender) => {
     setFormData({
       ...formData,
-      gender
+      gender,
     });
-    
+
     // Clear gender error
-    const newErrors = {...formErrors};
+    const newErrors = { ...formErrors };
     delete newErrors.gender;
     setFormErrors(newErrors);
   };
@@ -89,16 +107,16 @@ function Register() {
   const selectSpecialization = (specialization) => {
     setFormData({
       ...formData,
-      specialization
+      specialization,
     });
     setShowSpecializationDropdown(false);
-    
+
     // Clear specialization error
-    const newErrors = {...formErrors};
+    const newErrors = { ...formErrors };
     delete newErrors.specialization;
     setFormErrors(newErrors);
   };
-  
+
   const toggleSpecializationDropdown = () => {
     setShowSpecializationDropdown(!showSpecializationDropdown);
   };
@@ -131,8 +149,11 @@ function Register() {
       const today = new Date();
       const age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
-      
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+
+      if (
+        monthDiff < 0 ||
+        (monthDiff === 0 && today.getDate() < birthDate.getDate())
+      ) {
         if (age <= 21) {
           newErrors.dateOfBirth = "You must be at least 21 years old";
           isValid = false;
@@ -161,7 +182,7 @@ function Register() {
     if (!validateForm()) return;
 
     setIsLoading(true);
-    
+
     // Create profile data object according to API requirements
     const profileData = {
       firstName: formData.firstName.trim(),
@@ -173,26 +194,29 @@ function Register() {
     };
 
     // Use doctorService.createProfile API to create the user account
-    apiService.doctorService.createProfile(profileData)
-      .then(response => {
-        // Handle successful profile creation
-        console.log('Profile created successfully:', response.data);
-        
+    apiService.doctorService
+      .createProfile(profileData)
+      .then((response) => {
         // Store user data if available
         if (response.data.userData) {
-          localStorage.setItem('UserData', JSON.stringify(response.data.userData));
+          localStorage.setItem(
+            "UserData",
+            JSON.stringify(response.data.userData)
+          );
         }
-        
+
         setIsLoading(false);
         // Show success message and navigate to dashboard
-        alert('Your profile has been created successfully!');
-        navigate('/dashboard'); 
+        alert("Your profile has been created successfully!");
+        navigate("/dashboard");
       })
-      .catch(error => {
+      .catch((error) => {
         // Handle errors
-        console.error('Profile creation failed:', error);
+        console.error("Profile creation failed:", error);
         setFormErrors({
-          submit: error.response?.data?.message || 'Registration failed. Please try again.'
+          submit:
+            error.response?.data?.message ||
+            "Registration failed. Please try again.",
         });
         setIsLoading(false);
       });
@@ -204,21 +228,31 @@ function Register() {
       <Navbar />
 
       <div className="auth-container">
-        <div className={`auth-card register ${isVisible ? 'visible' : ''}`}>
+        <div className={`auth-card register ${isVisible ? "visible" : ""}`}>
           <div className="auth-header">
             <h2 className="animated-item fade-in">Create Your Profile</h2>
-            <p className="animated-item fade-in delay-1">Please fill in your details to get started</p>
+            <p className="animated-item fade-in delay-1">
+              Please fill in your details to get started
+            </p>
           </div>
 
-          {formErrors.submit && <div className="auth-error animated-item fade-in">{formErrors.submit}</div>}
+          {formErrors.submit && (
+            <div className="auth-error animated-item fade-in">
+              {formErrors.submit}
+            </div>
+          )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-section animated-item fade-in slide-up delay-2">
               <h3 className="section-title">Personal Information</h3>
-              
+
               <div className="form-group">
                 <label htmlFor="firstName">First Name</label>
-                <div className={`input-with-icon ${formErrors.firstName ? 'error' : ''}`}>
+                <div
+                  className={`input-with-icon ${
+                    formErrors.firstName ? "error" : ""
+                  }`}
+                >
                   <i className="material-icons">person</i>
                   <input
                     type="text"
@@ -230,7 +264,9 @@ function Register() {
                     className="input-animated"
                   />
                 </div>
-                {formErrors.firstName && <div className="error-text">{formErrors.firstName}</div>}
+                {formErrors.firstName && (
+                  <div className="error-text">{formErrors.firstName}</div>
+                )}
               </div>
 
               <div className="form-group">
@@ -251,7 +287,11 @@ function Register() {
 
               <div className="form-group">
                 <label htmlFor="lastName">Last Name</label>
-                <div className={`input-with-icon ${formErrors.lastName ? 'error' : ''}`}>
+                <div
+                  className={`input-with-icon ${
+                    formErrors.lastName ? "error" : ""
+                  }`}
+                >
                   <i className="material-icons">person</i>
                   <input
                     type="text"
@@ -263,29 +303,46 @@ function Register() {
                     className="input-animated"
                   />
                 </div>
-                {formErrors.lastName && <div className="error-text">{formErrors.lastName}</div>}
+                {formErrors.lastName && (
+                  <div className="error-text">{formErrors.lastName}</div>
+                )}
               </div>
 
               <div className="form-group">
-                <label className={formErrors.gender ? 'label-error' : ''}>Gender</label>
+                <label className={formErrors.gender ? "label-error" : ""}>
+                  Gender
+                </label>
                 <div className="gender-options">
                   {["Male", "Female", "Other"].map((gender) => (
                     <button
                       key={gender}
                       type="button"
-                      className={`gender-option ${formData.gender === gender ? 'selected' : ''}`}
+                      className={`gender-option ${
+                        formData.gender === gender ? "selected" : ""
+                      }`}
                       onClick={() => handleGenderSelect(gender)}
                     >
                       {gender}
                     </button>
                   ))}
                 </div>
-                {formErrors.gender && <div className="error-text">{formErrors.gender}</div>}
+                {formErrors.gender && (
+                  <div className="error-text">{formErrors.gender}</div>
+                )}
               </div>
 
               <div className="form-group">
-                <label htmlFor="dateOfBirth" className={formErrors.dateOfBirth ? 'label-error' : ''}>Date of Birth</label>
-                <div className={`input-with-icon ${formErrors.dateOfBirth ? 'error' : ''}`}>
+                <label
+                  htmlFor="dateOfBirth"
+                  className={formErrors.dateOfBirth ? "label-error" : ""}
+                >
+                  Date of Birth
+                </label>
+                <div
+                  className={`input-with-icon ${
+                    formErrors.dateOfBirth ? "error" : ""
+                  }`}
+                >
                   <i className="material-icons">calendar_today</i>
                   <input
                     type="date"
@@ -294,32 +351,57 @@ function Register() {
                     value={formData.dateOfBirth}
                     onChange={handleChange}
                     className="input-animated"
-                    max={new Date(new Date().setFullYear(new Date().getFullYear() - 21)).toISOString().split('T')[0]}
+                    max={
+                      new Date(
+                        new Date().setFullYear(new Date().getFullYear() - 21)
+                      )
+                        .toISOString()
+                        .split("T")[0]
+                    }
                   />
                 </div>
-                {formErrors.dateOfBirth && <div className="error-text">{formErrors.dateOfBirth}</div>}
+                {formErrors.dateOfBirth && (
+                  <div className="error-text">{formErrors.dateOfBirth}</div>
+                )}
               </div>
 
               <div className="form-group">
-                <label htmlFor="specialization" className={formErrors.specialization ? 'label-error' : ''}>Specialization</label>
-                <div className={`input-with-icon dropdown-container ${formErrors.specialization ? 'error' : ''}`}>
+                <label
+                  htmlFor="specialization"
+                  className={formErrors.specialization ? "label-error" : ""}
+                >
+                  Specialization
+                </label>
+                <div
+                  className={`input-with-icon dropdown-container ${
+                    formErrors.specialization ? "error" : ""
+                  }`}
+                >
                   <i className="material-icons">medical_services</i>
-                  <div 
-                    className="dropdown-field" 
+                  <div
+                    className="dropdown-field"
                     onClick={toggleSpecializationDropdown}
                   >
-                    <span className={!formData.specialization ? 'placeholder' : ''}>
-                      {formData.specialization || 'Select your specialization'}
+                    <span
+                      className={!formData.specialization ? "placeholder" : ""}
+                    >
+                      {formData.specialization || "Select your specialization"}
                     </span>
-                    <i className="material-icons">{showSpecializationDropdown ? 'arrow_drop_up' : 'arrow_drop_down'}</i>
+                    <i className="material-icons">
+                      {showSpecializationDropdown
+                        ? "arrow_drop_up"
+                        : "arrow_drop_down"}
+                    </i>
                   </div>
                 </div>
                 {showSpecializationDropdown && (
                   <div className="dropdown-list">
                     {SPECIALIZATIONS.map((spec) => (
-                      <div 
-                        key={spec} 
-                        className={`dropdown-item ${formData.specialization === spec ? 'selected' : ''}`}
+                      <div
+                        key={spec}
+                        className={`dropdown-item ${
+                          formData.specialization === spec ? "selected" : ""
+                        }`}
                         onClick={() => selectSpecialization(spec)}
                       >
                         {spec}
@@ -327,14 +409,18 @@ function Register() {
                     ))}
                   </div>
                 )}
-                {formErrors.specialization && <div className="error-text">{formErrors.specialization}</div>}
+                {formErrors.specialization && (
+                  <div className="error-text">{formErrors.specialization}</div>
+                )}
               </div>
             </div>
 
             <div className="form-footer animated-item fade-in delay-6">
-              <button 
-                type="submit" 
-                className={`auth-button ${Object.keys(formErrors).length > 0 ? 'disabled' : ''}`}
+              <button
+                type="submit"
+                className={`auth-button ${
+                  Object.keys(formErrors).length > 0 ? "disabled" : ""
+                }`}
                 disabled={isLoading}
               >
                 Create Profile

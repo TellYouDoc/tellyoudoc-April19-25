@@ -673,8 +673,6 @@ const handleSubmit = async (e) => {
       payload.specificDates = appointmentDates;
     }
     
-    console.log('Creating appointment:', payload);
-    
     // Replace with your actual API call
     const response = await apiService.appointmentService.createAppointment(payload);
     
@@ -706,7 +704,7 @@ const handleCancelAppointment = async (appointment) => {
       };
       // Call the API service to cancel the appointment
       const response = await apiService.appointmentService.cancelAppointment(data);
-      console.log("Cancelling appointment with data:", response);
+      
           if (response.status === 200) {
             alert(`Appointment with ${patientName} has been cancelled.`);
             // You could refresh appointments here
@@ -737,7 +735,6 @@ const handleAcceptAppointment = async (appointment) => {
         appointmentCreatedId: appointment.id || null,
         patientId: appointment.patientId || null
       };
-      console.log("Accepting appointment with data:", data);
       
       // Call the API service to accept the appointment
       const response = await apiService.appointmentService.acceptAppointment(data);

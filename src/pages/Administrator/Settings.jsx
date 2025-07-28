@@ -74,7 +74,6 @@ const AdminSettings = () => {
   }, [location]);
 
   const handleSave = (values) => {
-    console.log("Settings saved:", values);
     message.success("Settings updated successfully");
   };
 
@@ -124,7 +123,6 @@ const AdminSettings = () => {
       }
 
       // TODO: Add API call to verify current password and send OTP
-      console.log('Password change request:', values);
       
       // Show success and open OTP modal
       message.success('OTP sent to your email');
@@ -141,7 +139,6 @@ const AdminSettings = () => {
   const handleOtpSubmit = async (values) => {
     try {
       // TODO: Add API call to verify OTP
-      console.log('OTP verification:', values);
 
       // Close modal and show success
       setIsOtpModalVisible(false);

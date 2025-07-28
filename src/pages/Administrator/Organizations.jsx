@@ -112,15 +112,8 @@ const Organizations = () => {
         ...(ownershipTypeFilter !== "all" && { ownershipType: ownershipTypeFilter }),
         ...(verificationStatusFilter !== "all" && { verificationStatus: verificationStatusFilter }),
         ...(accountStatusFilter !== "all" && { isActive: accountStatusFilter === "active" }),
-      };
+      };  
 
-      // Log the request payload with filters
-      console.log("Request payload with filters:", data);
-
-      // Mock API call since we don't have the actual endpoint yet
-      // In a real implementation, you would use:
-      // const response = await apiService.AdministratorService.getAllOrganizations(data);
-      
       // For now, let's generate mock data
       const mockResponse = generateMockOrganizationData();
       

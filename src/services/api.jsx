@@ -1,10 +1,10 @@
 import axios from "axios";
 
 // Environment configuration
-const DEV_URL = "https://staging.api.tellyoudoc.com/api/v1"; // Using relative URL for dev to work with the proxy
-// const DEV_URL = "http://172.16.14.99:3050/api/v1";
-const PROD_URL = "https://staging.api.tellyoudoc.com/api/v1";
-// const PROD_URL = "http://172.16.14.99:3050/api/v1";
+// const DEV_URL = "https://staging.api.tellyoudoc.com/api/v1"; //   Using relative URL for dev to work with the proxy
+const DEV_URL = "/api/v1"; // Use relative URL to work with Vite proxy
+// const PROD_URL = "https://staging.api.tellyoudoc.com/api/v1";
+const PROD_URL = "http://172.16.14.99:3000/api/v1";
 
 // Determine if we're in development mode based on the environment
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -44,8 +44,6 @@ api.interceptors.request.use(
 
     // If token exists, add it to headers
     if (accessToken) {
-      console.log("Access Token found in cookie/localStorage");
-
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
 
@@ -148,8 +146,8 @@ const authService = {
 const homePageService = {
   contactUs: async (data) => {
     return api.post("/contact-us", data);
-  }
-}
+  },
+};
 
 // OTP send and verify service
 const betaRegistration = {
@@ -195,7 +193,7 @@ const doctorService = {
   addPracticeInfo: (data) => api.post("/doctor/add-practice", data),
   deletePracticeInfo: (id) => api.delete(`/doctor/remove-practice/${id}`),
 
-  requestApp: (data) => api.post("/request-app", data)
+  requestApp: (data) => api.post("/request-app", data),
 };
 
 // Patient-Doctor Connection Service
@@ -300,9 +298,9 @@ const AdministratorService = {
     api.patch(`/admin/users/${adminId}/permissions`, data),
 
   // Get Doctors
-  getAllDoctors: (page, limit, search, pinCode, status) =>
-    api.get("/admin/doctors", {
-      params: { page, limit, search, pinCode, status },
+  getAllDoctors: (page, limit, search, status) =>
+    api.get("/admin/doctors/doctors", {
+      params: { page, limit, search, status },
     }),
   // Get Doctor by ID
   getDoctorById: (doctorId) => api.get(`/admin/doctors/${doctorId}`),
@@ -339,6 +337,10 @@ const AdministratorService = {
   // Get subscriber by ID
   getSubscriberById: (subscriberId) =>
     api.get(`/admin/subscribers/${subscriberId}`),
+
+  // Update Doctor Status
+  updateDoctorStatus: (doctorId, data) =>
+    api.patch(`/admin/doctors/${doctorId}/status`, data),
 };
 
 // Create the API service object

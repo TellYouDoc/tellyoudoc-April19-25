@@ -242,8 +242,6 @@ const BetaPartners = () => {
         status: status !== "all" ? status : undefined,
       });
 
-      console.log("Filtered response:", response);
-
       // For now, filter the existing data locally
       let filtered = [...data];
 
@@ -382,7 +380,6 @@ const BetaPartners = () => {
 
       // Get the actual IDs of the selected rows
       const selectedIds = selectedRowKeys;
-      console.log("Sending bulk approval for IDs:", selectedIds);
 
       // In real implementation, this would be an API call to update multiple partners
       // Send all IDs together as an array along with the review notes
@@ -392,14 +389,12 @@ const BetaPartners = () => {
         reviewNotes: notes,
       };
 
-      console.log("Bulk approval request data:", requestData);
 
       const response =
         await apiService.AdministratorService.approveRejectMultipleBetaPartners(
           requestData
         );
 
-      console.log("Bulk approval response:", response);
 
       if (response && response.status === 200) {
         // For now, update local state
@@ -445,7 +440,6 @@ const BetaPartners = () => {
 
       // Get the actual IDs of the selected rows
       const selectedIds = selectedRowKeys;
-      console.log("Sending bulk rejection for IDs:", selectedIds);
 
       // In real implementation, this would be an API call to update multiple partners
       // Send all IDs together as an array along with the review notes
@@ -455,14 +449,12 @@ const BetaPartners = () => {
         reviewNotes: notes,
       };
 
-      console.log("Bulk rejection request data:", requestData);
 
       const response =
         await apiService.AdministratorService.approveRejectMultipleBetaPartners(
           requestData
         );
 
-      console.log("Bulk rejection response:", response);
 
       if (response && response.status === 200) {
         // For now, update local state
@@ -565,7 +557,6 @@ const BetaPartners = () => {
 
   // Approve or Reject single application
   const updatePartnerStatus = async (id, status, notes = "") => {
-    console.log("Updating partner status:", id, status, notes);
 
     try {
       setIsLoading(true); // Data to be sent to the API
@@ -581,7 +572,6 @@ const BetaPartners = () => {
           requestData
         );
 
-      console.log("Update response:", response);
 
       if (response && response.status === 200) {
         // Update local state with the new status

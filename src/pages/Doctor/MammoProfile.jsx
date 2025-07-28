@@ -63,7 +63,6 @@ function MammoProfile() {
         await apiService.patientDoctorService.getPatientRequestById(id);
 
       if (response.status === 200) {
-        console.log("Patient data fetched successfully:", response.data.data);
         setPatient(response.data.data);
         setIsLoading(false);
       } else {
@@ -321,7 +320,6 @@ function MammoProfile() {
               requestId
             );
 
-        console.log("Treatment decision response:", response);
 
         if (response.status === 200) {
           const successMessage = needsTreatment

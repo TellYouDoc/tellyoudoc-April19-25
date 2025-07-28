@@ -141,10 +141,6 @@ const AdminFAQ = () => {
       // For now just simulating an API call with setTimeout
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      console.log("Saving FAQs:", {
-        ungroupedFaqs: faqs,
-        faqGroups: faqGroups,
-      });
 
       setLastSaved(new Date());
     } catch (error) {

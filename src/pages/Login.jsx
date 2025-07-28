@@ -250,7 +250,6 @@ function Login() {
       otp: otpValue
     })
       .then(response => {
-        console.log('OTP verification response:', response);
 
         // Save tokens to cookies
         if (response.data && response.data.AccessToken) {
@@ -285,7 +284,6 @@ function Login() {
             
             // If there's a saved path, navigate to it
             if (lastViewedPage && lastViewedPage !== '/login') {
-              console.log('Redirecting to last viewed page:', lastViewedPage);
               window.location.replace(lastViewedPage);
             } else {
               // Default to dashboard
@@ -374,7 +372,6 @@ function Login() {
     // Use doctorService.createProfile API to create the user account
     apiService.doctorService.createProfile(profileData)
       .then(response => {
-        console.log('Profile created successfully:', response.data);
 
         // Store user data if available
         if (response.data.userData) {

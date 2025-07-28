@@ -35,10 +35,6 @@ function Patients() {
       try {
         const response = await apiService.patientDoctorService.getMyPatients();
 
-        console.log("Patient Page starts ---- ");
-
-        // console.log("response", response);
-
         const patientData = response.data;
         // Format the patient data exactly as in the mobile app - only using these specific fields
         const formattedPatients = patientData.map((patient) => ({
@@ -70,7 +66,6 @@ function Patients() {
     const fetchProfile = async () => {
       try {
         const response = await apiService.doctorService.getProfile();
-        console.log("Fetched profile:", response.data);
         setPatientId(response.data?.data?.UDI_id || "No ID");
       } catch (error) {
         console.error("Error fetching profile:", error);

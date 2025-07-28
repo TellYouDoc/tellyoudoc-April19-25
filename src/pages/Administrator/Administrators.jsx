@@ -122,11 +122,16 @@ const customStyles = {
     borderRadius: "var(--radius)",
   },
   modal: {
+    ".ant-modal": {
+      margin: "0",
+      padding: "0",
+    },
     ".ant-modal-content": {
       padding: "24px",
       background: "var(--background-primary)",
       borderRadius: "var(--radius-lg)",
       boxShadow: "var(--shadow-lg)",
+      margin: "0",
     },
     ".ant-modal-header": {
       padding: "0 0 16px 0",
@@ -142,6 +147,7 @@ const customStyles = {
     },
     ".ant-modal-body": {
       padding: "24px 0",
+      margin: "0",
     },
     ".ant-modal-close": {
       top: "24px",
@@ -154,7 +160,12 @@ const customStyles = {
     },
   },
   switchStyle: {
-    backgroundColor: "var(--primary-color)",
+    "&.ant-switch-checked": {
+      backgroundColor: "var(--primary-color) !important",
+    },
+    "&.ant-switch:not(.ant-switch-checked)": {
+      backgroundColor: "var(--border-color) !important",
+    },
   },
   formSection: {
     marginBottom: "24px",
@@ -236,6 +247,8 @@ function Administrators() {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isPermissionsModalVisible, setIsPermissionsModalVisible] =
     useState(false);
+  const [isViewDetailsModalVisible, setIsViewDetailsModalVisible] =
+    useState(false);
   const [isDebugModalVisible, setIsDebugModalVisible] = useState(false);
   const [localStorageItems, setLocalStorageItems] = useState([]);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
@@ -297,7 +310,7 @@ function Administrators() {
       key: "index",
       render: (_, __, index) => index + 1,
       width: 60,
-      fixed: 'left'
+      fixed: "left",
     },
     {
       title: "Role",
@@ -307,7 +320,7 @@ function Administrators() {
       render: (role) => (
         <Tag
           style={
-            role === "Super Admin"
+            role === "superadmin"
               ? customStyles.roleTag.superAdmin
               : customStyles.roleTag.admin
           }
@@ -357,197 +370,60 @@ function Administrators() {
       ellipsis: true,
       render: (email, record) => (
         <Tooltip title={email}>
-          <span style={currentAdmin && record._id === currentAdmin.id ? {fontWeight: 500} : undefined}>
+          <span
+            style={
+              currentAdmin && record._id === currentAdmin.id
+                ? { fontWeight: 500 }
+                : undefined
+            }
+          >
             {email}
           </span>
         </Tooltip>
       ),
     },
     {
-      title: (
-        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          Permissions
-          <Tooltip
-            title="Super Admins have all permissions by default. Admin permissions can be customized."
-            placement="top"
-          >
-            <InfoCircleOutlined
-              style={{ color: "var(--text-secondary)", fontSize: "14px" }}
-            />
-          </Tooltip>
-        </div>
-      ),
-      key: "permissions",
-      width: 200,
-      ellipsis: true,
-      render: (_, record) => {
-        const activePermissions = record.permissions || [];
-        const displayPermissions = activePermissions.slice(0, 2);
-        const remainingCount = activePermissions.length - 2;
-
-        // Special display for Super Admins
-        if (record.role === "superadmin") {
-          return (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Tag
-                style={{
-                  background: "var(--primary-color-light)",
-                  borderColor: "var(--primary-color)",
-                  color: "var(--primary-color)",
-                  borderRadius: "var(--radius)",
-                  padding: "0 8px",
-                  fontSize: "12px",
-                }}
-              >
-                All Permissions
-              </Tag>
-            </div>
-          );
-        }
-
-        const allPermissionsContent = (
-          <div style={{ maxWidth: "300px" }}>
-            <div style={{ marginBottom: "8px", fontWeight: 500 }}>
-              Active Permissions:
-            </div>
-            {activePermissions.length > 0 ? (
-              activePermissions.map((perm) => (
-                <div key={perm} style={{ marginBottom: "4px" }}>
-                  • {permissionConfig[perm]?.label || perm}
-                </div>
-              ))
-            ) : (
-              <div>No active permissions</div>
-            )}
-          </div>
-        );
-
-        return (
-          <Space size={4}>
-            {activePermissions.length === 0 ? (
-              <Tag
-                style={{
-                  background: "var(--background-secondary)",
-                  border: "1px solid var(--border-color)",
-                  borderRadius: "var(--radius)",
-                  color: "var(--text-secondary)",
-                  padding: "0 8px",
-                  fontSize: "12px",
-                }}
-              >
-                No permissions
-              </Tag>
-            ) : (
-              <>
-                {displayPermissions.map((perm) => (
-                  <Tag
-                    key={perm}
-                    style={{
-                      background: "var(--background-secondary)",
-                      border: "1px solid var(--border-color)",
-                      borderRadius: "var(--radius)",
-                      color: "var(--text-primary)",
-                      padding: "0 8px",
-                      fontSize: "12px",
-                    }}
-                  >
-                    {permissionConfig[perm]?.label || perm}
-                  </Tag>
-                ))}
-                {remainingCount > 0 && (
-                  <Tooltip title={allPermissionsContent} placement="topRight">
-                    <Tag
-                      style={{
-                        background: "var(--background-secondary)",
-                        border: "1px solid var(--border-color)",
-                        borderRadius: "var(--radius)",
-                        color: "var(--text-secondary)",
-                        padding: "0 8px",
-                        fontSize: "12px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      +{remainingCount} more
-                    </Tag>
-                  </Tooltip>
-                )}
-              </>
-            )}
-          </Space>
-        );
-      },
-    },
-    {
-      title: "Added On",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      width: 150,
-      render: (text) => {
-        try {
-          const date = new Date(text);
-          if (isNaN(date.getTime())) {
-            return "Invalid Date";
-          }
-
-          const day = date.getDate().toString().padStart(2, "0");
-          const month = (date.getMonth() + 1).toString().padStart(2, "0");
-          const year = date.getFullYear();
-          const hours = date.getHours().toString().padStart(2, "0");
-          const minutes = date.getMinutes().toString().padStart(2, "0");
-
-          return `${day}/${month}/${year} ${hours}:${minutes}`;
-        } catch (error) {
-          return "Invalid Date";
-        }
-      },
-    },
-    {
-      title: "Last Login",
-      dataIndex: "lastLogin",
-      key: "lastLogin",
-      render: (text) => {
-        // Check if lastLogin exists
-        if (!text) {
-          return "Never Logged In";
-        }
-
-        try {
-          const date = new Date(text);
-          if (isNaN(date.getTime())) {
-            return "Never Logged In";
-          }
-
-          const day = date.getDate().toString().padStart(2, "0");
-          const month = (date.getMonth() + 1).toString().padStart(2, "0");
-          const year = date.getFullYear();
-          const hours = date.getHours().toString().padStart(2, "0");
-          const minutes = date.getMinutes().toString().padStart(2, "0");
-
-          return `${day}/${month}/${year} ${hours}:${minutes}`;
-        } catch (error) {
-          return "Never Logged In";
-        }
-      },
-    },
-    {
       title: "Actions",
-      key: "actions", 
+      key: "actions",
+      width: 200,
       render: (_, record) => {
         // Disable actions if this is the current admin
         const isCurrentAdmin = currentAdmin && record._id === currentAdmin.id;
 
         if (isCurrentAdmin) {
           return (
-            <Tooltip title="You cannot modify your own account">
-              <div style={{ color: "var(--text-secondary)", fontSize: "12px" }}>
-                No actions available
-              </div>
-            </Tooltip>
+            <Space>
+              <Button
+                type="default"
+                icon={<InfoCircleOutlined />}
+                onClick={() => handleViewDetails(record)}
+                style={customStyles.actionButton}
+                className="btn-premium btn-sm btn-outline"
+              >
+                View
+              </Button>
+              <Tooltip title="You cannot modify your own account">
+                <div
+                  style={{ color: "var(--text-secondary)", fontSize: "12px" }}
+                >
+                  Other actions disabled
+                </div>
+              </Tooltip>
+            </Space>
           );
         }
 
         return (
           <Space>
+            <Button
+              type="default"
+              icon={<InfoCircleOutlined />}
+              onClick={() => handleViewDetails(record)}
+              style={customStyles.actionButton}
+              className="btn-premium btn-sm btn-outline"
+            >
+              View
+            </Button>
             {record.role !== "superadmin" && (
               <Button
                 type="default"
@@ -570,8 +446,8 @@ function Administrators() {
                   ...customStyles.popconfirmButton,
                   background: "var(--primary-color)",
                   borderColor: "var(--primary-color)",
-                  color: "white"
-                }
+                  color: "white",
+                },
               }}
               cancelButtonProps={{
                 className: "btn-premium",
@@ -579,8 +455,8 @@ function Administrators() {
                   ...customStyles.popconfirmButton,
                   background: "transparent",
                   borderColor: "var(--border-color)",
-                  color: "var(--text-primary)"
-                }
+                  color: "var(--text-primary)",
+                },
               }}
               placement="topRight"
             >
@@ -595,21 +471,21 @@ function Administrators() {
             </Popconfirm>
           </Space>
         );
-      }
+      },
     },
   ];
 
   useEffect(() => {
     // Load current admin data from localStorage
     try {
-      const adminData = localStorage.getItem('adminData');
+      const adminData = localStorage.getItem("adminData");
       if (adminData) {
         setCurrentAdmin(JSON.parse(adminData));
       }
     } catch (err) {
-      console.error('Error loading admin data:', err);
+      console.error("Error loading admin data:", err);
     }
-    
+
     const fetchAdministrators = async () => {
       try {
         let page = currentPage;
@@ -622,15 +498,10 @@ function Administrators() {
             limit
           );
 
-        console.log("API Response:", response);
-        console.log("Fetched Administrators:", response.data.data);
-
         if (response && response.status === 200) {
           setAdministrators(response.data.data);
           setFilteredAdministrators(response.data.data);
           setTotalAdministrators(response.data.pagination.total);
-
-          console.log("Total Administrators:", totalAdministrators);
         }
       } catch (error) {
         console.error("Error fetching administrators:", error);
@@ -676,15 +547,12 @@ function Administrators() {
         refreshToken: localStorage.getItem("refreshToken") || "",
       };
 
-      console.log("New Admin Data:", newAdmin);
-
       let createdAdmin;
 
       try {
         // Try to make the API call
         const response =
           await apiService.AdministratorService.createAdministrator(newAdmin);
-        console.log("API Response:", response);
 
         // If successful, use the returned admin from API
         if (response && response.data) {
@@ -802,9 +670,9 @@ function Administrators() {
 
   const handleDelete = async (id) => {
     // Prevent deleting current admin
-    const adminToDelete = administrators.find(admin => admin._id === id);
+    const adminToDelete = administrators.find((admin) => admin._id === id);
     if (currentAdmin && adminToDelete._id === currentAdmin.id) {
-      message.warning('You cannot delete your own account');
+      message.warning("You cannot delete your own account");
       return;
     }
 
@@ -833,10 +701,15 @@ function Administrators() {
     }
   };
 
+  const handleViewDetails = (admin) => {
+    setSelectedAdmin(admin);
+    setIsViewDetailsModalVisible(true);
+  };
+
   const handlePermissions = async (admin) => {
     // Prevent modifying current admin permissions
     if (currentAdmin && admin._id === currentAdmin.id) {
-      message.warning('You cannot modify your own permissions');
+      message.warning("You cannot modify your own permissions");
       return;
     }
 
@@ -883,8 +756,6 @@ function Administrators() {
           updateData
         );
 
-      console.log("API Response:", response);
-
       if (response && response.status === 200) {
         // Update local state with new permissions
         const updatedAdministrators = administrators.map((admin) =>
@@ -915,6 +786,30 @@ function Administrators() {
       );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Helper function to format dates consistently
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Never Logged In";
+    }
+
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return "Invalid Date";
+      }
+
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear();
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+
+      return `${day}/${month}/${year} ${hours}:${minutes}`;
+    } catch (error) {
+      return "Invalid Date";
     }
   };
 
@@ -1012,18 +907,18 @@ function Administrators() {
       );
     }
 
-    // Date search
-    if (date) {
-      const searchDate = date.startOf("day");
-      const nextDate = date.clone().endOf("day");
+    // // Date search
+    // if (date) {
+    //   const searchDate = date.startOf("day");
+    //   const nextDate = date.clone().endOf("day");
 
-      filtered = filtered.filter((admin) => {
-        const adminDate = new Date(admin.addedOn);
-        return (
-          adminDate >= searchDate.toDate() && adminDate <= nextDate.toDate()
-        );
-      });
-    }
+    //   filtered = filtered.filter((admin) => {
+    //     const adminDate = new Date(admin.addedOn);
+    //     return (
+    //       adminDate >= searchDate.toDate() && adminDate <= nextDate.toDate()
+    //     );
+    //   });
+    // }
 
     setFilteredAdministrators(filtered);
   };
@@ -1060,13 +955,15 @@ function Administrators() {
                 style={customStyles.searchBar}
                 className="form-control-premium"
               />
-              <DatePicker
+
+              {/* Date Filter */}
+              {/* <DatePicker
                 onChange={handleDateChange}
                 style={customStyles.datePicker}
                 placeholder="Filter by date"
                 format="DD/MM/YYYY"
                 allowClear={true}
-              />
+              /> */}
             </div>
             <Button
               type="primary"
@@ -1097,8 +994,10 @@ function Administrators() {
               showSizeChanger: false,
               showTotal: (total) => `Total ${total} administrators`,
             }}
-            rowClassName={(record) => 
-              currentAdmin && record._id === currentAdmin.id ? 'highlight-row' : ''
+            rowClassName={(record) =>
+              currentAdmin && record._id === currentAdmin.id
+                ? "highlight-row"
+                : ""
             }
             scroll={{ x: "max-content" }}
             size="middle"
@@ -1128,6 +1027,7 @@ function Administrators() {
           footer={null}
           styles={customStyles.modal}
           width={600}
+          centered
         >
           <Form
             form={form}
@@ -1322,6 +1222,7 @@ function Administrators() {
           footer={null}
           styles={customStyles.modal}
           width={600}
+          centered
         >
           <Form
             form={form}
@@ -1501,6 +1402,208 @@ function Administrators() {
           </Form>
         </Modal>
 
+        {/* View Details Modal */}
+        <Modal
+          title={
+            <div>
+              <div style={{ marginBottom: "8px" }}>Administrator Details</div>
+              <Text
+                type="secondary"
+                style={{ fontSize: "var(--font-size-sm)" }}
+              >
+                Complete information about this administrator
+              </Text>
+            </div>
+          }
+          open={isViewDetailsModalVisible}
+          onCancel={() => setIsViewDetailsModalVisible(false)}
+          footer={[
+            <Button
+              key="close"
+              onClick={() => setIsViewDetailsModalVisible(false)}
+            >
+              Close
+            </Button>,
+          ]}
+          styles={customStyles.modal}
+          width={500}
+          centered
+        >
+          {selectedAdmin && (
+            <div style={{ padding: "16px 0" }}>
+              <div style={{ marginBottom: "24px" }}>
+                <div
+                  style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginBottom: "16px",
+                    padding: "16px",
+                    background: "var(--background-secondary)",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
+                  <UserOutlined
+                    style={{ color: "var(--primary-color)", fontSize: "20px" }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: "600",
+                          color: "var(--text-primary)",
+                          fontSize: "16px",
+                        }}
+                      >
+                        {selectedAdmin.username}
+                      </div>
+                      {currentAdmin &&
+                        selectedAdmin._id === currentAdmin.id && (
+                          <Tag
+                            style={{
+                              background: "var(--primary-color-light)",
+                              borderColor: "var(--primary-color)",
+                              color: "var(--primary-color)",
+                              borderRadius: "var(--radius)",
+                              padding: "0 8px",
+                              fontSize: "12px",
+                            }}
+                          >
+                            You
+                          </Tag>
+                        )}
+                    </div>
+                    <div
+                      style={{
+                        color: "var(--text-secondary)",
+                        fontSize: "14px",
+                      }}
+                    >
+                      {selectedAdmin.email}
+                    </div>
+                  </div>
+                  <Tag
+                    style={{
+                      position: "absolute",
+                      top: "12px",
+                      right: "12px",
+                      background:
+                        selectedAdmin.role === "superadmin"
+                          ? "var(--primary-color)"
+                          : "var(--text-primary)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "var(--radius)",
+                      padding: "4px 12px",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    }}
+                  >
+                    {selectedAdmin.role === "superadmin"
+                      ? "Super Admin"
+                      : "Admin"}
+                  </Tag>
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gap: "16px" }}>
+                <div style={customStyles.permissionItem}>
+                  <div>
+                    <div style={customStyles.permissionTitle}>
+                      <SettingOutlined /> Permissions
+                    </div>
+                    <div style={customStyles.permissionDescription}>
+                      {selectedAdmin.role === "superadmin"
+                        ? "All Permissions (Super Admin)"
+                        : `${
+                            selectedAdmin.permissions?.length || 0
+                          } active permissions`}
+                    </div>
+                  </div>
+                </div>
+
+                {selectedAdmin.role !== "superadmin" &&
+                  selectedAdmin.permissions &&
+                  selectedAdmin.permissions.length > 0 && (
+                    <div
+                      style={{
+                        background: "var(--background-secondary)",
+                        padding: "16px",
+                        borderRadius: "var(--radius)",
+                        border: "1px solid var(--border-color)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontWeight: "500",
+                          marginBottom: "12px",
+                          color: "var(--text-primary)",
+                        }}
+                      >
+                        Active Permissions:
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "8px",
+                        }}
+                      >
+                        {selectedAdmin.permissions.map((perm) => (
+                          <Tag
+                            key={perm}
+                            style={{
+                              background: "var(--primary-color-light)",
+                              borderColor: "var(--primary-color)",
+                              color: "var(--primary-color)",
+                              borderRadius: "var(--radius)",
+                              padding: "4px 8px",
+                              fontSize: "12px",
+                            }}
+                          >
+                            {permissionConfig[perm]?.label || perm}
+                          </Tag>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                <div style={customStyles.permissionItem}>
+                  <div>
+                    <div style={customStyles.permissionTitle}>
+                      <FileTextOutlined /> Added On
+                    </div>
+                  </div>
+                  <span style={{ color: "var(--text-primary)" }}>
+                    {formatDate(selectedAdmin.createdAt)}
+                  </span>
+                </div>
+
+                <div style={customStyles.permissionItem}>
+                  <div>
+                    <div style={customStyles.permissionTitle}>
+                      <BarChartOutlined /> Last Login
+                    </div>
+                  </div>
+                  <span style={{ color: "var(--text-primary)" }}>
+                    {formatDate(selectedAdmin.lastLogin)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </Modal>
+
         {/* Permissions Modal */}
         <Modal
           title={
@@ -1522,6 +1625,7 @@ function Administrators() {
           footer={null}
           styles={customStyles.modal}
           width={600}
+          centered
         >
           {selectedAdmin && selectedAdmin.role === "Super Admin" ? (
             <div>
@@ -1654,6 +1758,7 @@ function Administrators() {
           ]}
           styles={customStyles.modal}
           width={800}
+          centered
         >
           <div
             style={{ maxHeight: "400px", overflow: "auto" }}

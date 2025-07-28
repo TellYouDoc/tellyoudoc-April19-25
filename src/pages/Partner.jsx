@@ -456,8 +456,6 @@ const Partner = () => {
           dataToSend
         );
 
-        console.log("Form submission response:", response);
-
         if (response.status === 200 || response.status === 201) {
           // Reset the form
           setFormData({
@@ -942,8 +940,6 @@ const Partner = () => {
       const verifyOTPresponse =
         await apiService.betaRegistration.verifyEmailOTP(dataToSend);
 
-      console.log("OTP verification response:", verifyOTPresponse);
-
       if (verifyOTPresponse.status === 200) {
         // Mark as verified
         setOtpVerified({
@@ -967,8 +963,6 @@ const Partner = () => {
     } else {
       const verifyOTPresponse =
         await apiService.betaRegistration.verifyPhoneOTP(dataToSend);
-
-      console.log("OTP verification response:", verifyOTPresponse);
 
       if (verifyOTPresponse.status === 200) {
         // Mark as verified

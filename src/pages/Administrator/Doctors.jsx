@@ -7,19 +7,14 @@ import {
   Tag,
   Select,
   Input,
-  Modal,
-  Form,
   message,
-  Tooltip,
-  Badge,
+  Avatar,
 } from "antd";
 import {
   CheckCircleOutlined,
-  CloseCircleOutlined,
   StopOutlined,
   EyeOutlined,
   SearchOutlined,
-  CrownOutlined,
 } from "@ant-design/icons";
 import AdminLayout from "../../components/AdminLayout";
 import apiService from "../../services/api";
@@ -31,29 +26,12 @@ const Doctors = () => {
   const [doctors, setDoctors] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchText, setSearchText] = useState("");
-  const [isSubscriptionModalVisible, setIsSubscriptionModalVisible] =
-    useState(false);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [form] = Form.useForm();
-
   const [pinCodeFilter, setPinCodeFilter] = useState("all");
-  const availablePinCodes = [
-    "110001",
-    "110002",
-    "110003",
-    "110004",
-    "110005",
-    "110006",
-    "110007",
-    "110008",
-    "110009",
-    "110010",
-    "110011",
-    "110012",
-  ];
+  const [availablePinCodes, setAvailablePinCodes] = useState([]);
 
   const [totalDoctors, setTotalDoctors] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Status color mapping
   const statusColors = {
@@ -69,36 +47,40 @@ const Doctors = () => {
   // };
 
   // Handle status change
-  const handleStatusChange = (doctorId, newStatus) => {
-    const updatedDoctors = doctors.map((doctor) =>
-      doctor.id === doctorId ? { ...doctor, isActive: newStatus } : doctor
-    );
-    setDoctors(updatedDoctors);
-    message.success(`Doctor status updated to ${newStatus}`);
+  const handleStatusChange = async (doctorId, newStatus) => {
+    try {
+      const data = {
+        newStatus: newStatus,
+      };
+
+      const response = await apiService.AdministratorService.updateDoctorStatus(
+        doctorId,
+        data
+      );
+
+      if (response.status === 200) {
+        // Update the doctor status in the local state
+        const updatedDoctors = doctors.map((doctor) =>
+          doctor._id === doctorId ? { ...doctor, isActive: newStatus } : doctor
+        );
+        setDoctors(updatedDoctors);
+
+        message.success(
+          `Doctor status updated to ${newStatus ? "Active" : "Inactive"}`
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Error updating doctor status:",
+        JSON.stringify(error, null, 2)
+      );
+      message.error("Failed to update doctor status");
+    }
   };
 
   // Navigate to doctor profile with ID
   const handleViewProfile = (doctor) => {
     navigate(`/admin/doctors/${doctor.doctorId}`);
-  };
-
-  // Handle subscription management
-  const handleManageSubscription = (doctor) => {
-    setSelectedDoctor(doctor);
-    form.setFieldsValue({ subscription: doctor.subscription });
-    setIsSubscriptionModalVisible(true);
-  };
-
-  // Handle subscription update
-  const handleSubscriptionUpdate = (values) => {
-    const updatedDoctors = doctors.map((doctor) =>
-      doctor.id === selectedDoctor.id
-        ? { ...doctor, subscription: values.subscription }
-        : doctor
-    );
-    setDoctors(updatedDoctors);
-    setIsSubscriptionModalVisible(false);
-    message.success("Subscription updated successfully");
   };
 
   // Filter doctors based on status and search text
@@ -131,28 +113,30 @@ const Doctors = () => {
       try {
         let page = currentPage;
         let limit = 10;
-        let status = statusFilter === "all" ? "" : statusFilter;
-
-        let search = searchText;
 
         const response = await apiService.AdministratorService.getAllDoctors(
           page,
           limit,
-          status,
-          pinCodeFilter,
-          search
+          searchText,
+          statusFilter === "all" ? "" : statusFilter,
+          pinCodeFilter === "all" ? "" : pinCodeFilter
         );
-
-        console.log("API response:", response);
-        console.log("Fetched doctors:", response.data.data);
 
         if (response.status === 200) {
           setDoctors(response.data.data);
+          setTotalDoctors(response.data.totalDoctors);
+          setTotalPages(response.data.totalPages);
+          setCurrentPage(response.data.currentPage);
 
-          console.log("Doctors: ", response.data.data);
-          console.log("Total doctors: ", response.data.total);
-
-          setTotalDoctors(response.data.total);
+          // Extract unique pincodes from the doctors data
+          const pincodes = [
+            ...new Set(
+              response.data.data
+                .map((doctor) => doctor.currentAddress?.pincode)
+                .filter((pincode) => pincode) // Remove undefined/null values
+            ),
+          ].sort();
+          setAvailablePinCodes(pincodes);
         }
       } catch (error) {
         console.error("Error fetching doctors:", error);
@@ -161,14 +145,7 @@ const Doctors = () => {
     };
 
     fetchDoctors();
-  }, [searchText, statusFilter, currentPage]);
-
-  // Pagination state for correct serial number
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-  const paginationConfigRef = React.useRef(pagination);
-  React.useEffect(() => {
-    paginationConfigRef.current = pagination;
-  }, [pagination]);
+  }, [searchText, statusFilter, currentPage, pinCodeFilter]);
 
   // Table columns configuration
   const columns = [
@@ -177,62 +154,75 @@ const Doctors = () => {
       key: "slNo",
       width: 70,
       render: (_, __, index) => {
-        // Calculate correct serial number based on pagination and filteredDoctors
-        const startIndex = (pagination.current - 1) * pagination.pageSize;
+        // Calculate correct serial number based on current page
+        const startIndex = (currentPage - 1) * 10;
         return startIndex + index + 1;
       },
       align: "center",
     },
     {
       title: "Name",
-      dataIndex: "firstName", // Keep this as is since it's used in the render function
-      key: "firstName", // Keep the original key
+      dataIndex: "firstName",
+      key: "firstName",
       render: (text, record) => (
         <Space>
-          {/* Combine firstName and lastName */}
-          {`${record.firstName || ""} ${record.lastName || ""}`}
+          <Avatar
+            src={record.profileImage}
+            size={40}
+            style={{ marginRight: 8 }}
+          >
+            {record.firstName?.charAt(0)?.toUpperCase()}
+          </Avatar>
+          <div>
+            <div style={{ fontWeight: 500 }}>
+              {`${record.firstName || ""} ${record.lastName || ""}`}
+            </div>
+            <div style={{ fontSize: "12px", color: "#666" }}>
+              Joined:{" "}
+              {new Date(record.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </div>
+          </div>
           <Tag color={statusColors[record.isActive]} key={record.isActive}>
             {record.isActive === true ? "Active" : "Inactive"}
           </Tag>
-          {record.subscription === "Beta Partner" && (
-            <Tooltip title="Beta Partner">
-              <CrownOutlined style={{ color: "#722ed1" }} />
-            </Tooltip>
-          )}
         </Space>
       ),
     },
     {
       title: "Specialization",
-      dataIndex: "specialization",
+      dataIndex: "professionalDetails",
       key: "specialization",
+      render: (text, record) => {
+        const specializations =
+          record.professionalDetails?.specialization || [];
+        return specializations.join(", ");
+      },
     },
     {
       title: "Experience",
-      dataIndex: "yearsOfExperience",
+      dataIndex: "professionalDetails",
       key: "yearsOfExperience",
+      render: (text, record) => {
+        const experience = record.professionalDetails?.yearsOfExperience;
+        return experience ? `${experience} years` : "N/A";
+      },
     },
     {
-      title: "Subscription",
-      dataIndex: "subscription",
-      key: "subscription",
+      title: "Pincode",
+      dataIndex: "currentAddress",
+      key: "pincode",
       render: (text, record) => {
-        return (
-          <Badge
-            count={record.subscription}
-            style={{
-              backgroundColor:
-                record.subscription === "Beta Partner" ? "#722ed1" : "#d9d9d9",
-              color: "#fff",
-            }}
-          />
-        );
+        return record.currentAddress?.pincode || "N/A";
       },
     },
     {
       title: "Actions",
       key: "actions",
-      width: 420,
+      width: 200,
       render: (_, record) => (
         <div style={{ display: "flex", gap: 8 }}>
           <Button
@@ -248,49 +238,30 @@ const Doctors = () => {
             View
           </Button>
 
-          {/* Status Actions Group */}
-          <div style={{ display: "flex", gap: 4 }}>
-            {record.isActive === true && (
-              <Button
-                danger
-                icon={<StopOutlined style={actionIconStyle} />}
-                onClick={() => handleStatusChange(record.id, true)}
-                style={actionButtonStyle}
-              >
-                Block
-              </Button>
-            )}
-            {record.isActive === false && (
-              <Button
-                type="primary"
-                icon={<CheckCircleOutlined style={actionIconStyle} />}
-                onClick={() => handleStatusChange(record.id, false)}
-                style={{
-                  ...actionButtonStyle,
-                  background: "var(--admin-success)",
-                  borderColor: "var(--admin-success)",
-                }}
-              >
-                Activate
-              </Button>
-            )}
-          </div>
-
-          {/* Subscription Action */}
-          <Button
-            type="default"
-            icon={
-              <CrownOutlined style={{ ...actionIconStyle, color: "#722ed1" }} />
-            }
-            onClick={() => handleManageSubscription(record)}
-            style={{
-              ...actionButtonStyle,
-              borderColor: "#722ed1",
-              color: "#722ed1",
-            }}
-          >
-            Sub
-          </Button>
+          {/* Block/Activate Action */}
+          {record.isActive === true ? (
+            <Button
+              danger
+              icon={<StopOutlined style={actionIconStyle} />}
+              onClick={() => handleStatusChange(record._id, false)}
+              style={actionButtonStyle}
+            >
+              Block
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              icon={<CheckCircleOutlined style={actionIconStyle} />}
+              onClick={() => handleStatusChange(record._id, true)}
+              style={{
+                ...actionButtonStyle,
+                background: "var(--admin-success)",
+                borderColor: "var(--admin-success)",
+              }}
+            >
+              Activate
+            </Button>
+          )}
         </div>
       ),
     },
@@ -308,11 +279,11 @@ const Doctors = () => {
           }}
         >
           <h1 style={{ margin: 0, fontSize: "24px", fontWeight: 600 }}>
-            Doctor Management
+            Doctors
           </h1>
           <Space>
             <Input
-              placeholder="Search by name..."
+              placeholder="Search by name, specialization, experience, pincode"
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -330,38 +301,23 @@ const Doctors = () => {
               <Option value="all">All Status</Option>
               <Option value="active">Active</Option>
               <Option value="inactive">Inactive</Option>
-              <Option value="pending">Pending</Option>
-            </Select>
-
-            {/* PIN Code Filter */}
-            <Select
-              value={pinCodeFilter}
-              onChange={setPinCodeFilter}
-              style={{ width: 120 }}
-              className="pincode-filter"
-            >
-              <Option value="all">All PIN Codes</Option>
-              {availablePinCodes.map((pinCode) => (
-                <Option key={pinCode} value={pinCode}>
-                  {pinCode}
-                </Option>
-              ))}
             </Select>
           </Space>
         </div>
 
         <Table
           columns={columns}
-          dataSource={filteredDoctors}
-          rowKey="id"
+          dataSource={doctors}
+          rowKey="_id"
           pagination={{
-            ...pagination,
-            showTotal: (total) => `Total ${total} doctors`,
-            pageSize: 10,
             current: currentPage,
-            onChange: (page) => setCurrentPage(page),
+            pageSize: 10,
             total: totalDoctors,
+            showTotal: (total, range) =>
+              `Showing ${range[0]}-${range[1]} of ${total} doctors`,
+            onChange: (page) => setCurrentPage(page),
             showSizeChanger: false,
+            showQuickJumper: true,
           }}
           style={{
             backgroundColor: "white",
@@ -369,41 +325,6 @@ const Doctors = () => {
             boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
           }}
         />
-
-        {/* Subscription Management Modal */}
-        <Modal
-          title="Manage Subscription"
-          open={isSubscriptionModalVisible}
-          onCancel={() => setIsSubscriptionModalVisible(false)}
-          footer={null}
-        >
-          <Form
-            form={form}
-            onFinish={handleSubscriptionUpdate}
-            layout="vertical"
-          >
-            <Form.Item
-              name="subscription"
-              label="Subscription Type"
-              rules={[
-                {
-                  required: true,
-                  message: "Please select a subscription type",
-                },
-              ]}
-            >
-              <Select>
-                <Option value="Beta Partner">Beta Partner</Option>
-                <Option value="Not Subscribed">Not Subscribed</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" className="btn-premium">
-                Update Subscription
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
       </div>
     </AdminLayout>
   );

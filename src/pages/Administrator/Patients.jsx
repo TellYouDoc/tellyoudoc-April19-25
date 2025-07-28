@@ -51,6 +51,22 @@ const Patients = () => {
     hasNextPage: false,
     hasPrevPage: false,
   });
+
+  // Action button styles (same as Doctors.jsx)
+  const actionButtonStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "4px",
+    padding: "4px 8px",
+    height: "32px",
+    borderRadius: "6px",
+    fontSize: "13px",
+    whiteSpace: "nowrap",
+  };
+
+  const actionIconStyle = {
+    fontSize: "14px",
+  };
   // Filter patients based on search text, status filter, and PIN code filter
   // NOTE: This client-side filtering will be phased out once the backend API implements filtering
   const filteredPatients = patients.filter((patient) => {
@@ -80,6 +96,8 @@ const Patients = () => {
     // Return true only if all conditions are met
     return matchesSearch && matchesStatus && matchesPinCode;
   });
+  
+  
   // Get all patients
   const getAllPatients = async () => {
     try {
@@ -90,12 +108,8 @@ const Patients = () => {
         limit: 10,
         // Include status filter if it's not set to 'all'
         ...(statusFilter !== "all" && { status: statusFilter }),
-        // Include pinCode filter if it's not set to 'all'
-        ...(pinCodeFilter !== "all" && { pinCode: pinCodeFilter }),
+        ...(searchText !== "" && { searchText: searchText }),
       };
-
-      // Log the request payload with filters
-      console.log("Request payload with filters:", data);
 
       /* 
       // FUTURE IMPLEMENTATION: 
@@ -119,13 +133,7 @@ const Patients = () => {
         data
       );
 
-      // Add detailed logging to understand the response structure
-      console.log("Full API Response:", response);
-      console.log("Patient data:", response?.data?.data?.patients?.[0]);
-      console.log(
-        "createdAt value:",
-        response?.data?.data?.patients?.[0]?.createdAt
-      ); // Process the API response
+      // Process the API response
       if (response && response.data && response.data.status === "success") {
         // Map the patient data to the format expected by our component
         const apiPatients = response.data.data.patients.map((patient) => ({
@@ -140,6 +148,7 @@ const Patients = () => {
           joinedDate: new Date(patient.createdAt).toISOString().split("T")[0], // Convert to YYYY-MM-DD
           healthConditions: [], // API might not have this info, can be added later
           pinCode: patient.placeOfBirth?.pincode || "", // Use pincode from placeOfBirth if available
+          currentAddress: patient.currentAddress, // Include currentAddress for pincode display
           UDI_id: patient.UDI_id,
           phoneNumber: patient.patientId?.phoneNumber || "",
           createdAt: patient.createdAt, // Save the full createdAt timestamp for display
@@ -175,7 +184,9 @@ const Patients = () => {
       setLoading(false);
       setFilterLoading(false);
     }
-  }; // Fetch patients on component mount and when page or filters change
+  };   
+  
+  // Fetch patients on component mount and when page or filters change
   React.useEffect(() => {
     // Create a variable to track if the component is mounted
     let isMounted = true;
@@ -190,7 +201,7 @@ const Patients = () => {
     // Reset to first page when filters change
     if (
       currentPage !== 1 &&
-      (statusFilter !== "all" || pinCodeFilter !== "all")
+      (statusFilter !== "all" || searchText !== "")
     ) {
       setCurrentPage(1);
     } else {
@@ -201,12 +212,16 @@ const Patients = () => {
     return () => {
       isMounted = false;
     };
-  }, [currentPage, statusFilter, pinCodeFilter]);
+  }, [currentPage, statusFilter, searchText]);
+
+  // Navigate to patient profile with ID
+  const handleViewProfile = (patient) => {
+    // TODO: Add navigation to patient profile page
+    console.log("View patient profile:", patient);
+  };
 
   // Handle status change
   const handleStatusChange = async (patientId, newStatus) => {
-    console.log("Changing status for patient:", patientId);
-
     // Object to send
     const data = {
       isActive: newStatus,
@@ -217,8 +232,6 @@ const Patients = () => {
       patientId,
       data
     );
-
-    // console.log("API Response:", response);
 
     if (response.status === 200) {
       message.success(
@@ -251,13 +264,37 @@ const Patients = () => {
       title: "Sl No",
       key: "slNo",
       width: 70,
-      render: (_, __, index) => index + 1,
-      align: "left",
+      render: (_, __, index) => {
+        // Calculate correct serial number based on current page
+        const startIndex = (currentPage - 1) * 10;
+        return startIndex + index + 1;
+      },
+      align: "center",
     },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      render: (text, record) => (
+        <Space>
+          <div>
+            <div style={{ fontWeight: 500 }}>
+              {record.name}
+            </div>
+            <div style={{ fontSize: "12px", color: "#666" }}>
+              Joined:{" "}
+              {new Date(record.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </div>
+          </div>
+          <Tag color={statusColors[record.status]} key={record.status}>
+            {record.status === "active" ? "Active" : "Inactive"}
+          </Tag>
+        </Space>
+      ),
       align: "left",
     },
     {
@@ -289,87 +326,58 @@ const Patients = () => {
         ),
     },
     {
-      title: "Joined Date",
-      dataIndex: "createdAt",
-      key: "joinedDate",
+      title: "Pincode",
+      dataIndex: "currentAddress",
+      key: "pincode",
       align: "left",
-      render: (_, record) => {
-        // Use the record.createdAt directly from the mapped data
-        if (!record.createdAt) return "-";
-        const formattedDate = new Date(record.createdAt).toLocaleString(
-          "en-IN",
-          {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true,
-          }
-        );
-        return formattedDate;
+      render: (text, record) => {
+        return record.currentAddress?.pincode || "N/A";
       },
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={statusColors[status]}>{status.toUpperCase()}</Tag>
-      ),
-      align: "left",
     },
     {
       title: "Actions",
       key: "actions",
-      width: 240,
+      width: 200,
       render: (_, record) => (
-        <Space size={4}>
+        <div style={{ display: "flex", gap: 8 }}>
           <Button
             type="primary"
-            icon={<EyeOutlined className="action-button-icon" />}
-            className="action-button action-button-primary"
-            // TODO: Add router link to patient profile page
+            icon={<EyeOutlined style={actionIconStyle} />}
+            onClick={() => handleViewProfile(record)}
+            style={{
+              ...actionButtonStyle,
+              background: "var(--admin-primary-color)",
+              borderColor: "var(--admin-primary-color)",
+            }}
           >
             View
-          </Button>{" "}
-          {record.status === "active" && (
-            <Popconfirm
-              title="Deactivate Patient"
-              description="Are you sure you want to deactivate this patient?"
-              onConfirm={() => handleStatusChange(record.patientId, false)}
-              okText="Yes"
-              cancelText="No"
-              placement="topRight"
+          </Button>
+
+          {/* Block/Activate Action */}
+          {record.status === "active" ? (
+            <Button
+              danger
+              icon={<StopOutlined style={actionIconStyle} />}
+              onClick={() => handleStatusChange(record.patientId, false)}
+              style={actionButtonStyle}
             >
-              <Button
-                danger
-                icon={<StopOutlined className="action-button-icon" />}
-                className="action-button"
-              >
-                Deactivate
-              </Button>
-            </Popconfirm>
-          )}
-          {record.status === "inactive" && (
-            <Popconfirm
-              title="Activate Patient"
-              description="Are you sure you want to activate this patient?"
-              onConfirm={() => handleStatusChange(record.patientId, true)}
-              okText="Yes"
-              cancelText="No"
-              placement="topRight"
+              Block
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              icon={<CheckCircleOutlined style={actionIconStyle} />}
+              onClick={() => handleStatusChange(record.patientId, true)}
+              style={{
+                ...actionButtonStyle,
+                background: "var(--admin-success)",
+                borderColor: "var(--admin-success)",
+              }}
             >
-              <Button
-                type="primary"
-                icon={<CheckCircleOutlined className="action-button-icon" />}
-                className="action-button action-button-success"
-              >
-                Activate
-              </Button>
-            </Popconfirm>
+              Activate
+            </Button>
           )}
-        </Space>
+        </div>
       ),
       align: "left",
     },
@@ -384,18 +392,13 @@ const Patients = () => {
           <div className="patient-header-actions">
             {/* Search Bar */}
             <Input
-              placeholder="Search by name, gender, status, or date..."
+              placeholder="Search by name, age, gender, health condition and pincode"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               prefix={<SearchOutlined />}
               className="search-input"
             />{" "}
-            {/* 
-              Filter with Status 
-              These filters are now configured to send parameters to the backend API.
-              Currently using client-side filtering, but the parameters are prepared for 
-              future backend implementation.
-            */}{" "}
+
             <Select
               value={statusFilter}
               onChange={(value) => {
@@ -415,35 +418,6 @@ const Patients = () => {
               <Select.Option value="all">All Status</Select.Option>
               <Select.Option value="active">Active</Select.Option>
               <Select.Option value="inactive">Inactive</Select.Option>
-            </Select>
-            {/* 
-              Filter with PIN Code 
-              These filters are now configured to send parameters to the backend API.
-              The API interface is prepared for future implementation.
-              PIN codes are dynamically loaded from patient data.
-            */}{" "}
-            <Select
-              value={pinCodeFilter}
-              onChange={(value) => {
-                setFilterLoading(true);
-                setPinCodeFilter(value);
-              }}
-              className="pincode-filter"
-              suffixIcon={
-                filterLoading && pinCodeFilter !== "all" ? (
-                  <LoadingOutlined spin />
-                ) : (
-                  <FilterOutlined />
-                )
-              }
-              disabled={loading}
-            >
-              <Select.Option value="all">All PIN Codes</Select.Option>
-              {availablePinCodes.map((pinCode) => (
-                <Select.Option key={pinCode} value={pinCode}>
-                  {pinCode}
-                </Select.Option>
-              ))}
             </Select>
           </div>
         </div>{" "}

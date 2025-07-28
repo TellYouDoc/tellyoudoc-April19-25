@@ -7,10 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/api/v1": {
-        target: "https://api.tellyoudoc.com",
-        // target: "http://172.16.14.75:3000",
+        target: "http://172.16.14.99:3000",
         changeOrigin: true,
-        secure: true,
+        secure: false,
       },
     },
   },

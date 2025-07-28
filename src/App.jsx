@@ -129,12 +129,14 @@ const Deeplink = lazy(() => import("./pages/Deeplink"));
 // App component with routes
 function AppRoutes() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
+  const [authChecksComplete, setAuthChecksComplete] = useState({ user: false, admin: false });
 
   const location = useLocation();
 
-  // Check if user is authenticated on app load and whenever the location changes
+  // Check if user is authenticated on app load only
   useEffect(() => {
     const checkAuth = () => {
       const accessToken = getCookie("AccessToken");
@@ -146,10 +148,12 @@ function AppRoutes() {
       } else {
         setIsAuthenticated(false);
       }
+      
+      setAuthChecksComplete(prev => ({ ...prev, user: true }));
     };
 
     checkAuth();
-  }, [location]); // Re-check auth when location changes
+  }, []); // Only run on mount
 
   // Check if the admin is Logged in or not
   useEffect(() => {
@@ -164,10 +168,19 @@ function AppRoutes() {
         // console.log("adminAuth is not set");
         setIsAdminAuthenticated(false);
       }
+      
+      setAuthChecksComplete(prev => ({ ...prev, admin: true }));
     };
 
     checkAdminAuth();
-  }, [location]); // Re-check auth when location changes
+  }, []); // Only run on mount
+
+  // Mark auth loading as complete when both checks are done
+  useEffect(() => {
+    if (authChecksComplete.user && authChecksComplete.admin) {
+      setIsAuthLoading(false);
+    }
+  }, [authChecksComplete]);
 
   // Show loading screen on initial app load and route changes
   useEffect(() => {
@@ -181,6 +194,11 @@ function AppRoutes() {
 
     return () => clearTimeout(timer);
   }, [location.pathname]);
+
+  // Don't render routes until authentication check is complete
+  if (isAuthLoading) {
+    return <LoadingScreen show={true} message="Checking authentication..." />;
+  }
 
   return (
     <>

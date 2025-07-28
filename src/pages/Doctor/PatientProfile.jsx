@@ -63,8 +63,6 @@ import apiService from "../../services/api";
 
 const PatientProfile = () => {
 
-  console.log("Patient profile page got loaded....");
-
 
   const { id } = useParams();
 
@@ -296,14 +294,14 @@ const PatientProfile = () => {
 
   // ✅ Fetch prescription data
   const fetchPrescriptionData = async () => {
-    console.log("Marlo amake");
+
 
     try {
       const response = await apiService.patientDoctorService.getPescriptions(
         id
       );
 
-      console.log("response", response);
+
 
       const PrescriptionData = response.data?.data || response.data || [];
 
@@ -324,7 +322,6 @@ const PatientProfile = () => {
           })),
         }));
       } else {
-        console.log("No prescription files found or invalid data format");
         setPatient((prev) => ({
           ...prev,
           prescriptionFiles: [],
@@ -1666,8 +1663,6 @@ const PatientProfile = () => {
   };
 
   const viewFile = (url) => {
-    console.log("File URL:", url.uri);
-
     if (!url) {
       alert(`Cannot open file: ${file.name}. File URL not found.`);
       return;

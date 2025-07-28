@@ -220,9 +220,6 @@ const DoctorProfile = () => {
           id
         );
 
-        console.log("API response: ", response);
-        console.log("Doctor Data: ", response.data.data);
-
         if (response.status === 200) {
           // Map the API response to the expected structure
           const doctorData = response.data.data;

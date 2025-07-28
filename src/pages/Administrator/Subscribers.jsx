@@ -131,13 +131,6 @@ const Subscribers = () => {  // State variables
         // Include expiry filter if it's not set to 'all'
         ...(expiryFilter !== "all" && { expiryStatus: expiryFilter }),
       };
-
-      // Log the request payload with filters
-      console.log("Request payload with filters:", data);
-
-      // Mock API call since we don't have the actual endpoint yet
-      // In a real implementation, you would use:
-      // const response = await apiService.AdministratorService.getAllSubscribers(data);
       
       // For now, let's generate mock data
       const mockResponse = generateMockSubscriberData();

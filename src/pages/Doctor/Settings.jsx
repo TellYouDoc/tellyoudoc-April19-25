@@ -57,12 +57,12 @@ const Settings = () => {
 
   const handleExportData = () => {
     // Here you would typically handle data export
-    console.log('Exporting data...');
+    // console.log('Exporting data...');
   };
 
   const handleDeleteAccount = () => {
     // Here you would typically handle account deletion
-    console.log('Deleting account...');
+    // console.log('Deleting account...');
   };
 
   const renderAccountSettings = () => (

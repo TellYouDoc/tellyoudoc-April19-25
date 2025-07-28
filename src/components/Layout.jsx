@@ -47,7 +47,6 @@ const Layout = ({ children }) => {
     // Store the current path in localStorage for potential restoration after login or refresh
     if (location.pathname !== '/login') {
       localStorage.setItem('lastViewedPage', location.pathname);
-      console.log('Layout updated lastViewedPage:', location.pathname);
     }
   }, [location.pathname]);
 
@@ -70,7 +69,6 @@ const Layout = ({ children }) => {
 
         if (response.data && response.status === 200) {
           setUserData(apiData);
-          console.log(apiData);
           // Store user data in localStorage for later use
           localStorage.setItem('UserData', JSON.stringify(apiData));
         }
@@ -144,7 +142,6 @@ const Layout = ({ children }) => {
 
     // Store current page path before logout
     localStorage.setItem('lastViewedPage', location.pathname);
-    console.log('Saving path before logout:', location.pathname);
 
     // Use the centralized auth clearance function
     clearAuthData();

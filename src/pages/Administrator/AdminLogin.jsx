@@ -71,34 +71,24 @@ const AdminLogin = () => {
         // Store the access token in local storage
         localStorage.setItem("adminAuth", "true");
         
-        // Log the response data structure
-        console.log('Response data:', response.data);
-        
         // Save tokens to cookies and localStorage
         if (response.data && response.data.data.tokens.accessToken) {
           document.cookie = `AccessToken=${response.data.data.tokens.accessToken}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=strict`;
           localStorage.setItem('AccessToken', response.data.data.tokens.accessToken);
-          console.log('Access token saved:', response.data.data.tokens.accessToken);
         }
 
         if (response.data && response.data.data.tokens.refreshToken) {
           document.cookie = `RefreshToken=${response.data.data.tokens.refreshToken}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=strict`;
           localStorage.setItem('RefreshToken', response.data.data.tokens.refreshToken);
-          console.log('Refresh token saved:', response.data.data.tokens.refreshToken);
         }
-
-        console.log("Admin data from the response: " + response.data.data.admin);
 
         // Log admin data before saving
         if (response.data && response.data.data.admin) {
-          console.log('Admin data being saved:', response.data.data.admin);
           localStorage.setItem('adminData', JSON.stringify(response.data.data.admin));
 
           // Verify the data was saved correctly
           const savedData = localStorage.getItem('adminData');
-          console.log('Verified saved admin data:', JSON.parse(savedData));
         } else {
-          console.warn('No admin data found in response:', response.data);
         }
 
         setTimeout(() => {

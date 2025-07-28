@@ -332,7 +332,6 @@ function AdminDashboard() {
     }
 
     // In a real app, this would make an API call to send OTP to the new email
-    console.log(`Sending OTP to ${newEmail}`);
     setOtpSent(true);
     setShowOtpModal(true);
   };
@@ -347,7 +346,6 @@ function AdminDashboard() {
     if (otp === "123456") {
       // Simulating a successful verification
       // Update the email
-      console.log(`Email updated to ${newEmail}`);
       alert("Email updated successfully");
       setShowOtpModal(false);
       setNewEmail("");
@@ -360,7 +358,6 @@ function AdminDashboard() {
 
   const resendOtp = () => {
     // In a real app, this would make an API call to resend the OTP
-    console.log(`Resending OTP to ${newEmail}`);
     alert(`OTP resent to ${newEmail}`);
   };
 

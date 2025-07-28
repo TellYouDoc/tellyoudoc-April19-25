@@ -17,12 +17,12 @@ function CookieConsent({ onAccept, onDecline }) {
       // Add slight delay for better UX
       const timer = setTimeout(() => {
         setVisible(true);
-        console.log('Cookie consent should be visible now');
+        // console.log('Cookie consent should be visible now');
       }, 1500);
       
       return () => clearTimeout(timer);
     } else {
-      console.log('Cookie consent not shown because cookiesAccepted =', cookiesAccepted);
+      // console.log('Cookie consent not shown because cookiesAccepted =', cookiesAccepted);
     }
   }, []);
 

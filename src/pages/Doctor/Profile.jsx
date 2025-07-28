@@ -507,7 +507,6 @@ const [isPermanentAddressSame, setIsPermanentAddressSame] = useState(false);
 
         const response = await apiService.doctorService.updateProfileImage(formData);
         if (response.status === 200 || response.status === 201 || response.status === 204) {
-          console.log('Profile image updated successfully');
           // You could display a success message here
           alert('Profile image updated successfully');
         }
@@ -843,7 +842,6 @@ const [isPermanentAddressSame, setIsPermanentAddressSame] = useState(false);
     if (existsOnServer && isEditing) {
       try {
         await apiService.doctorService.deletePracticeInfo(practiceToRemove.id);
-        console.log('Practice location deleted successfully');
       } catch (error) {
         console.error('Error deleting practice:', error);
         alert('Failed to delete practice location. Please try again.');
@@ -891,7 +889,6 @@ const [isPermanentAddressSame, setIsPermanentAddressSame] = useState(false);
       if (practiceId) {
         // Update existing practice
         response = await apiService.doctorService.updatePracticeInfo(practiceId, practiceInfo);
-        console.log('Practice location updated successfully:', response.data);
 
         if (response.status === 200) {
           alert('Practice information updated successfully');
@@ -899,7 +896,6 @@ const [isPermanentAddressSame, setIsPermanentAddressSame] = useState(false);
       } else {
         // Add new practice
         response = await apiService.doctorService.addPracticeInfo(practiceInfo);
-        console.log('Practice location added successfully:', response.data);
         if (response.status === 201) {
           alert('New practice location added successfully');
         }
@@ -986,10 +982,8 @@ const [isPermanentAddressSame, setIsPermanentAddressSame] = useState(false);
         socialMedia: profileData.basicDetails.socialMedia
       };
 
-      console.log('Updated profile data:', JSON.stringify(updatedProfileData, null, 2));
       // Call the API to update profile
       const response = await apiService.doctorService.updateProfile(updatedProfileData);
-      console.log('Profile update response:', response);
       if (response.status === 200 || response.status === 201 || response.status === 204) {
         // If profile picture was changed, upload it separately
         if (profileImage) {
@@ -998,7 +992,6 @@ const [isPermanentAddressSame, setIsPermanentAddressSame] = useState(false);
 
           try {
             await apiService.doctorService.updateProfileImage(formData);
-            console.log('Profile image updated successfully');
           } catch (imageError) {
             console.error('Error updating profile image:', imageError);
             alert('Profile saved but failed to update profile image. Please try again.');
@@ -1012,8 +1005,7 @@ const [isPermanentAddressSame, setIsPermanentAddressSame] = useState(false);
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      console.error('Response details:', error.response?.data);
-      console.error('Status code:', error.response?.status);
+
       alert('Failed to update profile. Please try again.');
     } finally {
       setIsLoading(false);

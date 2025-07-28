@@ -374,11 +374,9 @@ function Dashboard() {
     try {
       const response = await apiService.doctorService.getProfile();
 
-      // console.log(response);
-
       if (response.status === 200) {
         const profileData = response.data?.data || {};
-        console.log("Doctor Profile Data:", profileData);
+        
         setDoctorProfile(profileData);
         
         // Calculate profile completion percentage
