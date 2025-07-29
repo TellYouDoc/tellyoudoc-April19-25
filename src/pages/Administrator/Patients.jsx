@@ -8,6 +8,7 @@ import {
   message,
   Select,
   Popconfirm,
+  Avatar,
 } from "antd";
 import {
   EyeOutlined,
@@ -96,8 +97,7 @@ const Patients = () => {
     // Return true only if all conditions are met
     return matchesSearch && matchesStatus && matchesPinCode;
   });
-  
-  
+
   // Get all patients
   const getAllPatients = async () => {
     try {
@@ -110,24 +110,6 @@ const Patients = () => {
         ...(statusFilter !== "all" && { status: statusFilter }),
         ...(searchText !== "" && { searchText: searchText }),
       };
-
-      /* 
-      // FUTURE IMPLEMENTATION: 
-      // Once the backend API endpoints are updated to support filtering,
-      // the following structure can be used:
-      
-      // For status filtering
-      if (statusFilter !== 'all') {
-        // Convert frontend status values to backend expected format if needed
-        // e.g., 'active' -> true, 'inactive' -> false
-        data.isActive = statusFilter === 'active';
-      }
-      
-      // For PIN code filtering
-      if (pinCodeFilter !== 'all') {
-        data.pinCode = pinCodeFilter;
-      }
-      */
 
       const response = await apiService.AdministratorService.getAllPatients(
         data
@@ -146,12 +128,12 @@ const Patients = () => {
           gender: patient.gender,
           status: patient.isActive ? "active" : "inactive",
           joinedDate: new Date(patient.createdAt).toISOString().split("T")[0], // Convert to YYYY-MM-DD
-          healthConditions: [], // API might not have this info, can be added later
           pinCode: patient.placeOfBirth?.pincode || "", // Use pincode from placeOfBirth if available
           currentAddress: patient.currentAddress, // Include currentAddress for pincode display
           UDI_id: patient.UDI_id,
           phoneNumber: patient.patientId?.phoneNumber || "",
           createdAt: patient.createdAt, // Save the full createdAt timestamp for display
+          profileImage: patient.profileImage || "", // Include profile image
         }));
 
         setPatients(apiPatients);
@@ -184,8 +166,8 @@ const Patients = () => {
       setLoading(false);
       setFilterLoading(false);
     }
-  };   
-  
+  };
+
   // Fetch patients on component mount and when page or filters change
   React.useEffect(() => {
     // Create a variable to track if the component is mounted
@@ -199,10 +181,7 @@ const Patients = () => {
     };
 
     // Reset to first page when filters change
-    if (
-      currentPage !== 1 &&
-      (statusFilter !== "all" || searchText !== "")
-    ) {
+    if (currentPage !== 1 && (statusFilter !== "all" || searchText !== "")) {
       setCurrentPage(1);
     } else {
       handleFilterChange();
@@ -277,12 +256,17 @@ const Patients = () => {
       key: "name",
       render: (text, record) => (
         <Space>
+          <Avatar
+            src={record.profileImage}
+            size={40}
+            style={{ marginRight: 8 }}
+          >
+            {record.firstName?.charAt(0)?.toUpperCase()}
+          </Avatar>
           <div>
-            <div style={{ fontWeight: 500 }}>
-              {record.name}
-            </div>
+            <div style={{ fontWeight: 500 }}>{record.name}</div>
             <div style={{ fontSize: "12px", color: "#666" }}>
-              Joined:{" "}
+              {record.age} • {record.gender} • Joined:{" "}
               {new Date(record.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "short",
@@ -298,33 +282,13 @@ const Patients = () => {
       align: "left",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
       align: "left",
+      render: (text, record) => record.phoneNumber || "N/A",
     },
-    {
-      title: "Gender",
-      dataIndex: "gender",
-      key: "gender",
-      align: "left",
-    },
-    {
-      title: "Health Condition",
-      dataIndex: "healthConditions",
-      key: "healthConditions",
-      align: "left",
-      render: (conditions) =>
-        conditions && conditions.length > 0 ? (
-          conditions.map((cond, idx) => (
-            <Tag color="processing" key={idx}>
-              {cond}
-            </Tag>
-          ))
-        ) : (
-          <Tag color="default">Healthy</Tag>
-        ),
-    },
+
     {
       title: "Pincode",
       dataIndex: "currentAddress",
@@ -392,13 +356,12 @@ const Patients = () => {
           <div className="patient-header-actions">
             {/* Search Bar */}
             <Input
-              placeholder="Search by name, age, gender, health condition and pincode"
+              placeholder="Search by name, age, gender and pincode"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               prefix={<SearchOutlined />}
               className="search-input"
             />{" "}
-
             <Select
               value={statusFilter}
               onChange={(value) => {

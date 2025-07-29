@@ -42,6 +42,8 @@ api.interceptors.request.use(
       accessToken = localStorage.getItem("AccessToken");
     }
 
+    console.log("Access Token: ", accessToken);
+
     // If token exists, add it to headers
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -341,6 +343,10 @@ const AdministratorService = {
   // Update Doctor Status
   updateDoctorStatus: (doctorId, data) =>
     api.patch(`/admin/doctors/${doctorId}/status`, data),
+
+  // Get Slots by Doctor ID
+  getSlotsByDoctorId: (doctorId) =>
+    api.get(`/admin/appointments/slots/${doctorId}`),
 };
 
 // Create the API service object

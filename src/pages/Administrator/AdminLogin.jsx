@@ -92,7 +92,8 @@ const AdminLogin = () => {
         }
 
         setTimeout(() => {
-          navigate("/admin/dashboard");
+          // Force a page reload to update the authentication state
+          window.location.href = "/admin/dashboard";
         }, 1000);
       } else {
         setError("Invalid username or password");
