@@ -309,6 +309,7 @@ function AppRoutes() {
 
           <Route path="/partner" element={<Partner />} />
           <Route path="/Home" element={<Home />} />
+          <Route path="/connect" element={<Deeplink />} />
           <Route
             path="/doctor/delete-account"
             element={<DoctorDeleteAccount />}
