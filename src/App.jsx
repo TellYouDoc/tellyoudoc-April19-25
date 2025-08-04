@@ -34,11 +34,12 @@ import "./styles/Administrator/Reports.css";
 import "./styles/Administrator/Settings.css";
 import "./styles/Administrator/Subscribers.css";
 import "./styles/Administrator/pin-code-filter.css";
+import "./styles/Administrator/KYC.css";
 import LoadingScreen from "./components/LoadingScreen";
 import Layout from "./components/Layout";
 import CookieConsent from "./components/CookieConsent";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { getCookie, removeCookie } from "./utils/cookieUtils";
+import { getCookie } from "./utils/cookieUtils";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
@@ -105,6 +106,7 @@ const AdminSubscription = lazy(() =>
 const AdminOrganizations = lazy(() =>
   import("./pages/Administrator/Organizations")
 );
+const KYC = lazy(() => import("./pages/Administrator/KYC"));
 
 // Organization Login Pages
 const OrganizationLogin = lazy(() => import("./pages/Organization/Login"));
@@ -517,6 +519,16 @@ function AppRoutes() {
                 <Navigate to="/admin" replace />
               ) : (
                 <AdminOrganizations />
+              )
+            }
+          />
+          <Route
+            path="/admin/kyc"
+            element={
+              !isAdminAuthenticated ? (
+                <Navigate to="/admin" replace />
+              ) : (
+                <KYC />
               )
             }
           />

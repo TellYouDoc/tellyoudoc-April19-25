@@ -17,7 +17,7 @@
 
 .ant-card {
   border-radius: var(--radius);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(0, 0, 0, 0.09);
   /* margin-bottom: var(--spacing-6); */
 }
 

@@ -368,7 +368,8 @@ td {
   border-bottom: 1px solid var(--border-color);
 }
 
-tr:hover {
+/* Global table hover - only for non-Ant Design tables */
+table:not(.ant-table) tr:hover {
   background-color: var(--primary-light);
 }
 

@@ -24,8 +24,8 @@
 }
 
 .admin-appointments-title p {
-  margin: 4px;
   font-size: 16px;
+  color: #000;
 }
 
 .admin-appointments-actions {
@@ -411,118 +411,192 @@
   margin-bottom: 6px;
 }
 
-/* Slot card styles */
-.slot-card {
+/* Slot table styles */
+.slot-table-container {
+  background: white;
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
-.slot-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #52c41a 0%, #73d13d 100%);
+.slot-table {
+  border: none;
 }
 
-.slot-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  transform: translateY(-4px);
-  border-color: rgba(82, 196, 26, 0.2);
+.slot-table .ant-table-thead > tr > th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  color: #495057;
+  padding: 16px;
 }
 
-.slot-card-header {
+.slot-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 16px;
+  vertical-align: top;
+}
+
+.slot-table .ant-table-tbody > tr:hover > td {
+  background-color: #f8f9fa;
+}
+
+.slot-date-cell {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 16px;
+  gap: 4px;
 }
 
-.slot-card-location {
+.slot-date-line {
   display: flex;
-  align-items: flex-start;
-  flex: 1;
+  align-items: center;
+  gap: 6px;
 }
 
-.slot-card-icon {
-  margin-right: 8px;
-  margin-top: 4px;
+.slot-table-icon {
   color: #1890ff;
   font-size: 16px;
 }
 
-.slot-card-location-text {
+.slot-day-name {
+  font-size: 12px;
+  color: #8c8c8c;
   font-weight: 500;
-  color: #262626;
-  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 22px;
 }
 
-.slot-card-dates {
-  margin-top: 12px;
+.slot-time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-.slot-card-dates-title {
-  font-weight: 600;
-  color: #262626;
-  margin-bottom: 12px;
+.time-slot-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+.time-slot-chip.available {
+  border-color: #1890ff;
+  background: #ffffff;
+  color: #1890ff;
+}
+
+.time-slot-chip.booked {
+  border-color: #ff4d4f;
+  background: #ffffff;
+  color: #ff4d4f;
+}
+
+.time-slot-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.time-slot-chip.available:hover {
+  border-color: #40a9ff;
+  background: #f0f9ff;
+  color: #1890ff;
+}
+
+.time-slot-chip.booked:hover {
+  border-color: #ff7875;
+  background: #fff2f0;
+  color: #ff4d4f;
+}
+
+.time-slot-time {
+  font-weight: 500;
   font-size: 14px;
 }
 
-.slot-date-item {
-  margin-bottom: 12px;
-  padding: 12px;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border-radius: 10px;
-  border: 1px solid rgba(14, 165, 233, 0.1);
-  transition: all 0.2s ease;
-}
-
-.slot-date-item:hover {
-  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-  border-color: rgba(14, 165, 233, 0.2);
-}
-
-.slot-date {
+/* Slot modal styles */
+.slot-modal-title {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
 }
 
-.slot-date-text {
-  font-weight: 500;
-  color: #262626;
-  margin-bottom: 4px;
+.slot-modal-title .anticon {
+  color: #1890ff;
+  font-size: 20px;
 }
 
-.slot-time-text {
+.slot-details {
+  padding: 16px 0;
+}
+
+.slot-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.slot-detail-item label {
+  font-weight: 600;
   color: #8c8c8c;
-  font-size: 13px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.time-slot {
-  display: inline-block;
-  margin-right: 12px;
-  margin-bottom: 8px;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+.slot-detail-item span {
+  font-size: 14px;
+  color: #262626;
   font-weight: 500;
+}
+
+.slot-edit-form {
+  padding: 16px 0;
+}
+
+.slot-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Remove old slot card styles */
+.slot-card,
+.slot-card-header,
+.slot-card-title,
+.slot-card-location,
+.slot-card-location-text,
+.slot-card-content,
+.slot-info-grid,
+.slot-info-row,
+.slot-info-date,
+.slot-location-group,
+.slot-location-header,
+.location-name,
+.slot-info-times,
+.time-slot-item,
+.time-range {
+  display: none;
 }
 
 /* Options card styles */
 .options-card {
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
-  border: 1px solid rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
 }
@@ -534,13 +608,10 @@
   left: 0;
   right: 0;
   height: 6px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
 .options-card:hover {
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
   transform: translateY(-8px) scale(1.02);
-  border-color: rgba(102, 126, 234, 0.3);
 }
 
 .options-card .ant-card-body {
@@ -549,21 +620,150 @@
 
 /* Button styling improvements */
 .admin-appointments-header .ant-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #1890ff;
+  border: 1px solid #1890ff;
   color: white;
   font-weight: 500;
   border-radius: 10px;
-  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 }
 
 .admin-appointments-header .ant-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: #40a9ff;
+  border-color: #40a9ff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.25);
 }
+
+/* Enhanced Action Buttons */
+.admin-appointments-table .ant-btn {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 6px 16px;
+  height: auto;
+  line-height: 1.4;
+  transition: none;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+  border: none;
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%) !important;
+  color: white !important;
+}
+
+.admin-appointments-table .ant-btn:hover,
+.admin-appointments-table .ant-btn:focus,
+.admin-appointments-table .ant-btn:active {
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.25) !important;
+}
+
+
+
+
+
+.admin-appointments-table .ant-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+/* Second button styling (View Appointments) */
+.admin-appointments-table .ant-btn + .ant-btn {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%) !important;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.15) !important;
+}
+
+.admin-appointments-table .ant-btn + .ant-btn:hover,
+.admin-appointments-table .ant-btn + .ant-btn:focus,
+.admin-appointments-table .ant-btn + .ant-btn:active {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(82, 196, 26, 0.25) !important;
+}
+
+
+
+/* Disable all table row hover effects */
+.admin-appointments-table .ant-table-tbody > tr:hover > td {
+  background-color: transparent !important;
+  transition: none !important;
+}
+
+.admin-appointments-table .ant-table-tbody > tr:hover {
+  background-color: transparent !important;
+}
+
+/* Button container spacing */
+.admin-appointments-table .ant-table-cell .ant-btn {
+  margin-right: 8px;
+}
+
+.admin-appointments-table .ant-table-cell .ant-btn:last-child {
+  margin-right: 0;
+}
+
+/* Icon styling in buttons */
+.admin-appointments-table .ant-btn .anticon {
+  font-size: 14px;
+  margin-right: 4px;
+  transition: transform 0.2s ease;
+}
+
+/* Slot filter buttons */
+.slot-filter-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-bottom: 16px; */
+  padding: 0 0 8px 0;
+  /* border-bottom: 1px solid #f0f0f0; */
+}
+
+.slot-filter-left {
+  display: flex;
+  gap: 8px;
+}
+
+.slot-filter-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-filter-buttons .ant-btn {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 8px 16px;
+  height: auto;
+  transition: all 0.2s ease;
+}
+
+.slot-filter-buttons .ant-btn-primary {
+  background: #1890ff;
+  border-color: #1890ff;
+  box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+}
+
+.slot-filter-buttons .ant-btn-primary:hover {
+  background: #40a9ff;
+  border-color: #40a9ff;
+  box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+}
+
+.slot-filter-buttons .ant-btn-default {
+  border-color: #d9d9d9;
+  color: #8c8c8c;
+}
+
+.slot-filter-buttons .ant-btn-default:hover {
+  border-color: #1890ff;
+  color: #1890ff;
+}
+
 
 /* Responsive styles */
 @media (max-width: 768px) {
@@ -601,7 +801,8 @@
   
   /* Make cards full width on small screens */
   .appointment-card,
-  .doctor-card {
+  .doctor-card,
+  .slot-card {
     width: 100%;
   }
   
@@ -613,6 +814,39 @@
   .doctor-card {
     min-height: 240px;
     padding: 12px;
+  }
+  
+  .slot-card {
+    min-height: 240px;
+  }
+  
+  .slot-card .ant-card-body {
+    padding: 16px;
+  }
+  
+  .slot-info-row {
+    padding: 10px;
+  }
+  
+  .slot-info-date {
+    font-size: 14px;
+    padding-bottom: 8px;
+  }
+  
+  .slot-location-header {
+    font-size: 13px;
+    padding: 4px 6px;
+  }
+  
+  .slot-info-times {
+    margin-left: 12px;
+  }
+  
+  .time-slot-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 6px 8px;
   }
   
   .doctor-card-header .ant-avatar {
@@ -645,4 +879,75 @@
   .stat-label {
     font-size: 9px;
   }
+
+  /* Slot table responsive styles */
+  .slot-table-container {
+    overflow-x: auto;
+  }
+  
+  .slot-table .ant-table-thead > tr > th,
+  .slot-table .ant-table-tbody > tr > td {
+    padding: 12px 8px;
+  }
+  
+  .slot-date-cell {
+    min-width: 100px;
+  }
+  
+  .slot-time-slots {
+    gap: 6px;
+  }
+  
+  .time-slot-chip {
+    min-width: 80px;
+    padding: 8px 10px;
+  }
+  
+  .time-slot-time {
+    font-size: 12px;
+  }
+  
+  /* Slot filter buttons responsive */
+  .slot-filter-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .slot-filter-left,
+  .slot-filter-right {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .slot-filter-right {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .slot-filter-right .ant-picker {
+    width: 100% !important;
+  }
+  
+  .slot-filter-right .ant-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* No slots message */
+.no-slots-message {
+  text-align: center;
+  padding: 60px 20px;
+  color: #8c8c8c;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  border: 2px dashed #dee2e6;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 20px 0;
+}
+
+.no-slots-message p {
+  margin: 0;
+  color: #666;
 }

@@ -1,0 +1,399 @@
+.kyc-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.kyc-header {
+  margin-bottom: 2rem;
+}
+
+.kyc-header h1 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.kyc-header p {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.kyc-controls {
+  margin-bottom: 2rem;
+}
+
+.search-filter {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 300px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.filter-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.kyc-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: 1px solid #e9ecef;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.kyc-table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.kyc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.kyc-table th {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2c3e50;
+  border-bottom: 2px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.kyc-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: top;
+}
+
+.kyc-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.kyc-row.pending {
+  border-left: 4px solid #f39c12;
+}
+
+.kyc-row.approved {
+  border-left: 4px solid #27ae60;
+}
+
+.kyc-row.rejected {
+  border-left: 4px solid #e74c3c;
+}
+
+.doctor-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.doctor-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.doctor-id {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.contact-info div:first-child {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.contact-info div:last-child {
+  color: #7f8c8d;
+}
+
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-icon {
+  font-size: 1rem;
+}
+
+.status-icon.pending {
+  color: #f39c12;
+}
+
+.status-icon.approved {
+  color: #27ae60;
+}
+
+.status-icon.rejected {
+  color: #e74c3c;
+}
+
+.status-text {
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-text.pending {
+  background-color: #fef5e7;
+  color: #f39c12;
+}
+
+.status-text.approved {
+  background-color: #e8f5e8;
+  color: #27ae60;
+}
+
+.status-text.rejected {
+  background-color: #fdeaea;
+  color: #e74c3c;
+}
+
+.date-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.date-info div:first-child {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.date-info div:not(:first-child) {
+  color: #7f8c8d;
+  font-size: 0.8rem;
+}
+
+.documents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.document-item:hover {
+  background-color: #e9ecef;
+}
+
+.download-icon {
+  color: #3498db;
+  font-size: 0.8rem;
+}
+
+.notes-cell {
+  font-size: 0.85rem;
+  color: #2c3e50;
+  line-height: 1.4;
+  max-width: 200px;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.8rem;
+}
+
+.view-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #2980b9;
+}
+
+.approve-btn {
+  background-color: #27ae60;
+  color: white;
+}
+
+.approve-btn:hover {
+  background-color: #229954;
+}
+
+.reject-btn {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.reject-btn:hover {
+  background-color: #c0392b;
+}
+
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .kyc-container {
+    padding: 1rem;
+  }
+  
+  .search-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .search-input {
+    min-width: auto;
+  }
+  
+  .kyc-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .kyc-table {
+    font-size: 0.8rem;
+  }
+  
+  .kyc-table th,
+  .kyc-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .kyc-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .actions-cell {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .kyc-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  .kyc-table-container {
+    overflow-x: auto;
+  }
+  
+  .kyc-table {
+    min-width: 800px;
+  }
+} 

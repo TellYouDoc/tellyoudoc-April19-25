@@ -22,21 +22,13 @@ import {
 } from "antd";
 import {
   CalendarOutlined,
-  FileSearchOutlined,
   CloseCircleOutlined,
   SyncOutlined,
   DownloadOutlined,
-  InfoCircleOutlined,
   UserOutlined,
-  TeamOutlined,
-  ClockCircleOutlined,
-  EnvironmentOutlined,
-  PhoneOutlined,
-  MailOutlined,
   AppstoreOutlined,
   UnorderedListOutlined,
   ArrowLeftOutlined,
-  UserAddOutlined,
 } from "@ant-design/icons";
 import { SectionLoading } from "../../components/LoadingStates";
 import AdminLayout from "../../components/AdminLayout";
@@ -44,498 +36,157 @@ import dayjs from "dayjs";
 import apiService from "../../services/api";
 import "../../styles/Administrator/Appointments.css";
 
-const { Title, Text } = Typography;
 
-// Mock API service for appointments (replace with actual API calls later)
-const mockApiService = {
-  getAppointments: (filters) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          data: mockAppointments.filter((appointment) => {
-            // Filter by doctor ID
-            if (
-              filters.doctorId &&
-              appointment.doctor.id !== filters.doctorId
-            ) {
-              return false;
-            }
-
-            // Filter by status
-            if (filters.status && filters.status !== "all") {
-              if (appointment.status !== filters.status) return false;
-            }
-
-            // Filter by date range
-            if (filters.dateRange && filters.dateRange.length === 2) {
-              const appointmentDate = dayjs(appointment.appointmentDate);
-              const startDate = filters.dateRange[0];
-              const endDate = filters.dateRange[1];
-
-              if (
-                appointmentDate.isBefore(startDate) ||
-                appointmentDate.isAfter(endDate)
-              ) {
-                return false;
-              }
-            }
-
-            // Filter by search text (patient name or appointment ID)
-            if (filters.searchText) {
-              const searchLower = filters.searchText.toLowerCase();
-              const patientName = appointment.patient.name.toLowerCase();
-              const appointmentId = appointment.id.toLowerCase();
-
-              if (
-                !patientName.includes(searchLower) &&
-                !appointmentId.includes(searchLower)
-              ) {
-                return false;
-              }
-            }
-
-            return true;
-          }),
-        });
-      }, 500);
-    });
-  },
-
-  cancelAppointment: (id) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // In a real app, this would update the database
-        const appointmentIndex = mockAppointments.findIndex(
-          (app) => app.id === id
-        );
-        if (appointmentIndex !== -1) {
-          mockAppointments[appointmentIndex].status = "cancelled";
-          mockAppointments[appointmentIndex].statusHistory.push({
-            status: "cancelled",
-            timestamp: new Date().toISOString(),
-            message: "Cancelled by administrator",
-          });
-        }
-        resolve({ success: true });
-      }, 500);
-    });
-  },
-
-  rescheduleAppointment: (id, newDateTime) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // In a real app, this would update the database
-        const appointmentIndex = mockAppointments.findIndex(
-          (app) => app.id === id
-        );
-        if (appointmentIndex !== -1) {
-          mockAppointments[appointmentIndex].appointmentDate = newDateTime;
-          mockAppointments[appointmentIndex].statusHistory.push({
-            status: "rescheduled",
-            timestamp: new Date().toISOString(),
-            message: "Rescheduled by administrator",
-          });
-        }
-        resolve({ success: true });
-      }, 500);
-    });
-  },
-};
-
-// Mock appointment data
-const mockAppointments = [
-  {
-    id: "APT-1001",
-    appointmentDate: "2025-05-20T10:30:00",
-    createdAt: "2025-05-10T14:25:00",
-    duration: 30,
-    status: "upcoming",
-    type: "checkup",
-    patient: {
-      id: "PT-1001",
-      name: "Jane Cooper",
-      age: 32,
-      gender: "Female",
-      phone: "+91 9834567890",
-      email: "jane.cooper@example.com",
-    },
-    doctor: {
-      id: "DOC-101",
-      name: "Dr. Rajesh Sharma",
-      specialization: "Oncology",
-      phone: "+91 9876543210",
-      email: "dr.sharma@tellyoudoc.com",
-    },
-    location: {
-      address: "TellyouDoc Clinic, 123 Medical Plaza",
-      city: "Mumbai",
-      pincode: "400001",
-    },
-    payment: {
-      amount: 1200,
-      status: "paid",
-      method: "online",
-    },
-    notes: "Regular follow-up for breast cancer screening",
-    statusHistory: [
-      {
-        status: "booked",
-        timestamp: "2025-05-10T14:25:00",
-        message: "Appointment booked by patient",
-      },
-      {
-        status: "confirmed",
-        timestamp: "2025-05-10T14:30:00",
-        message: "Appointment confirmed by system",
-      },
-    ],
-  },
-  {
-    id: "APT-1002",
-    appointmentDate: "2025-05-18T15:00:00",
-    createdAt: "2025-05-12T10:15:00",
-    duration: 45,
-    status: "upcoming",
-    type: "consultation",
-    patient: {
-      id: "PT-1002",
-      name: "Rahul Mehta",
-      age: 45,
-      gender: "Male",
-      phone: "+91 8765432190",
-      email: "rahul.m@example.com",
-    },
-    doctor: {
-      id: "DOC-102",
-      name: "Dr. Priya Patel",
-      specialization: "Cardiology",
-      phone: "+91 9876512340",
-      email: "dr.priya@tellyoudoc.com",
-    },
-    location: {
-      address: "TellyouDoc Clinic, 123 Medical Plaza",
-      city: "Mumbai",
-      pincode: "400001",
-    },
-    payment: {
-      amount: 1500,
-      status: "paid",
-      method: "credit card",
-    },
-    notes: "Initial consultation for chest pain",
-    statusHistory: [
-      {
-        status: "booked",
-        timestamp: "2025-05-12T10:15:00",
-        message: "Appointment booked by patient",
-      },
-    ],
-  },
-  {
-    id: "APT-1003",
-    appointmentDate: "2025-05-15T11:00:00",
-    createdAt: "2025-05-05T09:30:00",
-    duration: 60,
-    status: "completed",
-    type: "follow-up",
-    patient: {
-      id: "PT-1003",
-      name: "Anita Singh",
-      age: 28,
-      gender: "Female",
-      phone: "+91 9234567890",
-      email: "anita.s@example.com",
-    },
-    doctor: {
-      id: "DOC-103",
-      name: "Dr. Alok Gupta",
-      specialization: "Gynecology",
-      phone: "+91 9876123450",
-      email: "dr.alok@tellyoudoc.com",
-    },
-    location: {
-      address: "TellyouDoc Clinic, 456 Health Center",
-      city: "Delhi",
-      pincode: "110001",
-    },
-    payment: {
-      amount: 1800,
-      status: "paid",
-      method: "online",
-    },
-    notes: "Follow-up after treatment",
-    statusHistory: [
-      {
-        status: "booked",
-        timestamp: "2025-05-05T09:30:00",
-        message: "Appointment booked by patient",
-      },
-      {
-        status: "completed",
-        timestamp: "2025-05-15T12:05:00",
-        message: "Appointment marked as completed",
-      },
-    ],
-  },
-  {
-    id: "APT-1004",
-    appointmentDate: "2025-05-25T14:30:00",
-    createdAt: "2025-05-11T16:45:00",
-    duration: 30,
-    status: "upcoming",
-    type: "checkup",
-    patient: {
-      id: "PT-1004",
-      name: "Vikram Desai",
-      age: 52,
-      gender: "Male",
-      phone: "+91 9876543210",
-      email: "vikram.d@example.com",
-    },
-    doctor: {
-      id: "DOC-101",
-      name: "Dr. Rajesh Sharma",
-      specialization: "Oncology",
-      phone: "+91 9876543210",
-      email: "dr.sharma@tellyoudoc.com",
-    },
-    location: {
-      address: "TellyouDoc Clinic, 123 Medical Plaza",
-      city: "Mumbai",
-      pincode: "400001",
-    },
-    payment: {
-      amount: 1200,
-      status: "pending",
-      method: null,
-    },
-    notes: "Routine checkup for cancer monitoring",
-    statusHistory: [
-      {
-        status: "booked",
-        timestamp: "2025-05-11T16:45:00",
-        message: "Appointment booked via mobile app",
-      },
-    ],
-  },
-  {
-    id: "APT-1005",
-    appointmentDate: "2025-05-10T09:15:00",
-    createdAt: "2025-05-02T13:20:00",
-    duration: 45,
-    status: "cancelled",
-    type: "consultation",
-    patient: {
-      id: "PT-1005",
-      name: "Sunita Patel",
-      age: 39,
-      gender: "Female",
-      phone: "+91 7654321890",
-      email: "sunita.p@example.com",
-    },
-    doctor: {
-      id: "DOC-102",
-      name: "Dr. Priya Patel",
-      specialization: "Cardiology",
-      phone: "+91 9876512340",
-      email: "dr.priya@tellyoudoc.com",
-    },
-    location: {
-      address: "TellyouDoc Clinic, 456 Health Center",
-      city: "Delhi",
-      pincode: "110001",
-    },
-    payment: {
-      amount: 1500,
-      status: "refunded",
-      method: "credit card",
-    },
-    notes: "Consultation regarding high blood pressure",
-    statusHistory: [
-      {
-        status: "booked",
-        timestamp: "2025-05-02T13:20:00",
-        message: "Appointment booked by patient",
-      },
-      {
-        status: "cancelled",
-        timestamp: "2025-05-08T10:15:00",
-        message: "Cancelled by patient: Family emergency",
-      },
-    ],
-  },
-  {
-    id: "APT-1006",
-    appointmentDate: "2025-05-16T16:30:00",
-    createdAt: "2025-05-09T11:45:00",
-    duration: 30,
-    status: "completed",
-    type: "follow-up",
-    patient: {
-      id: "PT-1006",
-      name: "Arjun Khanna",
-      age: 41,
-      gender: "Male",
-      phone: "+91 8123456789",
-      email: "arjun.k@example.com",
-    },
-    doctor: {
-      id: "DOC-104",
-      name: "Dr. Maya Reddy",
-      specialization: "Neurology",
-      phone: "+91 9876901234",
-      email: "dr.maya@tellyoudoc.com",
-    },
-    location: {
-      address: "TellyouDoc Clinic, 789 Brain Center",
-      city: "Bangalore",
-      pincode: "560001",
-    },
-    payment: {
-      amount: 2000,
-      status: "paid",
-      method: "online",
-    },
-    notes: "Follow-up for migraine treatment",
-    statusHistory: [
-      {
-        status: "booked",
-        timestamp: "2025-05-09T11:45:00",
-        message: "Appointment booked by patient",
-      },
-      {
-        status: "completed",
-        timestamp: "2025-05-16T17:05:00",
-        message: "Appointment marked as completed",
-      },
-    ],
-  },
-  {
-    id: "APT-1007",
-    appointmentDate: "2025-05-22T13:00:00",
-    createdAt: "2025-05-14T09:30:00",
-    duration: 60,
-    status: "upcoming",
-    type: "consultation",
-    patient: {
-      id: "PT-1007",
-      name: "Priya Malhotra",
-      age: 35,
-      gender: "Female",
-      phone: "+91 9876123450",
-      email: "priya.m@example.com",
-    },
-    doctor: {
-      id: "DOC-103",
-      name: "Dr. Alok Gupta",
-      specialization: "Gynecology",
-      phone: "+91 9876123450",
-      email: "dr.alok@tellyoudoc.com",
-    },
-    location: {
-      address: "TellyouDoc Clinic, 123 Medical Plaza",
-      city: "Mumbai",
-      pincode: "400001",
-    },
-    payment: {
-      amount: 1800,
-      status: "paid",
-      method: "online",
-    },
-    notes: "Initial consultation for fertility treatment",
-    statusHistory: [
-      {
-        status: "booked",
-        timestamp: "2025-05-14T09:30:00",
-        message: "Appointment booked by patient",
-      },
-    ],
-  },
-  {
-    id: "APT-1008",
-    appointmentDate: "2025-05-12T10:00:00",
-    createdAt: "2025-05-05T14:20:00",
-    duration: 45,
-    status: "cancelled",
-    type: "consultation",
-    patient: {
-      id: "PT-1008",
-      name: "Sanjay Kumar",
-      age: 56,
-      gender: "Male",
-      phone: "+91 7890123456",
-      email: "sanjay.k@example.com",
-    },
-    doctor: {
-      id: "DOC-105",
-      name: "Dr. Ritu Verma",
-      specialization: "Dermatology",
-      phone: "+91 9123456780",
-      email: "dr.ritu@tellyoudoc.com",
-    },
-    location: {
-      address: "TellyouDoc Clinic, 456 Health Center",
-      city: "Delhi",
-      pincode: "110001",
-    },
-    payment: {
-      amount: 1300,
-      status: "refunded",
-      method: "cash",
-    },
-    notes: "Consultation for skin condition",
-    statusHistory: [
-      {
-        status: "booked",
-        timestamp: "2025-05-05T14:20:00",
-        message: "Appointment booked by patient",
-      },
-      {
-        status: "cancelled",
-        timestamp: "2025-05-11T08:30:00",
-        message: "Cancelled by doctor: Doctor unavailable due to emergency",
-      },
-    ],
-  },
-];
 
 // Status map for colors and labels
 const statusMap = {
-  upcoming: { color: "blue", label: "Upcoming" },
-  completed: { color: "green", label: "Completed" },
-  cancelled: { color: "red", label: "Cancelled" },
+  booked: { color: "blue", label: "Booked" },
+  complete: { color: "green", label: "Completed" },
+  cancel: { color: "red", label: "Cancelled" },
+  pending: { color: "orange", label: "Pending" },
   rescheduled: { color: "orange", label: "Rescheduled" },
 };
 
 // Helper function to export using csv or pdf
-const exportData = (data, format) => {
-  if (format === "csv") {
-    // Convert data to CSV format
-    const headers = "ID,Date,Time,Patient,Doctor,Status,Type\n";
+const exportData = (data, format, doctorName = 'all') => {
+  if (format === "excel") {
+    // Create a CSV file that Excel can open properly
+    // Excel can open CSV files directly, so we'll use CSV format with .csv extension
+    const headers = "ID,Date,Time,Patient Name,Patient Age,Patient Gender,Status,Type,Is Visited,Prescription Provided,Report Provided,Next Visit\n";
     const csvContent = data
       .map((item) => {
         const date = dayjs(item.appointmentDate).format("YYYY-MM-DD");
         const time = dayjs(item.appointmentDate).format("HH:mm");
-        return `${item.id},${date},${time},"${item.patient.name}","${item.doctor.name}",${item.status},${item.type}`;
+        return `${item.id},${date},${time},"${item.patient.name}","${item.patient.age}","${item.patient.gender}",${item.status},${item.type},${item.isVisited ? 'Yes' : 'No'},${item.prescriptionProvided ? 'Yes' : 'No'},${item.reportProvided ? 'Yes' : 'No'},"${item.nextVisit || 'N/A'}"`;
       })
       .join("\n");
 
-    const blob = new Blob([headers + csvContent], { type: "text/csv" });
+    const blob = new Blob([headers + csvContent], {
+      type: "text/csv;charset=utf-8;"
+    });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.setAttribute("hidden", "");
     a.setAttribute("href", url);
     a.setAttribute(
       "download",
-      `appointments_${dayjs().format("YYYY-MM-DD")}.csv`
+      `appointments_${doctorName}_${dayjs().format("YYYY-MM-DD")}.csv`
     );
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
   } else if (format === "pdf") {
-    // In a real application, you would generate a PDF here
-    // This is just a placeholder
-    message.info("PDF export functionality would be implemented here");
+    // Create a proper PDF using jsPDF library
+    // First, we need to dynamically load jsPDF and autoTable plugin
+    const script1 = document.createElement('script');
+    script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+
+    script1.onload = () => {
+      const script2 = document.createElement('script');
+      script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js';
+
+      script2.onload = () => {
+        const { jsPDF } = window.jspdf;
+
+        // Create new PDF document
+        const doc = new jsPDF();
+
+        // Set font
+        doc.setFont("helvetica");
+
+        // Add title
+        doc.setFontSize(20);
+        doc.text("Appointments Report", 105, 20, { align: "center" });
+
+        // Add subtitle
+        doc.setFontSize(12);
+        doc.text(`Doctor: ${doctorName}`, 105, 30, { align: "center" });
+        doc.text(`Generated: ${dayjs().format("MMMM DD, YYYY")}`, 105, 40, { align: "center" });
+
+        // Define table headers
+        const headers = [
+          ['Date & Time', 'Patient Details', 'Status', 'Visited', 'Prescription', 'Report']
+        ];
+
+        // Prepare table data
+        const tableData = data.map((item) => {
+          const date = dayjs(item.appointmentDate).format("MMM DD");
+          const time = dayjs(item.appointmentDate).format("HH:mm");
+          const patientDetails = `${item.patient.name.substring(0, 25)}\n${item.patient.age} yrs, ${item.patient.gender}`;
+          const formattedStatus = item.status.charAt(0).toUpperCase() + item.status.slice(1);
+          return [
+            `${date}\n${time}`,
+            patientDetails,
+            formattedStatus,
+            item.isVisited ? 'Yes' : 'No',
+            item.prescriptionProvided ? 'Yes' : 'No',
+            item.reportProvided ? 'Yes' : 'No'
+          ];
+        });
+
+
+
+        // Create table
+        doc.autoTable({
+          head: [headers[0]],
+          body: tableData,
+          startY: 55,
+          styles: {
+            fontSize: 8,
+            cellPadding: 3,
+          },
+          headStyles: {
+            fillColor: [66, 139, 202],
+            textColor: 255,
+            fontStyle: 'bold',
+          },
+          alternateRowStyles: {
+            fillColor: [245, 245, 245],
+          },
+          columnStyles: {
+            0: { cellWidth: 25 }, // Date & Time
+            1: { cellWidth: 80 }, // Patient Details
+            2: { cellWidth: 20 }, // Status
+            3: { cellWidth: 20 }, // Visited
+            4: { cellWidth: 25 }, // Prescription
+            5: { cellWidth: 20 }, // Report
+          },
+          margin: { left: 10, right: 10 },
+          tableWidth: 'auto',
+          didDrawPage: function (data) {
+            // Add page number
+            doc.setFontSize(10);
+            doc.text(
+              `Page ${doc.internal.getNumberOfPages()}`,
+              data.settings.margin.left,
+              doc.internal.pageSize.height - 10
+            );
+          }
+        });
+
+        // Add summary
+        const finalY = doc.lastAutoTable.finalY || 50;
+        doc.setFontSize(12);
+        doc.text(`Total Appointments: ${data.length}`, 105, finalY + 10, { align: "center" });
+
+        // Save the PDF
+        doc.save(`appointments_${doctorName}_${dayjs().format("YYYY-MM-DD")}.pdf`);
+
+        message.success("PDF report generated successfully!");
+      };
+
+      script2.onerror = () => {
+        message.error("Failed to load autoTable plugin. Please try again.");
+      };
+
+      document.head.appendChild(script2);
+    };
+
+    script1.onerror = () => {
+      message.error("Failed to load PDF library. Please try again.");
+    };
+
+    document.head.appendChild(script1);
   }
 };
 
@@ -543,9 +194,7 @@ function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
-  const [dateRange, setDateRange] = useState(null);
   const [status, setStatus] = useState("all");
-  const [viewDetailsVisible, setViewDetailsVisible] = useState(false);
   const [rescheduleVisible, setRescheduleVisible] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [rescheduleDate, setRescheduleDate] = useState(null);
@@ -560,13 +209,26 @@ function Appointments() {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [doctorsLoading, setDoctorsLoading] = useState(true);
-  const [totalDoctors, setTotalDoctors] = useState(0);
   const [slots, setSlots] = useState({});
   const [slotsLoading, setSlotsLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [doctorSearchText, setDoctorSearchText] = useState("");
   const [form] = Form.useForm();
   const { RangePicker } = DatePicker;
   const { TabPane } = Tabs;
+
+  // Helper function to convert 24-hour format to 12-hour format
+  const convertTo12HourFormat = (time24) => {
+    if (!time24) return '';
+
+    const [hours, minutes] = time24.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    const formattedHour = hour12.toString().padStart(2, '0');
+    const formattedMinutes = minutes.padStart(2, '0');
+
+    return `${formattedHour}:${formattedMinutes} ${ampm}`;
+  };
 
   // Load doctors when component mounts
   useEffect(() => {
@@ -578,38 +240,57 @@ function Appointments() {
   // Load appointments when component mounts
   useEffect(() => {
     if (currentView === "appointments" && selectedDoctor) {
-      fetchAppointments();
+      fetchAppointmentsByDoctorId(selectedDoctor.doctorId, status);
     }
   }, [currentView, selectedDoctor]);
 
   // Load appointments when filters change
   useEffect(() => {
     if (currentView === "appointments" && selectedDoctor) {
-      fetchAppointments();
+      fetchAppointmentsByDoctorId(selectedDoctor.doctorId, status);
     }
   }, [filters, currentView, selectedDoctor]);
 
-  // Handle doctor selection
-  const handleDoctorSelect = async (doctor) => {
+  // Handle doctor selection for slots
+  const handleViewSlots = async (doctor) => {
     setSelectedDoctor(doctor);
     await fetchSlotsByDoctorId(doctor.doctorId);
-    setCurrentView("options");
+    setCurrentView("slots");
+  };
+
+  // Handle doctor selection for appointments
+  const handleViewAppointments = async (doctor) => {
+    await fetchAppointmentsByDoctorId(doctor.doctorId, 'all');
+
+    setSelectedDoctor(doctor);
+    setFilters({
+      ...filters,
+      doctorId: doctor._id || doctor.id,
+    });
+    setCurrentView("appointments");
+  };
+
+  // Handle doctor search
+  const handleDoctorSearch = (e) => {
+    const searchValue = e.target.value;
+    setDoctorSearchText(searchValue);
+    // Call API with search text
+    fetchDoctors(searchValue);
   };
 
   // Fetch doctors from API
-  const fetchDoctors = async () => {
+  const fetchDoctors = async (searchText = "") => {
     setDoctorsLoading(true);
     try {
       const response = await apiService.AdministratorService.getAllDoctors(
         1, // page
         100, // limit - get more doctors for the grid view
-        "", // search
+        searchText, // search
         "" // status - get all doctors
       );
 
       if (response.status === 200) {
         setDoctors(response.data.data);
-        setTotalDoctors(response.data.totalDoctors);
       }
     } catch (error) {
       console.error("Error fetching doctors:", error);
@@ -626,11 +307,11 @@ function Appointments() {
       const response = await apiService.AdministratorService.getSlotsByDoctorId(
         doctorId
       );
-      console.log("Slots for doctor", doctorId, ":", JSON.stringify(response.data, null, 2));
+
       if (response.status === 200) {
-        setSlots(prevSlots => ({
+        setSlots((prevSlots) => ({
           ...prevSlots,
-          [doctorId]: response.data.data || []
+          [doctorId]: response.data.data || [],
         }));
       }
     } catch (error) {
@@ -638,6 +319,72 @@ function Appointments() {
       message.error("Failed to fetch slots");
     } finally {
       setSlotsLoading(false);
+    }
+  };
+
+  // Fetch appointments by doctor ID with optional status filter
+  const fetchAppointmentsByDoctorId = async (doctorId, statusFilter = null) => {
+    setLoading(true);
+    try {
+      // Build query parameters based on status filter
+      let queryParams = {};
+      if (statusFilter && statusFilter !== 'all') {
+        // Map frontend status values to backend query parameters
+        // The backend expects the actual status value, not a boolean
+        switch (statusFilter) {
+          case 'booked':
+            queryParams.booked = 'booked';
+            break;
+          case 'complete':
+            queryParams.complete = 'complete';
+            break;
+          case 'cancel':
+            queryParams.cancel = 'cancel';
+            break;
+          case 'pending':
+            queryParams.pending = 'pending';
+            break;
+          default:
+            break;
+        }
+      }
+
+      const response = await apiService.AdministratorService.getAppointmentsByDoctorId(doctorId, queryParams);
+
+      console.log("Appointments fetched successfully:", response.data);
+      console.log("Response status:", response.status);
+      console.log("Response data success:", response.data.success);
+      console.log("Response data data:", response.data.data);
+
+      if (response.status === 200 && response.data.success) {
+        // Transform the API response to match the expected format
+        const transformedAppointments = response.data.data.map(appointment => ({
+          id: appointment._id,
+          appointmentDate: appointment.date,
+          patient: {
+            name: `${appointment.patientId.patientProfile.firstName} ${appointment.patientId.patientProfile.middleName} ${appointment.patientId.patientProfile.lastName}`.trim(),
+            age: appointment.patientId.patientProfile.age,
+            gender: appointment.patientId.patientProfile.gender
+          },
+          status: appointment.bookingStatus,
+          type: "Consultation", // Default type since it's not in the API response
+          isVisited: appointment.isVisited,
+          prescriptionProvided: appointment.prescriptionProvided,
+          reportProvided: appointment.reportProvided,
+          nextVisit: appointment.nextVisit,
+          behalfUserId: appointment.behalfUserId
+        }));
+
+        setAppointments(transformedAppointments);
+        console.log("Appointments fetched successfully:", transformedAppointments);
+        console.log("Appointments count:", transformedAppointments.length);
+        console.log("Appointments statuses:", transformedAppointments.map(apt => apt.status));
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      message.error("Failed to fetch appointments");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -651,33 +398,7 @@ function Appointments() {
     });
   };
 
-  // Handle view slots
-  const handleViewSlots = () => {
-    setCurrentView("slots");
-  };
 
-  // Handle view appointments
-  const handleViewAppointments = () => {
-    setFilters({
-      ...filters,
-      doctorId: selectedDoctor._id || selectedDoctor.id,
-    });
-    setCurrentView("appointments");
-  };
-
-  // Fetch appointments with current filters
-  const fetchAppointments = async () => {
-    setLoading(true);
-    try {
-      const response = await mockApiService.getAppointments(filters);
-      setAppointments(response.data);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-      message.error("Failed to load appointments");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Handle search input change
   const handleSearchChange = (e) => {
@@ -692,14 +413,7 @@ function Appointments() {
     });
   };
 
-  // Handle date range change
-  const handleDateRangeChange = (dates) => {
-    setDateRange(dates);
-    setFilters({
-      ...filters,
-      dateRange: dates,
-    });
-  };
+
 
   // Handle status filter change
   const handleStatusChange = (value) => {
@@ -708,13 +422,14 @@ function Appointments() {
       ...filters,
       status: value,
     });
+
+    // Fetch appointments with the new status filter
+    if (selectedDoctor) {
+      fetchAppointmentsByDoctorId(selectedDoctor.doctorId, value);
+    }
   };
 
-  // View appointment details
-  const handleViewDetails = (record) => {
-    setSelectedAppointment(record);
-    setViewDetailsVisible(true);
-  };
+
 
   // Open reschedule modal
   const handleRescheduleClick = (record) => {
@@ -727,13 +442,16 @@ function Appointments() {
   const handleReschedule = async () => {
     setLoading(true);
     try {
-      await mockApiService.rescheduleAppointment(
-        selectedAppointment.id,
-        rescheduleDate.format("YYYY-MM-DDTHH:mm:ss")
-      );
-      message.success("Appointment rescheduled successfully");
+      // TODO: Replace with actual API call when available
+      // await apiService.AdministratorService.rescheduleAppointment(
+      //   selectedAppointment.id,
+      //   rescheduleDate.format("YYYY-MM-DDTHH:mm:ss")
+      // );
+      message.info("Reschedule API integration pending");
       setRescheduleVisible(false);
-      fetchAppointments();
+      if (selectedDoctor) {
+        fetchAppointmentsByDoctorId(selectedDoctor.doctorId, status);
+      }
     } catch (error) {
       message.error("Failed to reschedule appointment");
       console.error("Error rescheduling appointment:", error);
@@ -743,12 +461,15 @@ function Appointments() {
   };
 
   // Cancel appointment
-  const handleCancel = async (record) => {
+  const handleCancel = async () => {
     setLoading(true);
     try {
-      await mockApiService.cancelAppointment(record.id);
-      message.success("Appointment cancelled successfully");
-      fetchAppointments();
+      // TODO: Replace with actual API call when available
+      // await apiService.AdministratorService.cancelAppointment(record.id);
+      message.info("Cancel appointment API integration pending");
+      if (selectedDoctor) {
+        fetchAppointmentsByDoctorId(selectedDoctor.doctorId, status);
+      }
     } catch (error) {
       message.error("Failed to cancel appointment");
       console.error("Error cancelling appointment:", error);
@@ -759,17 +480,12 @@ function Appointments() {
 
   // Export appointments
   const handleExport = (format) => {
-    exportData(appointments, format);
+    const doctorName = selectedDoctor ? `${selectedDoctor.firstName} ${selectedDoctor.lastName}` : 'all';
+    exportData(appointments, format, doctorName);
   };
 
   // Table columns
   const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 100,
-    },
     {
       title: "Date & Time",
       dataIndex: "appointmentDate",
@@ -793,17 +509,10 @@ function Appointments() {
         <div>
           <div>{patient.name}</div>
           <div style={{ color: "rgba(0, 0, 0, 0.45)" }}>
-            {patient.age} yrs, {patient.gender}
+            {patient.age}, {patient.gender}
           </div>
         </div>
       ),
-    },
-
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      render: (text) => text.charAt(0).toUpperCase() + text.slice(1),
     },
     {
       title: "Status",
@@ -816,10 +525,10 @@ function Appointments() {
         </Tag>
       ),
       filters: [
-        { text: "Upcoming", value: "upcoming" },
-        { text: "Completed", value: "completed" },
-        { text: "Cancelled", value: "cancelled" },
-        { text: "Rescheduled", value: "rescheduled" },
+        { text: "Booked", value: "booked" },
+        { text: "Completed", value: "complete" },
+        { text: "Cancelled", value: "cancel" },
+        { text: "Pending", value: "pending" },
       ],
       onFilter: (value, record) => record.status === value,
     },
@@ -828,16 +537,7 @@ function Appointments() {
       key: "actions",
       render: (_, record) => (
         <Space size="small">
-          <Button
-            type="primary"
-            size="small"
-            icon={<FileSearchOutlined />}
-            onClick={() => handleViewDetails(record)}
-          >
-            View
-          </Button>
-
-          {record.status === "upcoming" && (
+          {record.status === "booked" && (
             <>
               <Button
                 type="default"
@@ -851,7 +551,7 @@ function Appointments() {
                 danger
                 size="small"
                 icon={<CloseCircleOutlined />}
-                onClick={() => handleCancel(record)}
+                onClick={() => handleCancel()}
               >
                 Cancel
               </Button>
@@ -861,437 +561,286 @@ function Appointments() {
       ),
     },
   ];
-  // Render appointment detail tabs
-  const renderAppointmentDetailTabs = () => {
-    if (!selectedAppointment) return null;
+
+
+
+
+  // State for slot modal
+  const [slotModalVisible, setSlotModalVisible] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [editingSlot, setEditingSlot] = useState(null);
+  const [slotDateFilter, setSlotDateFilter] = useState('upcoming'); // 'past' or 'upcoming'
+  const [selectedDate, setSelectedDate] = useState(null); // For specific date search
+
+  // Handle slot click to open modal
+  const handleSlotClick = (slot, dateSlot, timeSlot) => {
+    setSelectedSlot({
+      ...slot,
+      selectedDate: dateSlot.date,
+      selectedTimeSlot: timeSlot
+    });
+    setEditingSlot(null);
+    setSlotModalVisible(true);
+  };
+
+  // Handle edit slot
+  const handleEditSlot = () => {
+    setEditingSlot(selectedSlot);
+  };
+
+  // Handle delete slot
+  const handleDeleteSlot = async () => {
+    try {
+      // Here you would call the API to delete the slot
+      message.success("Slot deleted successfully");
+      setSlotModalVisible(false);
+      // Refresh slots
+      if (selectedDoctor) {
+        await fetchSlotsByDoctorId(selectedDoctor.doctorId);
+      }
+    } catch (error) {
+      message.error("Failed to delete slot");
+      console.error("Error deleting slot:", error);
+    }
+  };
+
+  // Handle save edited slot
+  const handleSaveSlot = async () => {
+    try {
+      // Here you would call the API to update the slot
+      message.success("Slot updated successfully");
+      setSlotModalVisible(false);
+      setEditingSlot(null);
+      // Refresh slots
+      if (selectedDoctor) {
+        await fetchSlotsByDoctorId(selectedDoctor.doctorId);
+      }
+    } catch (error) {
+      message.error("Failed to update slot");
+      console.error("Error updating slot:", error);
+    }
+  };
+
+  // Render slot table
+  const renderSlotTable = () => {
+    // Group slots by date
+    const slotsByDate = {};
+
+    slots[selectedDoctor?.doctorId]?.forEach((slot) => {
+      slot.applicableDates?.forEach((dateSlot) => {
+        const dateKey = dayjs(dateSlot.date).format("YYYY-MM-DD");
+        if (!slotsByDate[dateKey]) {
+          slotsByDate[dateKey] = {
+            date: dateSlot.date,
+            slots: []
+          };
+        }
+
+        // Add slot information with location
+        dateSlot.timeSlots?.forEach((timeSlot) => {
+          slotsByDate[dateKey].slots.push({
+            ...timeSlot,
+            location: slot.location,
+            slotId: slot._id,
+            originalSlot: slot
+          });
+        });
+      });
+    });
+
+    // Filter dates based on selected filter
+    const today = dayjs().startOf('day');
+    const filteredDates = Object.keys(slotsByDate).filter(dateKey => {
+      const slotDate = dayjs(dateKey);
+      if (slotDateFilter === 'past') {
+        return slotDate.isBefore(today);
+      } else if (slotDateFilter === 'upcoming') {
+        return slotDate.isSame(today) || slotDate.isAfter(today);
+      } else if (slotDateFilter === 'specific' && selectedDate) {
+        return slotDate.isSame(selectedDate, 'day');
+      }
+      return true; // Show all if no filter
+    });
+
+    // Sort dates
+    const sortedDates = filteredDates.sort();
+
+    // Check if no slots found for specific date
+    if (slotDateFilter === 'specific' && selectedDate && sortedDates.length === 0) {
+      return (
+        <div className="no-slots-message">
+          <p>No slots available for {selectedDate.format('MMM DD, YYYY')}</p>
+        </div>
+      );
+    }
 
     return (
-      <Tabs defaultActiveKey="details">
-        <TabPane tab="Details" key="details">
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <Card title="Patient Information" bordered={false}>
-                <p>
-                  <UserOutlined /> <strong>Name:</strong>{" "}
-                  {selectedAppointment.patient.name}
-                </p>
-                <p>
-                  <InfoCircleOutlined /> <strong>Age/Gender:</strong>{" "}
-                  {selectedAppointment.patient.age} years,{" "}
-                  {selectedAppointment.patient.gender}
-                </p>
-                <p>
-                  <PhoneOutlined /> <strong>Phone:</strong>{" "}
-                  {selectedAppointment.patient.phone}
-                </p>
-                <p>
-                  <MailOutlined /> <strong>Email:</strong>{" "}
-                  {selectedAppointment.patient.email}
-                </p>
-              </Card>
-            </Col>
-            <Col span={12}>
-              <Card title="Doctor Information" bordered={false}>
-                <p>
-                  <TeamOutlined /> <strong>Name:</strong>{" "}
-                  {selectedAppointment.doctor.name}
-                </p>
-                <p>
-                  <InfoCircleOutlined /> <strong>Specialization:</strong>{" "}
-                  {selectedAppointment.doctor.specialization}
-                </p>
-                <p>
-                  <PhoneOutlined /> <strong>Phone:</strong>{" "}
-                  {selectedAppointment.doctor.phone}
-                </p>
-                <p>
-                  <MailOutlined /> <strong>Email:</strong>{" "}
-                  {selectedAppointment.doctor.email}
-                </p>
-              </Card>
-            </Col>
-            <Col span={12}>
-              <Card title="Appointment Details" bordered={false}>
-                <p>
-                  <CalendarOutlined /> <strong>Date & Time:</strong>{" "}
-                  {dayjs(selectedAppointment.appointmentDate).format(
-                    "MMM DD, YYYY hh:mm A"
-                  )}
-                </p>
-                <p>
-                  <ClockCircleOutlined /> <strong>Duration:</strong>{" "}
-                  {selectedAppointment.duration} minutes
-                </p>
-                <p>
-                  <Tag
-                    color={
-                      statusMap[selectedAppointment.status]?.color || "default"
-                    }
-                  >
-                    {statusMap[selectedAppointment.status]?.label ||
-                      selectedAppointment.status}
+      <div className="slot-table-container">
+        <Table
+          dataSource={sortedDates.map(dateKey => ({
+            key: dateKey,
+            date: slotsByDate[dateKey].date,
+            slots: slotsByDate[dateKey].slots
+          }))}
+          columns={[
+            {
+              title: "Date",
+              dataIndex: "date",
+              key: "date",
+              width: 150,
+              render: (date) => (
+                <div className="slot-date-cell">
+                  <div className="slot-date-line">
+                    <CalendarOutlined className="slot-table-icon" />
+                    <span>{dayjs(date).format("MMM DD, YYYY")}</span>
+                  </div>
+                  <div className="slot-day-name">{dayjs(date).format("dddd")}</div>
+                </div>
+              ),
+            },
+            {
+              title: "Available Time Slots",
+              dataIndex: "slots",
+              key: "slots",
+              render: (slots) => (
+                <div className="slot-time-slots">
+                  {slots.map((slot, index) => (
+                    <div
+                      key={index}
+                      className={`time-slot-chip ${slot.status === 'available' ? 'available' : 'booked'}`}
+                      onClick={() => handleSlotClick(slot.originalSlot, { date: slot.date }, slot)}
+                    >
+                      <div className="time-slot-time">
+                        {convertTo12HourFormat(slot.startTime)} to {convertTo12HourFormat(slot.endTime)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ),
+            }
+          ]}
+          pagination={false}
+          className="slot-table"
+        />
+      </div>
+    );
+  };
+
+  // Render slot modal
+  const renderSlotModal = () => {
+    if (!selectedSlot) return null;
+
+    return (
+      <Modal
+        title={
+          <div className="slot-modal-title">
+            <CalendarOutlined />
+            <span>Slot Details</span>
+          </div>
+        }
+        open={slotModalVisible}
+        onCancel={() => {
+          setSlotModalVisible(false);
+          setSelectedSlot(null);
+          setEditingSlot(null);
+        }}
+        footer={[
+          <Button key="cancel" onClick={() => setSlotModalVisible(false)}>
+            Cancel
+          </Button>,
+          <Button key="edit" type="primary" onClick={handleEditSlot}>
+            Edit
+          </Button>,
+          <Button key="delete" danger onClick={handleDeleteSlot}>
+            Delete
+          </Button>,
+        ]}
+        width={600}
+      >
+        {editingSlot ? (
+          <div className="slot-edit-form">
+            <Form layout="vertical">
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Date">
+                    <DatePicker
+                      style={{ width: '100%' }}
+                      value={dayjs(editingSlot.selectedDate)}
+                      disabled
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Location">
+                    <Input value={editingSlot.location} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item label="Start Time">
+                    <Input value={editingSlot.selectedTimeSlot.startTime} />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="End Time">
+                    <Input value={editingSlot.selectedTimeSlot.endTime} />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Form.Item label="Status">
+                <Select value={editingSlot.selectedTimeSlot.status}>
+                  <Select.Option value="available">Available</Select.Option>
+                  <Select.Option value="booked">Booked</Select.Option>
+                </Select>
+              </Form.Item>
+              <div className="slot-edit-actions">
+                <Button onClick={() => setEditingSlot(null)}>Cancel</Button>
+                <Button type="primary" onClick={() => handleSaveSlot(editingSlot)}>
+                  Save Changes
+                </Button>
+              </div>
+            </Form>
+          </div>
+        ) : (
+          <div className="slot-details">
+            <Row gutter={[16, 16]}>
+              <Col span={12}>
+                <div className="slot-detail-item">
+                  <label>Date:</label>
+                  <span>{dayjs(selectedSlot.selectedDate).format("MMM DD, YYYY")}</span>
+                </div>
+              </Col>
+              <Col span={12}>
+                <div className="slot-detail-item">
+                  <label>Day:</label>
+                  <span>{dayjs(selectedSlot.selectedDate).format("dddd")}</span>
+                </div>
+              </Col>
+              <Col span={12}>
+                <div className="slot-detail-item">
+                  <label>Time:</label>
+                  <span>{convertTo12HourFormat(selectedSlot.selectedTimeSlot.startTime)} to {convertTo12HourFormat(selectedSlot.selectedTimeSlot.endTime)}</span>
+                </div>
+              </Col>
+              <Col span={12}>
+                <div className="slot-detail-item">
+                  <label>Location:</label>
+                  <span>{selectedSlot.location}</span>
+                </div>
+              </Col>
+              <Col span={12}>
+                <div className="slot-detail-item">
+                  <label>Status:</label>
+                  <Tag color={selectedSlot.selectedTimeSlot.status === "available" ? "green" : "red"}>
+                    {selectedSlot.selectedTimeSlot.status === "available" ? "Available" : "Booked"}
                   </Tag>
-                </p>
-                <p>
-                  <InfoCircleOutlined /> <strong>Type:</strong>{" "}
-                  {selectedAppointment.type.charAt(0).toUpperCase() +
-                    selectedAppointment.type.slice(1)}
-                </p>
-                <p>
-                  <InfoCircleOutlined /> <strong>Notes:</strong>{" "}
-                  {selectedAppointment.notes}
-                </p>
-              </Card>
-            </Col>
-            <Col span={12}>
-              <Card title="Location & Payment" bordered={false}>
-                <p>
-                  <EnvironmentOutlined /> <strong>Address:</strong>{" "}
-                  {selectedAppointment.location.address}
-                </p>
-                <p>
-                  <EnvironmentOutlined /> <strong>City:</strong>{" "}
-                  {selectedAppointment.location.city},{" "}
-                  {selectedAppointment.location.pincode}
-                </p>
-                <p>
-                  <InfoCircleOutlined /> <strong>Payment Amount:</strong> ₹
-                  {selectedAppointment.payment.amount}
-                </p>
-                <p>
-                  <InfoCircleOutlined /> <strong>Payment Status:</strong>{" "}
-                  {selectedAppointment.payment.status.charAt(0).toUpperCase() +
-                    selectedAppointment.payment.status.slice(1)}
-                </p>
-                {selectedAppointment.payment.method && (
-                  <p>
-                    <InfoCircleOutlined /> <strong>Payment Method:</strong>{" "}
-                    {selectedAppointment.payment.method
-                      .charAt(0)
-                      .toUpperCase() +
-                      selectedAppointment.payment.method.slice(1)}
-                  </p>
-                )}
-              </Card>
-            </Col>
-          </Row>
-        </TabPane>
-        <TabPane tab="History" key="history">
-          <Timeline>
-            {selectedAppointment.statusHistory.map((history, index) => (
-              <Timeline.Item
-                key={index}
-                color={
-                  history.status === "booked"
-                    ? "blue"
-                    : history.status === "confirmed"
-                      ? "blue"
-                      : history.status === "completed"
-                        ? "green"
-                        : history.status === "cancelled"
-                          ? "red"
-                          : history.status === "rescheduled"
-                            ? "orange"
-                            : "gray"
-                }
-              >
-                <p>
-                  <strong>
-                    {dayjs(history.timestamp).format("MMM DD, YYYY hh:mm A")}
-                  </strong>
-                </p>
-                <p>
-                  <strong>Status:</strong>{" "}
-                  {history.status.charAt(0).toUpperCase() +
-                    history.status.slice(1)}
-                </p>
-                <p>{history.message}</p>
-              </Timeline.Item>
-            ))}
-          </Timeline>
-        </TabPane>
-      </Tabs>
-    );
-  };
-
-  // Render doctor card
-  const renderDoctorCard = (doctor) => {
-    // Get doctor name from API data structure
-    const doctorName = `${doctor.firstName || ""} ${doctor.lastName || ""
-      }`.trim();
-
-    // Get specializations from API data structure
-    const specializations = doctor.professionalDetails?.specialization || [];
-    const specializationText = specializations.join(", ") || "Not specified";
-
-    // Get contact information
-    const phone = doctor.contact?.primaryNumber || "Not available";
-    const email = doctor.contact?.email || "Not available";
-
-    // Get status
-    const status = doctor.isActive ? "Active" : "Inactive";
-    const statusColor = doctor.isActive ? "blue" : "red";
-
-    // Get appointment stats from the API response
-    const appointmentStats = {
-      total: doctor.appointmentCounts?.all || 0,
-      upcoming: doctor.appointmentCounts?.upcoming || 0,
-      completed: doctor.appointmentCounts?.completed || 0,
-      cancelled: doctor.appointmentCounts?.cancelled || 0,
-    };
-
-    return (
-      <Col xs={24} sm={12} lg={8} xl={8} key={doctor._id || doctor.id}>
-        <Card
-          hoverable
-          className="doctor-card"
-          onClick={() => handleDoctorSelect(doctor)}
-          style={{ cursor: "pointer" }}
-        >
-          <div className="doctor-card-header">
-            <Avatar
-              src={doctor.profileImage}
-              size={48}
-              style={{ marginBottom: 8 }}
-            >
-              {doctorName.charAt(0)?.toUpperCase()}
-            </Avatar>
-            <Tag color={statusColor} style={{ marginBottom: 0 }}>
-              {status}
-            </Tag>
+                </div>
+              </Col>
+            </Row>
           </div>
-
-          <div className="doctor-card-info">
-            <Title level={4}>{doctorName}</Title>
-            <div className="specialization-container">
-              <Tooltip
-                title={
-                  <div>
-                    <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
-                      Specializations:
-                    </div>
-                    {specializations.map((spec, index) => (
-                      <div key={index}>• {spec}</div>
-                    ))}
-                  </div>
-                }
-                placement="top"
-              >
-                <div className="specialization-text">
-                  {specializations.length > 0
-                    ? specializations[0]
-                    : "Not specified"}
-                  {specializations.length > 1 && (
-                    <span className="more-indicator">
-                      {" "}
-                      +{specializations.length - 1}
-                    </span>
-                  )}
-                </div>
-              </Tooltip>
-            </div>
-
-            <div
-              style={{
-                marginTop: "16px",
-                paddingTop: "12px",
-                borderTop: "2px solid #e8e8e8",
-                padding: "12px 8px",
-              }}
-            >
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(4, 1fr)",
-                  gap: "8px",
-                }}
-              >
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "8px 4px",
-                    backgroundColor: "#ffffff",
-                    borderRadius: "6px",
-                    border: "1px solid #e8e8e8",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color:
-                        appointmentStats.total === 0 ? "#d9d9d9" : "#262626",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    {appointmentStats.total}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "10px",
-                      color: "#8c8c8c",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    Total
-                  </div>
-                </div>
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "8px 4px",
-                    backgroundColor: "#ffffff",
-                    borderRadius: "6px",
-                    border: "1px solid #e8e8e8",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color:
-                        appointmentStats.upcoming === 0 ? "#d9d9d9" : "#1890ff",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    {appointmentStats.upcoming}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "10px",
-                      color: "#8c8c8c",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    Upcoming
-                  </div>
-                </div>
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "8px 4px",
-                    backgroundColor: "#ffffff",
-                    borderRadius: "6px",
-                    border: "1px solid #e8e8e8",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color:
-                        appointmentStats.completed === 0
-                          ? "#d9d9d9"
-                          : "#52c41a",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    {appointmentStats.completed}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "10px",
-                      color: "#8c8c8c",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    Completed
-                  </div>
-                </div>
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "8px 4px",
-                    backgroundColor: "#ffffff",
-                    borderRadius: "6px",
-                    border: "1px solid #e8e8e8",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color:
-                        appointmentStats.cancelled === 0
-                          ? "#d9d9d9"
-                          : "#ff4d4f",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    {appointmentStats.cancelled}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "10px",
-                      color: "#8c8c8c",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    Cancelled
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </Col>
-    );
-  };
-
-  // Render slot card
-  const renderSlotCard = (slot) => {
-    return (
-      <Col xs={24} sm={12} lg={8} xl={6} key={slot._id}>
-        <Card
-          hoverable
-          className="slot-card"
-          style={{ marginBottom: 16 }}
-        >
-          <div className="slot-card-header">
-            <div className="slot-card-location">
-              <EnvironmentOutlined className="slot-card-icon" />
-              <div>
-                <div className="slot-card-location-text">{slot.location}</div>
-              </div>
-            </div>
-            <Tag color={slot.active ? "green" : "red"}>
-              {slot.active ? "Active" : "Inactive"}
-            </Tag>
-          </div>
-
-          <div className="slot-card-dates">
-            <div className="slot-card-dates-title">Available Dates:</div>
-            {slot.applicableDates?.map((dateSlot, index) => (
-              <div key={index} className="slot-date-item">
-                <div className="slot-date">
-                  <CalendarOutlined className="slot-card-icon" />
-                  <div>
-                    <div className="slot-date-text">
-                      {dayjs(dateSlot.date).format("MMM DD, YYYY")}
-                    </div>
-                    <div className="slot-time-text">
-                      {dateSlot.timeSlots?.map((timeSlot, timeIndex) => (
-                        <span key={timeIndex} className="time-slot">
-                          {timeSlot.startTime} - {timeSlot.endTime}
-                          {timeSlot.status === "available" && (
-                            <Tag color="green" size="small" style={{ marginLeft: 8 }}>
-                              Available
-                            </Tag>
-                          )}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </Col>
+        )}
+      </Modal>
     );
   };
 
@@ -1303,14 +852,7 @@ function Appointments() {
           hoverable
           className="appointment-card"
           actions={[
-            <Tooltip title="View Details">
-              <Button
-                type="text"
-                icon={<FileSearchOutlined />}
-                onClick={() => handleViewDetails(appointment)}
-              />
-            </Tooltip>,
-            appointment.status === "upcoming" && (
+            appointment.status === "booked" && (
               <Tooltip title="Reschedule">
                 <Button
                   type="text"
@@ -1319,20 +861,19 @@ function Appointments() {
                 />
               </Tooltip>
             ),
-            appointment.status === "upcoming" && (
+            appointment.status === "booked" && (
               <Tooltip title="Cancel">
                 <Button
                   type="text"
                   danger
                   icon={<CloseCircleOutlined />}
-                  onClick={() => handleCancel(appointment)}
+                  onClick={() => handleCancel()}
                 />
               </Tooltip>
             ),
           ].filter(Boolean)}
         >
           <div className="appointment-card-header">
-            <div className="appointment-card-id">{appointment.id}</div>
             <Tag color={statusMap[appointment.status]?.color || "default"}>
               {statusMap[appointment.status]?.label ||
                 appointment.status.charAt(0).toUpperCase() +
@@ -1361,16 +902,8 @@ function Appointments() {
                 {appointment.patient.name}
               </div>
               <div className="appointment-card-detail">
-                {appointment.patient.age} years, {appointment.patient.gender}
+                {appointment.patient.age}, {appointment.patient.gender}
               </div>
-            </div>
-          </div>
-
-          <div className="appointment-card-type">
-            <InfoCircleOutlined className="appointment-card-icon" />
-            <div>
-              {appointment.type.charAt(0).toUpperCase() +
-                appointment.type.slice(1)}
             </div>
           </div>
         </Card>
@@ -1381,113 +914,188 @@ function Appointments() {
   return (
     <AdminLayout>
       <div className="admin-appointments-container">
-
         {/* Main Page content */}
         {currentView === "doctors" ? (
           // Doctors View
           <>
-
             {/* Main heading */}
 
             <div className="admin-appointments-title">
               <h1>Appointment Management</h1>
             </div>
 
-            {/* Doctors grid */}
-            <div className="admin-appointments-grid">
-              {doctorsLoading ? (
-                <div className="appointments-loading">
-                  <div className="loading-message">Loading doctors...</div>
-                </div>
-              ) : (
-                <Row gutter={[16, 16]} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Doctors table */}
+            <div className="admin-appointments-table" >
+              <div
+                className="admin-appointments-title"
+                style={{ marginBottom: 0, display: 'flex', justifyContent: 'space-between', flexDirection: "row", alignItems: "center" }}
+              >
+                <p>Select a doctor to view their slots</p>
 
-                  {/* Heading */}
-                  <div className="admin-appointments-title">
-                    <h1>Select a doctor to view their slots or appointments</h1>
-                  </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    {/* Doctors grid */}
-                    {doctors.length > 0 ? (
-                      doctors.map((doctor) => renderDoctorCard(doctor))
-                    ) : (
-                      <Col span={24}>
-                        <div className="no-appointments-message">
-                          <p>No doctors found.</p>
-                        </div>
-                      </Col>
-                    )}
-                  </div>
-                </Row>
-              )}
-            </div>
-          </>
-        ) : currentView === "options" ? (
-          // Options View
-          <>
-            <div className="admin-appointments-header">
-              <div className="admin-appointments-title">
-                <Button
-                  icon={<ArrowLeftOutlined />}
-                  onClick={handleBackToDoctors}
-                  style={{ marginRight: 16 }}
-                >
-                  Back to Doctors
-                </Button>
-                <div>
-                  <h1>
-                    {selectedDoctor
-                      ? `${selectedDoctor.firstName || ""} ${selectedDoctor.lastName || ""
-                        }`.trim()
-                      : ""}
-                  </h1>
-                  <p>Choose what you want to view</p>
+                {/* Search input for doctors */}
+                <div style={{ marginBottom: 16, width: '300px', borderRadius: '8px' }}>
+                  <Input
+                    placeholder="Search doctors by name..."
+                    value={doctorSearchText}
+                    onChange={handleDoctorSearch}
+                    prefix={<UserOutlined />}
+                    style={{ maxWidth: 400 }}
+                    allowClear
+                  />
                 </div>
               </div>
-            </div>
 
-            <div className="admin-appointments-grid">
-              <Row gutter={[24, 24]} justify="center">
-                <Col xs={24} sm={12} lg={8}>
-                  <Card
-                    hoverable
-                    className="options-card"
-                    onClick={handleViewSlots}
-                    style={{
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      height: '240px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <CalendarOutlined style={{ fontSize: '56px', color: '#667eea', marginBottom: '20px' }} />
-                    <Title level={3} style={{ marginBottom: '8px', color: '#262626' }}>View Slots</Title>
-                    <Text type="secondary" style={{ fontSize: '15px' }}>View available appointment slots</Text>
-                  </Card>
-                </Col>
-                <Col xs={24} sm={12} lg={8}>
-                  <Card
-                    hoverable
-                    className="options-card"
-                    onClick={handleViewAppointments}
-                    style={{
-                      cursor: 'pointer',
-                      textAlign: 'center',
-                      height: '240px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <FileSearchOutlined style={{ fontSize: '56px', color: '#52c41a', marginBottom: '20px' }} />
-                    <Title level={3} style={{ marginBottom: '8px', color: '#262626' }}>Booked Appointments</Title>
-                    <Text type="secondary" style={{ fontSize: '15px' }}>View and manage booked appointments</Text>
-                  </Card>
-                </Col>
-              </Row>
+              <Table
+                columns={[
+                  {
+                    title: "Sl No",
+                    key: "slNo",
+                    width: 80,
+                    render: (_, __, index) => index + 1,
+                  },
+                  {
+                    title: "Doctor",
+                    key: "doctorName",
+                    render: (_, doctor) => {
+                      const doctorName = `${doctor.firstName || ""} ${doctor.lastName || ""
+                        }`.trim();
+                      const specializations =
+                        doctor.professionalDetails?.specialization || [];
+                      return (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <Avatar src={doctor.profileImage} size={32}>
+                            {doctorName.charAt(0)?.toUpperCase()}
+                          </Avatar>
+                          <div>
+                            <div style={{ fontWeight: 500 }}>{doctorName}</div>
+                            <div style={{ fontSize: "12px", color: "#8c8c8c" }}>
+                              <Tooltip
+                                title={
+                                  <div>
+                                    <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
+                                      Specializations:
+                                    </div>
+                                    {specializations.map((spec, index) => (
+                                      <div key={index}>• {spec}</div>
+                                    ))}
+                                  </div>
+                                }
+                                placement="top"
+                              >
+                                <div style={{ cursor: "pointer" }}>
+                                  {specializations.length > 0
+                                    ? specializations[0]
+                                    : "Not specified"}
+                                  {specializations.length > 1 && (
+                                    <span style={{ color: "#1890ff", fontWeight: 500, marginLeft: "2px" }}>
+                                      +{specializations.length - 1}
+                                    </span>
+                                  )}
+                                </div>
+                              </Tooltip>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    },
+                  },
+                  {
+                    title: "Total Bookings",
+                    key: "totalBookings",
+                    align: "center",
+                    render: (_, doctor) => (
+                      <span style={{ fontWeight: 500 }}>
+                        {doctor.appointmentCounts?.all || 0}
+                      </span>
+                    ),
+                  },
+                  {
+                    title: "Pending",
+                    key: "pendingBookings",
+                    align: "center",
+                    render: (_, doctor) => (
+                      <Tag color="orange">
+                        {doctor.appointmentCounts?.pending || 0}
+                      </Tag>
+                    ),
+                  },
+                  {
+                    title: "Upcoming",
+                    key: "upcomingBookings",
+                    align: "center",
+                    render: (_, doctor) => (
+                      <Tag color="blue">
+                        {doctor.appointmentCounts?.upcoming || 0}
+                      </Tag>
+                    ),
+                  },
+                  {
+                    title: "Completed",
+                    key: "completedBookings",
+                    align: "center",
+                    render: (_, doctor) => (
+                      <Tag color="green">
+                        {doctor.appointmentCounts?.completed || 0}
+                      </Tag>
+                    ),
+                  },
+                  {
+                    title: "Cancelled",
+                    key: "cancelledBookings",
+                    align: "center",
+                    render: (_, doctor) => (
+                      <Tag color="red">
+                        {doctor.appointmentCounts?.cancelled || 0}
+                      </Tag>
+                    ),
+                  },
+                  {
+                    title: "Actions",
+                    key: "actions",
+                    align: "center",
+                    render: (_, doctor) => (
+                      <>
+                        <Button
+                          type="primary"
+                          size="small"
+                          icon={<CalendarOutlined />}
+                          onClick={() => handleViewSlots(doctor)}
+                        >
+                          View Slots
+                        </Button>
+
+                        <Button
+                          type="primary"
+                          size="small"
+                          icon={<CalendarOutlined />}
+                          onClick={() => handleViewAppointments(doctor)}
+                        >
+                          View Appointments
+                        </Button>
+                      </>
+                    ),
+                  },
+                ]}
+                dataSource={doctors}
+                rowKey={(record) => record._id || record.id}
+                loading={doctorsLoading}
+                pagination={{
+                  pageSize: 10,
+                  showSizeChanger: true,
+                  pageSizeOptions: ["10", "20", "50"],
+                  showTotal: (total) => `Total ${total} doctors`,
+                }}
+                locale={{
+                  emptyText: "No doctors found.",
+                }}
+              />
             </div>
           </>
         ) : currentView === "slots" ? (
@@ -1497,10 +1105,10 @@ function Appointments() {
               <div className="admin-appointments-title">
                 <Button
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => setCurrentView("options")}
+                  onClick={handleBackToDoctors}
                   style={{ marginRight: 16 }}
                 >
-                  Back to Options
+                  Back to Doctors
                 </Button>
                 <div>
                   <h1>
@@ -1515,23 +1123,82 @@ function Appointments() {
               </div>
             </div>
 
-            <div className="admin-appointments-grid">
+            <div className="admin-appointments-table">
               {slotsLoading ? (
                 <div className="appointments-loading">
                   <div className="loading-message">Loading slots...</div>
                 </div>
               ) : (
-                <Row gutter={[16, 16]}>
-                  {slots[selectedDoctor?.doctorId] && slots[selectedDoctor.doctorId].length > 0 ? (
-                    slots[selectedDoctor.doctorId].map((slot) => renderSlotCard(slot))
-                  ) : (
-                    <Col span={24}>
-                      <div className="no-appointments-message">
-                        <p>No slots found for this doctor.</p>
+                <>
+                  {slots[selectedDoctor?.doctorId] &&
+                    slots[selectedDoctor.doctorId].length > 0 ? (
+                    <>
+                      <div className="slot-filter-buttons">
+                        <div className="slot-filter-left">
+                          <Button
+                            type={slotDateFilter === 'past' ? 'primary' : 'default'}
+                            onClick={() => {
+                              setSlotDateFilter('past');
+                              setSelectedDate(null);
+                            }}
+                            style={{ marginRight: 8 }}
+                          >
+                            Past
+                          </Button>
+                          <Button
+                            type={slotDateFilter === 'upcoming' ? 'primary' : 'default'}
+                            onClick={() => {
+                              setSlotDateFilter('upcoming');
+                              setSelectedDate(null);
+                            }}
+                          >
+                            Upcoming
+                          </Button>
+                        </div>
+                        <div className="slot-filter-right">
+                          <DatePicker
+                            placeholder="Search specific date"
+                            value={selectedDate}
+                            onChange={(date) => {
+                              setSelectedDate(date);
+                              setSlotDateFilter('specific');
+                            }}
+                            format="DD/MM/YYYY"
+                            style={{ marginRight: 8, width: 150 }}
+                            allowClear
+                          />
+                          <Button
+                            type="default"
+                            onClick={() => {
+                              setSelectedDate(dayjs());
+                              setSlotDateFilter('specific');
+                            }}
+                          >
+                            Today
+                          </Button>
+                          {(slotDateFilter !== 'upcoming' || selectedDate) && (
+                            <Button
+                              type="default"
+                              danger
+                              onClick={() => {
+                                setSlotDateFilter('upcoming');
+                                setSelectedDate(null);
+                              }}
+                              style={{ marginLeft: 8 }}
+                            >
+                              Reset
+                            </Button>
+                          )}
+                        </div>
                       </div>
-                    </Col>
+                      {renderSlotTable()}
+                    </>
+                  ) : (
+                    <div className="no-appointments-message">
+                      <p>No slots found for this doctor.</p>
+                    </div>
                   )}
-                </Row>
+                </>
               )}
             </div>
           </>
@@ -1542,10 +1209,10 @@ function Appointments() {
               <div className="admin-appointments-title">
                 <Button
                   icon={<ArrowLeftOutlined />}
-                  onClick={() => setCurrentView("options")}
+                  onClick={handleBackToDoctors}
                   style={{ marginRight: 16 }}
                 >
-                  Back to Options
+                  Back to Doctors
                 </Button>
                 <div>
                   <h1>
@@ -1564,7 +1231,7 @@ function Appointments() {
                   </p>
                 </div>
               </div>
-              <div className="admin-appointments-actions">
+              <div className="admin-appointments-actions" style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', padding: '10px 0' }}>
                 <div className="admin-appointments-filters">
                   <Input.Search
                     placeholder="Search by patient name or appointment ID"
@@ -1573,24 +1240,6 @@ function Appointments() {
                     onSearch={handleSearch}
                     style={{ width: 250, marginRight: 16 }}
                   />
-                  <RangePicker
-                    style={{ width: 280, marginRight: 16 }}
-                    onChange={handleDateRangeChange}
-                  />
-                  <Select
-                    placeholder="Filter by status"
-                    style={{ width: 150 }}
-                    onChange={handleStatusChange}
-                    value={status}
-                  >
-                    <Select.Option value="all">All Status</Select.Option>
-                    <Select.Option value="upcoming">Upcoming</Select.Option>
-                    <Select.Option value="completed">Completed</Select.Option>
-                    <Select.Option value="cancelled">Cancelled</Select.Option>
-                    <Select.Option value="rescheduled">
-                      Rescheduled
-                    </Select.Option>
-                  </Select>
                 </div>
                 <div className="admin-appointments-actions-right">
                   <Radio.Group
@@ -1611,12 +1260,12 @@ function Appointments() {
                   </Radio.Group>
 
                   <div className="admin-appointments-export">
-                    <Tooltip title="Export as CSV">
+                    <Tooltip title="Export as Excel">
                       <Button
                         icon={<DownloadOutlined />}
-                        onClick={() => handleExport("csv")}
+                        onClick={() => handleExport("excel")}
                       >
-                        CSV
+                        Excel
                       </Button>
                     </Tooltip>
                     <Tooltip title="Export as PDF">
@@ -1662,17 +1311,19 @@ function Appointments() {
                           )}
                         </Row>
                       </TabPane>
-                      <TabPane tab="Upcoming" key="upcoming">
+                      <TabPane tab="Booked" key="booked">
                         <Row gutter={[16, 16]}>
-                          {appointments.length > 0 ? (
-                            appointments.map((appointment) =>
-                              renderAppointmentCard(appointment)
-                            )
+                          {appointments.filter(appointment => appointment.status === "booked").length > 0 ? (
+                            appointments
+                              .filter(appointment => appointment.status === "booked")
+                              .map((appointment) =>
+                                renderAppointmentCard(appointment)
+                              )
                           ) : (
                             <Col span={24}>
                               <div className="no-appointments-message">
                                 <p>
-                                  No upcoming appointments found for this
+                                  No booked appointments found for this
                                   doctor.
                                 </p>
                               </div>
@@ -1680,12 +1331,14 @@ function Appointments() {
                           )}
                         </Row>
                       </TabPane>
-                      <TabPane tab="Completed" key="completed">
+                      <TabPane tab="Completed" key="complete">
                         <Row gutter={[16, 16]}>
-                          {appointments.length > 0 ? (
-                            appointments.map((appointment) =>
-                              renderAppointmentCard(appointment)
-                            )
+                          {appointments.filter(appointment => appointment.status === "complete").length > 0 ? (
+                            appointments
+                              .filter(appointment => appointment.status === "complete")
+                              .map((appointment) =>
+                                renderAppointmentCard(appointment)
+                              )
                           ) : (
                             <Col span={24}>
                               <div className="no-appointments-message">
@@ -1698,17 +1351,39 @@ function Appointments() {
                           )}
                         </Row>
                       </TabPane>
-                      <TabPane tab="Cancelled" key="cancelled">
+                      <TabPane tab="Cancelled" key="cancel">
                         <Row gutter={[16, 16]}>
-                          {appointments.length > 0 ? (
-                            appointments.map((appointment) =>
-                              renderAppointmentCard(appointment)
-                            )
+                          {appointments.filter(appointment => appointment.status === "cancel").length > 0 ? (
+                            appointments
+                              .filter(appointment => appointment.status === "cancel")
+                              .map((appointment) =>
+                                renderAppointmentCard(appointment)
+                              )
                           ) : (
                             <Col span={24}>
                               <div className="no-appointments-message">
                                 <p>
                                   No cancelled appointments found for this
+                                  doctor.
+                                </p>
+                              </div>
+                            </Col>
+                          )}
+                        </Row>
+                      </TabPane>
+                      <TabPane tab="Pending" key="pending">
+                        <Row gutter={[16, 16]}>
+                          {appointments.filter(appointment => appointment.status === "pending").length > 0 ? (
+                            appointments
+                              .filter(appointment => appointment.status === "pending")
+                              .map((appointment) =>
+                                renderAppointmentCard(appointment)
+                              )
+                          ) : (
+                            <Col span={24}>
+                              <div className="no-appointments-message">
+                                <p>
+                                  No pending appointments found for this
                                   doctor.
                                 </p>
                               </div>
@@ -1747,24 +1422,7 @@ function Appointments() {
           </>
         )}
 
-        {/* View Details Modal */}
-        <Modal
-          title={
-            <div style={{ fontSize: "18px", fontWeight: "bold" }}>
-              Appointment Details - {selectedAppointment?.id}
-            </div>
-          }
-          open={viewDetailsVisible}
-          onCancel={() => setViewDetailsVisible(false)}
-          footer={[
-            <Button key="back" onClick={() => setViewDetailsVisible(false)}>
-              Close
-            </Button>,
-          ]}
-          width={900}
-        >
-          {renderAppointmentDetailTabs()}
-        </Modal>
+
 
         {/* Reschedule Modal */}
         <Modal
@@ -1814,6 +1472,9 @@ function Appointments() {
             </Form.Item>
           </Form>
         </Modal>
+
+        {/* Slot Modal */}
+        {renderSlotModal()}
       </div>
     </AdminLayout>
   );

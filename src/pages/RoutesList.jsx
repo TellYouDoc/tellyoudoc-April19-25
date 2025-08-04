@@ -136,6 +136,12 @@ const RoutesList = () => {
         access: 'Admin (Authenticated)'
       },
       {
+        path: '/admin/kyc',
+        name: 'KYC Management',
+        description: 'Manage doctor verification and Know Your Customer processes',
+        access: 'Admin (Authenticated)'
+      },
+      {
         path: '/admin/patients',
         name: 'Patients (Admin)',
         description: 'Manage patient accounts',

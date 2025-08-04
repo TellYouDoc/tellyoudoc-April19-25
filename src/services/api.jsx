@@ -87,12 +87,10 @@ api.interceptors.response.use(
         const { AccessToken, newRefreshToken } = response.data;
 
         // Store the new tokens in cookies
-        document.cookie = `AccessToken=${AccessToken}; path=/; max-age=${
-          60 * 60 * 24 * 30
-        }; samesite=strict`;
-        document.cookie = `RefreshToken=${newRefreshToken}; path=/; max-age=${
-          60 * 60 * 24 * 30
-        }; samesite=strict`;
+        document.cookie = `AccessToken=${AccessToken}; path=/; max-age=${60 * 60 * 24 * 30
+          }; samesite=strict`;
+        document.cookie = `RefreshToken=${newRefreshToken}; path=/; max-age=${60 * 60 * 24 * 30
+          }; samesite=strict`;
 
         // Retry the original request
         return api(originalRequest);
@@ -347,6 +345,12 @@ const AdministratorService = {
   // Get Slots by Doctor ID
   getSlotsByDoctorId: (doctorId) =>
     api.get(`/admin/appointments/slots/${doctorId}`),
+
+  // Get Appointments by Doctor ID
+  getAppointmentsByDoctorId: (doctorId, statuses) =>
+    api.get(`/admin/appointments/statuses/${doctorId}`, {
+      params: statuses || {}
+    }),
 };
 
 // Create the API service object
