@@ -507,7 +507,7 @@ const statusMap = {
   rescheduled: { color: "orange", label: "Rescheduled" },
 };
 
-// Helper function to export data
+// Helper function to export using csv or pdf
 const exportData = (data, format) => {
   if (format === "csv") {
     // Convert data to CSV format
@@ -985,14 +985,14 @@ function Appointments() {
                   history.status === "booked"
                     ? "blue"
                     : history.status === "confirmed"
-                    ? "blue"
-                    : history.status === "completed"
-                    ? "green"
-                    : history.status === "cancelled"
-                    ? "red"
-                    : history.status === "rescheduled"
-                    ? "orange"
-                    : "gray"
+                      ? "blue"
+                      : history.status === "completed"
+                        ? "green"
+                        : history.status === "cancelled"
+                          ? "red"
+                          : history.status === "rescheduled"
+                            ? "orange"
+                            : "gray"
                 }
               >
                 <p>
@@ -1017,9 +1017,8 @@ function Appointments() {
   // Render doctor card
   const renderDoctorCard = (doctor) => {
     // Get doctor name from API data structure
-    const doctorName = `${doctor.firstName || ""} ${
-      doctor.lastName || ""
-    }`.trim();
+    const doctorName = `${doctor.firstName || ""} ${doctor.lastName || ""
+      }`.trim();
 
     // Get specializations from API data structure
     const specializations = doctor.professionalDetails?.specialization || [];
@@ -1247,8 +1246,8 @@ function Appointments() {
   const renderSlotCard = (slot) => {
     return (
       <Col xs={24} sm={12} lg={8} xl={6} key={slot._id}>
-        <Card 
-          hoverable 
+        <Card
+          hoverable
           className="slot-card"
           style={{ marginBottom: 16 }}
         >
@@ -1263,7 +1262,7 @@ function Appointments() {
               {slot.active ? "Active" : "Inactive"}
             </Tag>
           </div>
-          
+
           <div className="slot-card-dates">
             <div className="slot-card-dates-title">Available Dates:</div>
             {slot.applicableDates?.map((dateSlot, index) => (
@@ -1337,7 +1336,7 @@ function Appointments() {
             <Tag color={statusMap[appointment.status]?.color || "default"}>
               {statusMap[appointment.status]?.label ||
                 appointment.status.charAt(0).toUpperCase() +
-                  appointment.status.slice(1)}
+                appointment.status.slice(1)}
             </Tag>
           </div>
 
@@ -1380,25 +1379,36 @@ function Appointments() {
   };
 
   return (
-          <AdminLayout>
-        <div className="admin-appointments-container">
-          {currentView === "doctors" ? (
-            // Doctors View
-            <>
-              <div className="admin-appointments-header">
-                <div className="admin-appointments-title">
-                  <h1>Appointment Management</h1>
-                  <p>Select a doctor to view their slots or appointments</p>
+    <AdminLayout>
+      <div className="admin-appointments-container">
+
+        {/* Main Page content */}
+        {currentView === "doctors" ? (
+          // Doctors View
+          <>
+
+            {/* Main heading */}
+
+            <div className="admin-appointments-title">
+              <h1>Appointment Management</h1>
+            </div>
+
+            {/* Doctors grid */}
+            <div className="admin-appointments-grid">
+              {doctorsLoading ? (
+                <div className="appointments-loading">
+                  <div className="loading-message">Loading doctors...</div>
                 </div>
-              </div>
-              
-              <div className="admin-appointments-grid">
-                {doctorsLoading ? (
-                  <div className="appointments-loading">
-                    <div className="loading-message">Loading doctors...</div>
+              ) : (
+                <Row gutter={[16, 16]} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+                  {/* Heading */}
+                  <div className="admin-appointments-title">
+                    <h1>Select a doctor to view their slots or appointments</h1>
                   </div>
-                ) : (
-                  <Row gutter={[16, 16]}>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {/* Doctors grid */}
                     {doctors.length > 0 ? (
                       doctors.map((doctor) => renderDoctorCard(doctor))
                     ) : (
@@ -1408,155 +1418,152 @@ function Appointments() {
                         </div>
                       </Col>
                     )}
-                  </Row>
-                )}
-              </div>
-            </>
-          ) : currentView === "options" ? (
-            // Options View
-            <>
-              <div className="admin-appointments-header">
-                <div className="admin-appointments-title">
-                  <Button 
-                    icon={<ArrowLeftOutlined />} 
-                    onClick={handleBackToDoctors}
-                    style={{ marginRight: 16 }}
-                  >
-                    Back to Doctors
-                  </Button>
-                  <div>
-                    <h1>
-                      {selectedDoctor
-                        ? `${selectedDoctor.firstName || ""} ${
-                            selectedDoctor.lastName || ""
-                          }`.trim()
-                        : ""}
-                    </h1>
-                    <p>Choose what you want to view</p>
                   </div>
-                </div>
-              </div>
-              
-              <div className="admin-appointments-grid">
-                <Row gutter={[24, 24]} justify="center">
-                  <Col xs={24} sm={12} lg={8}>
-                    <Card 
-                      hoverable 
-                      className="options-card"
-                      onClick={handleViewSlots}
-                      style={{ 
-                        cursor: 'pointer', 
-                        textAlign: 'center',
-                        height: '240px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center'
-                      }}
-                    >
-                      <CalendarOutlined style={{ fontSize: '56px', color: '#667eea', marginBottom: '20px' }} />
-                      <Title level={3} style={{ marginBottom: '8px', color: '#262626' }}>View Slots</Title>
-                      <Text type="secondary" style={{ fontSize: '15px' }}>View available appointment slots</Text>
-                    </Card>
-                  </Col>
-                  <Col xs={24} sm={12} lg={8}>
-                    <Card 
-                      hoverable 
-                      className="options-card"
-                      onClick={handleViewAppointments}
-                      style={{ 
-                        cursor: 'pointer', 
-                        textAlign: 'center',
-                        height: '240px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center'
-                      }}
-                    >
-                      <FileSearchOutlined style={{ fontSize: '56px', color: '#52c41a', marginBottom: '20px' }} />
-                      <Title level={3} style={{ marginBottom: '8px', color: '#262626' }}>Booked Appointments</Title>
-                      <Text type="secondary" style={{ fontSize: '15px' }}>View and manage booked appointments</Text>
-                    </Card>
-                  </Col>
                 </Row>
-              </div>
-            </>
-          ) : currentView === "slots" ? (
-            // Slots View
-            <>
-              <div className="admin-appointments-header">
-                <div className="admin-appointments-title">
-                  <Button 
-                    icon={<ArrowLeftOutlined />} 
-                    onClick={() => setCurrentView("options")}
-                    style={{ marginRight: 16 }}
-                  >
-                    Back to Options
-                  </Button>
-                  <div>
-                    <h1>
-                      Slots -{" "}
-                      {selectedDoctor
-                        ? `${selectedDoctor.firstName || ""} ${
-                            selectedDoctor.lastName || ""
-                          }`.trim()
-                        : ""}
-                    </h1>
-                    <p>View available appointment slots</p>
-                  </div>
+              )}
+            </div>
+          </>
+        ) : currentView === "options" ? (
+          // Options View
+          <>
+            <div className="admin-appointments-header">
+              <div className="admin-appointments-title">
+                <Button
+                  icon={<ArrowLeftOutlined />}
+                  onClick={handleBackToDoctors}
+                  style={{ marginRight: 16 }}
+                >
+                  Back to Doctors
+                </Button>
+                <div>
+                  <h1>
+                    {selectedDoctor
+                      ? `${selectedDoctor.firstName || ""} ${selectedDoctor.lastName || ""
+                        }`.trim()
+                      : ""}
+                  </h1>
+                  <p>Choose what you want to view</p>
                 </div>
               </div>
-              
-              <div className="admin-appointments-grid">
-                {slotsLoading ? (
-                  <div className="appointments-loading">
-                    <div className="loading-message">Loading slots...</div>
-                  </div>
-                ) : (
-                  <Row gutter={[16, 16]}>
-                    {slots[selectedDoctor?.doctorId] && slots[selectedDoctor.doctorId].length > 0 ? (
-                      slots[selectedDoctor.doctorId].map((slot) => renderSlotCard(slot))
-                    ) : (
-                      <Col span={24}>
-                        <div className="no-appointments-message">
-                          <p>No slots found for this doctor.</p>
-                        </div>
-                      </Col>
-                    )}
-                  </Row>
-                )}
-              </div>
-            </>
-          ) : (
-            // Appointments View
-            <>
-              <div className="admin-appointments-header">
-                <div className="admin-appointments-title">
-                  <Button 
-                    icon={<ArrowLeftOutlined />} 
-                    onClick={() => setCurrentView("options")}
-                    style={{ marginRight: 16 }}
+            </div>
+
+            <div className="admin-appointments-grid">
+              <Row gutter={[24, 24]} justify="center">
+                <Col xs={24} sm={12} lg={8}>
+                  <Card
+                    hoverable
+                    className="options-card"
+                    onClick={handleViewSlots}
+                    style={{
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      height: '240px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center'
+                    }}
                   >
-                    Back to Options
-                  </Button>
-                  <div>
-                    <h1>
-                      Appointments -{" "}
-                      {selectedDoctor
-                        ? `${selectedDoctor.firstName || ""} ${
-                            selectedDoctor.lastName || ""
-                          }`.trim()
-                        : ""}
-                    </h1>
-                    <p>
-                      View and manage appointments for{" "}
-                      {selectedDoctor
-                        ? `${selectedDoctor.firstName || ""} ${
-                            selectedDoctor.lastName || ""
-                          }`.trim()
-                        : ""}
-                    </p>
-                  </div>
+                    <CalendarOutlined style={{ fontSize: '56px', color: '#667eea', marginBottom: '20px' }} />
+                    <Title level={3} style={{ marginBottom: '8px', color: '#262626' }}>View Slots</Title>
+                    <Text type="secondary" style={{ fontSize: '15px' }}>View available appointment slots</Text>
+                  </Card>
+                </Col>
+                <Col xs={24} sm={12} lg={8}>
+                  <Card
+                    hoverable
+                    className="options-card"
+                    onClick={handleViewAppointments}
+                    style={{
+                      cursor: 'pointer',
+                      textAlign: 'center',
+                      height: '240px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <FileSearchOutlined style={{ fontSize: '56px', color: '#52c41a', marginBottom: '20px' }} />
+                    <Title level={3} style={{ marginBottom: '8px', color: '#262626' }}>Booked Appointments</Title>
+                    <Text type="secondary" style={{ fontSize: '15px' }}>View and manage booked appointments</Text>
+                  </Card>
+                </Col>
+              </Row>
+            </div>
+          </>
+        ) : currentView === "slots" ? (
+          // Slots View
+          <>
+            <div className="admin-appointments-header">
+              <div className="admin-appointments-title">
+                <Button
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => setCurrentView("options")}
+                  style={{ marginRight: 16 }}
+                >
+                  Back to Options
+                </Button>
+                <div>
+                  <h1>
+                    Slots -{" "}
+                    {selectedDoctor
+                      ? `${selectedDoctor.firstName || ""} ${selectedDoctor.lastName || ""
+                        }`.trim()
+                      : ""}
+                  </h1>
+                  <p>View available appointment slots</p>
                 </div>
+              </div>
+            </div>
+
+            <div className="admin-appointments-grid">
+              {slotsLoading ? (
+                <div className="appointments-loading">
+                  <div className="loading-message">Loading slots...</div>
+                </div>
+              ) : (
+                <Row gutter={[16, 16]}>
+                  {slots[selectedDoctor?.doctorId] && slots[selectedDoctor.doctorId].length > 0 ? (
+                    slots[selectedDoctor.doctorId].map((slot) => renderSlotCard(slot))
+                  ) : (
+                    <Col span={24}>
+                      <div className="no-appointments-message">
+                        <p>No slots found for this doctor.</p>
+                      </div>
+                    </Col>
+                  )}
+                </Row>
+              )}
+            </div>
+          </>
+        ) : (
+          // Appointments View
+          <>
+            <div className="admin-appointments-header">
+              <div className="admin-appointments-title">
+                <Button
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => setCurrentView("options")}
+                  style={{ marginRight: 16 }}
+                >
+                  Back to Options
+                </Button>
+                <div>
+                  <h1>
+                    Appointments -{" "}
+                    {selectedDoctor
+                      ? `${selectedDoctor.firstName || ""} ${selectedDoctor.lastName || ""
+                        }`.trim()
+                      : ""}
+                  </h1>
+                  <p>
+                    View and manage appointments for{" "}
+                    {selectedDoctor
+                      ? `${selectedDoctor.firstName || ""} ${selectedDoctor.lastName || ""
+                        }`.trim()
+                      : ""}
+                  </p>
+                </div>
+              </div>
               <div className="admin-appointments-actions">
                 <div className="admin-appointments-filters">
                   <Input.Search

@@ -6,39 +6,26 @@
   min-height: 100vh;
 }
 
-.admin-appointments-header {
-  margin-bottom: 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 24px;
-  border-radius: 16px;
-  color: white;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
 .admin-appointments-title {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-direction: column;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
 }
 
 .admin-appointments-title h1 {
+  color: var(--text-primary);
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
   margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .admin-appointments-title p {
-  margin: 4px 0 0;
+  margin: 4px;
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 400;
 }
 
 .admin-appointments-actions {
@@ -73,9 +60,8 @@
 .admin-appointments-table {
   background-color: white;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 24px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* Doctor card styles */
@@ -103,7 +89,6 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
 }
 
 .doctor-card:hover {
