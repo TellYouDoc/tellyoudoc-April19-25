@@ -218,6 +218,18 @@ const RoutesList = () => {
         name: 'Organizations',
         description: 'Manage organizations',
         access: 'Admin (Authenticated)'
+      },
+      {
+        path: '/admin/specializations',
+        name: 'Specializations',
+        description: 'Manage doctor specializations',
+        access: 'Admin (Authenticated)'
+      },
+      {
+        path: '/admin/doctor-app-content',
+        name: 'Doctor App Content',
+        description: 'Manage doctor app content and specializations',
+        access: 'Admin (Authenticated)'
       }
     ],
     organization: [

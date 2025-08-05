@@ -106,7 +106,9 @@ const AdminSubscription = lazy(() =>
 const AdminOrganizations = lazy(() =>
   import("./pages/Administrator/Organizations")
 );
-const KYC = lazy(() => import("./pages/Administrator/KYC"));
+const KYC = lazy(() => import("./pages/Administrator/DoctorKYC"));
+const Specializations = lazy(() => import("./pages/Administrator/Specializations"));
+const DoctorAppContent = lazy(() => import("./pages/Administrator/DoctorAppContent"));
 
 // Organization Login Pages
 const OrganizationLogin = lazy(() => import("./pages/Organization/Login"));
@@ -530,6 +532,26 @@ function AppRoutes() {
                 <Navigate to="/admin" replace />
               ) : (
                 <KYC />
+              )
+            }
+          />
+          <Route
+            path="/admin/specializations"
+            element={
+              !isAdminAuthenticated ? (
+                <Navigate to="/admin" replace />
+              ) : (
+                <Specializations />
+              )
+            }
+          />
+          <Route
+            path="/admin/doctor-app-content"
+            element={
+              !isAdminAuthenticated ? (
+                <Navigate to="/admin" replace />
+              ) : (
+                <DoctorAppContent />
               )
             }
           />

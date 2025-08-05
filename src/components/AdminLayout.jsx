@@ -17,6 +17,7 @@ import {
   FaFileAlt,
   FaHistory,
   FaUserCheck,
+  FaMobile,
 } from "react-icons/fa";
 import tellyouDocLogo from "../assets/tellyoudoc.png";
 import "../styles/Administrator/AdminLayout.css";
@@ -35,7 +36,8 @@ const AdminLayout = ({ children }) => {
     contentManagement: false,
     analytics: false,
     appointmentManagement: false,
-    doctorManagement: false,
+    kycManagement: false,
+    appManagement: false,
   });
 
   const toggleMenuExpand = (menuKey) => {
@@ -114,18 +116,20 @@ const AdminLayout = ({ children }) => {
     const path = location.pathname;
 
     // Check which menu group should be expanded based on current path
-    const userManagementPaths = ['/admin/administrators', '/admin/patients', '/admin/organizations', '/admin/subscribers', '/admin/doctors', '/admin/kyc'];
+    const userManagementPaths = ['/admin/administrators', '/admin/patients', '/admin/doctors'];
     const analyticsPaths = ['/admin/reports', '/admin/activity-logs'];
     const contentManagementPaths = ['/admin/content', '/admin/notifications'];
     const appointmentManagementPaths = ['/admin/appointments', '/admin/appointment-analytics'];
-    const doctorManagementPaths = ['/admin/doctors', '/admin/kyc'];
+    const kycManagementPaths = ['/admin/kyc'];
+    const appManagementPaths = ['/admin/doctor-app-content', '/admin/specializations'];
 
     setExpandedMenus({
       userManagement: userManagementPaths.includes(path),
       analytics: analyticsPaths.includes(path),
       contentManagement: contentManagementPaths.includes(path),
       appointmentManagement: appointmentManagementPaths.includes(path),
-      doctorManagement: doctorManagementPaths.includes(path),
+      kycManagement: kycManagementPaths.includes(path),
+      appManagement: appManagementPaths.includes(path),
     });
   }, [location.pathname]);
 
@@ -319,21 +323,18 @@ const AdminLayout = ({ children }) => {
               </Link>
             </li>
 
-                         {/* User Management Group */}
-             <li
-               className={`menu-group ${expandedMenus.userManagement ? "expanded" : ""
-                 } ${[
-                   "/admin/administrators",
-                   "/admin/patients",
-                   "/admin/organizations",
-                   "/admin/subscribers",
-                   "/admin/doctors",
-                   "/admin/kyc",
-                 ].includes(location.pathname)
-                   ? "active-group"
-                   : ""
-                 }`}
-             >
+            {/* User Management Group */}
+            <li
+              className={`menu-group ${expandedMenus.userManagement ? "expanded" : ""
+                } ${[
+                  "/admin/administrators",
+                  "/admin/patients",
+                  "/admin/doctors",
+                ].includes(location.pathname)
+                  ? "active-group"
+                  : ""
+                }`}
+            >
               <div
                 className="menu-group-header"
                 onClick={() => toggleMenuExpand("userManagement")}
@@ -348,100 +349,62 @@ const AdminLayout = ({ children }) => {
                   {expandedMenus.userManagement ? "−" : "+"}
                 </div>
               </div>
-                             <ul className="submenu">
-                 <li
-                   className={
-                     location.pathname === "/admin/administrators"
-                       ? "active"
-                       : ""
-                   }
-                 >
-                   <Link to="/admin/administrators">
-                     <span className="admin-menu-icon">
-                       <FaUserShield />
-                     </span>
-                     <span className="admin-menu-text">Administrators</span>
-                   </Link>
-                 </li>
-                 {/* Doctor Management Sub-Group */}
-                 <li
-                   className={`menu-group ${expandedMenus.doctorManagement ? "expanded" : ""
-                     } ${["/admin/doctors", "/admin/kyc"].includes(
-                       location.pathname
-                     )
-                       ? "active-group"
-                       : ""
-                     }`}
-                 >
-                   <div
-                     className="menu-group-header"
-                     onClick={() => toggleMenuExpand("doctorManagement")}
-                   >
-                     <div className="menu-group-title">
-                       <span className="admin-menu-icon">
-                         <FaUserMd />
-                       </span>
-                       <span className="admin-menu-text">Doctor Management</span>
-                     </div>
-                     <div className="menu-expand-icon">
-                       {expandedMenus.doctorManagement ? "−" : "+"}
-                     </div>
-                   </div>
-                   <ul className="submenu">
-                     <li
-                       className={
-                         location.pathname === "/admin/doctors" ? "active" : ""
-                       }
-                     >
-                       <Link to="/admin/doctors">
-                         <span className="admin-menu-icon">
-                           <FaUserMd />
-                         </span>
-                         <span className="admin-menu-text">Doctors</span>
-                       </Link>
-                     </li>
-                     <li
-                       className={
-                         location.pathname === "/admin/kyc" ? "active" : ""
-                       }
-                     >
-                       <Link to="/admin/kyc">
-                         <span className="admin-menu-icon">
-                           <FaUserCheck />
-                         </span>
-                         <span className="admin-menu-text">KYC</span>
-                       </Link>
-                     </li>
-                   </ul>
-                 </li>
-                 <li
-                   className={
-                     location.pathname === "/admin/patients" ? "active" : ""
-                   }
-                 >
-                   <Link to="/admin/patients">
-                     <span className="admin-menu-icon">
-                       <FaUsers />
-                     </span>
-                     <span className="admin-menu-text">Patients</span>
-                   </Link>
-                 </li>
-                 {/* <li className={location.pathname === '/admin/organizations' ? 'active' : ''}>
-                   <Link to="/admin/organizations">
-                     <span className="admin-menu-icon"><FaHandshake /></span>
-                     <span className="admin-menu-text">Organizations</span>
-                   </Link>
-                 </li>
-                 <li className={location.pathname === '/admin/subscribers' ? 'active' : ''}>
-                   <Link to="/admin/subscribers">
-                     <span className="admin-menu-icon"><FaHandshake /></span>
-                     <span className="admin-menu-text">Subscribers</span>
-                   </Link>
-                 </li> */}
-               </ul>
-                         </li>
+              <ul className="submenu">
+                <li
+                  className={
+                    location.pathname === "/admin/administrators"
+                      ? "active"
+                      : ""
+                  }
+                >
+                  <Link to="/admin/administrators">
+                    <span className="admin-menu-icon">
+                      <FaUserShield />
+                    </span>
+                    <span className="admin-menu-text">Administrators</span>
+                  </Link>
+                </li>
+                <li
+                  className={
+                    location.pathname === "/admin/doctors" ? "active" : ""
+                  }
+                >
+                  <Link to="/admin/doctors">
+                    <span className="admin-menu-icon">
+                      <FaUserMd />
+                    </span>
+                    <span className="admin-menu-text">Doctors</span>
+                  </Link>
+                </li>
+                <li
+                  className={
+                    location.pathname === "/admin/patients" ? "active" : ""
+                  }
+                >
+                  <Link to="/admin/patients">
+                    <span className="admin-menu-icon">
+                      <FaUsers />
+                    </span>
+                    <span className="admin-menu-text">Patients</span>
+                  </Link>
+                </li>
+                {/* Future additions can be added here:
+                <li className={location.pathname === '/admin/organizations' ? 'active' : ''}>
+                  <Link to="/admin/organizations">
+                    <span className="admin-menu-icon"><FaHandshake /></span>
+                    <span className="admin-menu-text">Organizations</span>
+                  </Link>
+                </li>
+                <li className={location.pathname === '/admin/subscribers' ? 'active' : ''}>
+                  <Link to="/admin/subscribers">
+                    <span className="admin-menu-icon"><FaHandshake /></span>
+                    <span className="admin-menu-text">Subscribers</span>
+                  </Link>
+                </li> */}
+              </ul>
+            </li>
 
-             {/* Appointment Management Group */}
+            {/* Appointment Management Group */}
             <li
               className={`menu-group ${expandedMenus.appointmentManagement ? "expanded" : ""
                 } ${["/admin/appointments", "/admin/appointment-analytics"].includes(
@@ -490,6 +453,59 @@ const AdminLayout = ({ children }) => {
                     <span className="admin-menu-text">Analytics</span>
                   </Link>
                 </li>
+              </ul>
+            </li>
+
+            {/* KYC Management Group */}
+            <li
+              className={`menu-group ${expandedMenus.kycManagement ? "expanded" : ""
+                } ${["/admin/kyc"].includes(
+                  location.pathname
+                )
+                  ? "active-group"
+                  : ""
+                }`}
+            >
+              <div
+                className="menu-group-header"
+                onClick={() => toggleMenuExpand("kycManagement")}
+              >
+                <div className="menu-group-title">
+                  <span className="admin-menu-icon">
+                    <FaUserCheck />
+                  </span>
+                  <span className="admin-menu-text">KYC Management</span>
+                </div>
+                <div className="menu-expand-icon">
+                  {expandedMenus.kycManagement ? "−" : "+"}
+                </div>
+              </div>
+              <ul className="submenu">
+                <li
+                  className={
+                    location.pathname === "/admin/kyc" ? "active" : ""
+                  }
+                >
+                  <Link to="/admin/kyc">
+                    <span className="admin-menu-icon">
+                      <FaUserMd />
+                    </span>
+                    <span className="admin-menu-text">Doctors</span>
+                  </Link>
+                </li>
+                {/* Future KYC items can be added here:
+                <li className={location.pathname === '/admin/kyc/patients' ? 'active' : ''}>
+                  <Link to="/admin/kyc/patients">
+                    <span className="admin-menu-icon"><FaUsers /></span>
+                    <span className="admin-menu-text">Patients</span>
+                  </Link>
+                </li>
+                <li className={location.pathname === '/admin/kyc/organizations' ? 'active' : ''}>
+                  <Link to="/admin/kyc/organizations">
+                    <span className="admin-menu-icon"><FaHandshake /></span>
+                    <span className="admin-menu-text">Organizations</span>
+                  </Link>
+                </li> */}
               </ul>
             </li>
 
@@ -545,6 +561,53 @@ const AdminLayout = ({ children }) => {
               </ul>
             </li>
 
+            {/* App Management Group */}
+            <li
+              className={`menu-group ${expandedMenus.appManagement ? "expanded" : ""
+                } ${["/admin/doctor-app-content"].includes(
+                  location.pathname
+                )
+                  ? "active-group"
+                  : ""
+                }`}
+            >
+              <div
+                className="menu-group-header"
+                onClick={() => toggleMenuExpand("appManagement")}
+              >
+                <div className="menu-group-title">
+                  <span className="admin-menu-icon">
+                    <FaMobile />
+                  </span>
+                  <span className="admin-menu-text">App Management</span>
+                </div>
+                <div className="menu-expand-icon">
+                  {expandedMenus.appManagement ? "−" : "+"}
+                </div>
+              </div>
+              <ul className="submenu">
+                <li
+                  className={
+                    location.pathname === "/admin/doctor-app-content" ? "active" : ""
+                  }
+                >
+                  <Link to="/admin/doctor-app-content">
+                    <span className="admin-menu-icon">
+                      <FaUserMd />
+                    </span>
+                    <span className="admin-menu-text">Doctor App</span>
+                  </Link>
+                </li>
+                {/* Future App Management items can be added here:
+                <li className={location.pathname === '/admin/app-management/patients' ? 'active' : ''}>
+                  <Link to="/admin/app-management/patients">
+                    <span className="admin-menu-icon"><FaUsers /></span>
+                    <span className="admin-menu-text">Patients</span>
+                  </Link>
+                </li> */}
+              </ul>
+            </li>
+
             {/* Content Management Group */}
             <li
               className={`menu-group ${expandedMenus.contentManagement ? "expanded" : ""
@@ -563,7 +626,7 @@ const AdminLayout = ({ children }) => {
                   <span className="admin-menu-icon">
                     <FaFileAlt />
                   </span>
-                  <span className="admin-menu-text">Content Management</span>
+                  <span className="admin-menu-text">Website Management</span>
                 </div>
                 <div className="menu-expand-icon">
                   {expandedMenus.contentManagement ? "−" : "+"}
@@ -579,19 +642,7 @@ const AdminLayout = ({ children }) => {
                     <span className="admin-menu-icon">
                       <FaFileAlt />
                     </span>
-                    <span className="admin-menu-text">Website Content</span>
-                  </Link>
-                </li>
-                <li
-                  className={
-                    location.pathname === "/admin/notifications" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/notifications">
-                    <span className="admin-menu-icon">
-                      <FaBell />
-                    </span>
-                    <span className="admin-menu-text">Notifications</span>
+                    <span className="admin-menu-text">Content</span>
                   </Link>
                 </li>
               </ul>

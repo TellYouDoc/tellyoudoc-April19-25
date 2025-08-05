@@ -280,6 +280,7 @@ const appointmentService = {
   // Method to create appointment slots
   createAppointmentSlots: (payload) =>
     api.post(`/appointments/doctor/slots`, payload),
+
 };
 
 const AdministratorService = {
@@ -351,6 +352,26 @@ const AdministratorService = {
     api.get(`/admin/appointments/statuses/${doctorId}`, {
       params: statuses || {}
     }),
+
+  // Specialization Management
+  // Get all specializations
+  getAllSpecializations: (page, limit) => {
+    const params = {};
+    if (page !== undefined) params.page = page;
+    if (limit !== undefined) params.limit = limit;
+    return api.get("/admin/content/doctor/specializations", { params });
+  },
+  // Create specialization
+  createSpecialization: (data) => api.post("/admin/content/doctor/specializations", data),
+  // Update specialization
+  updateSpecialization: (documentId, specializationId, data) =>
+    api.put(`/admin/content/doctor/specializations/${documentId}/update/${specializationId}`, data),
+  // Delete specialization
+  deleteSpecialization: (documentId, specializationId) =>
+    api.delete(`/admin/content/doctor/specializations/${documentId}/remove/${specializationId}`),
+  // Get specialization by ID
+  getSpecializationById: (specializationId) =>
+    api.get(`/admin/content/doctor/specializations/${specializationId}`),
 };
 
 // Create the API service object

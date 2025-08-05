@@ -133,16 +133,33 @@
   background-color: #f8f9fa;
 }
 
-.kyc-row.pending {
+/* KYC Status Row Colors */
+.kyc-row.not_started {
+  border-left: 4px solid #95a5a6;
+}
+
+.kyc-row.aadhaar_initiated {
   border-left: 4px solid #f39c12;
 }
 
-.kyc-row.approved {
+.kyc-row.aadhaar_verified {
+  border-left: 4px solid #3498db;
+}
+
+.kyc-row.registration_initiated {
+  border-left: 4px solid #9b59b6;
+}
+
+.kyc-row.completed {
   border-left: 4px solid #27ae60;
 }
 
 .kyc-row.rejected {
   border-left: 4px solid #e74c3c;
+}
+
+.kyc-row.manual_review_required {
+  border-left: 4px solid #f1c40f;
 }
 
 .doctor-info {
@@ -177,26 +194,92 @@
   color: #7f8c8d;
 }
 
-.status-cell {
+/* Verification Information Styles */
+.verification-info {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
-.status-icon {
+.verification-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.verification-icon {
   font-size: 1rem;
 }
 
-.status-icon.pending {
+.verification-icon.verified {
+  color: #27ae60;
+}
+
+.verification-icon.not-verified {
+  color: #e74c3c;
+}
+
+.verification-status .verified {
+  color: #27ae60;
+}
+
+.verification-status .not-verified {
+  color: #e74c3c;
+}
+
+.verification-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #7f8c8d;
+}
+
+.verification-details small {
+  line-height: 1.3;
+}
+
+/* Status Cell Styles */
+.status-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.status-cell .status-icon {
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+/* Status Icon Colors */
+.status-icon.not-started {
+  color: #95a5a6;
+}
+
+.status-icon.aadhaar-initiated {
   color: #f39c12;
 }
 
-.status-icon.approved {
+.status-icon.aadhaar-verified {
+  color: #3498db;
+}
+
+.status-icon.registration-initiated {
+  color: #9b59b6;
+}
+
+.status-icon.completed {
   color: #27ae60;
 }
 
 .status-icon.rejected {
   color: #e74c3c;
+}
+
+.status-icon.manual-review {
+  color: #f1c40f;
 }
 
 .status-text {
@@ -208,12 +291,28 @@
   letter-spacing: 0.5px;
 }
 
-.status-text.pending {
+/* Status Text Colors */
+.status-text.not_started {
+  background-color: #ecf0f1;
+  color: #95a5a6;
+}
+
+.status-text.aadhaar_initiated {
   background-color: #fef5e7;
   color: #f39c12;
 }
 
-.status-text.approved {
+.status-text.aadhaar_verified {
+  background-color: #ebf3fd;
+  color: #3498db;
+}
+
+.status-text.registration_initiated {
+  background-color: #f4f1f8;
+  color: #9b59b6;
+}
+
+.status-text.completed {
   background-color: #e8f5e8;
   color: #27ae60;
 }
@@ -223,55 +322,110 @@
   color: #e74c3c;
 }
 
-.date-info {
+.status-text.manual_review_required {
+  background-color: #fef9e7;
+  color: #f1c40f;
+}
+
+.rejection-reason {
+  font-size: 0.75rem;
+  color: #e74c3c;
+  background-color: #fdeaea;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+}
+
+/* Name Matching Styles */
+.name-matching-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.matching-strategy {
+  margin-bottom: 0.25rem;
+}
+
+.strategy {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.strategy.exact_match {
+  background-color: #e8f5e8;
+  color: #27ae60;
+}
+
+.strategy.high_similarity {
+  background-color: #ebf3fd;
+  color: #3498db;
+}
+
+.strategy.token_match {
+  background-color: #fef5e7;
+  color: #f39c12;
+}
+
+.strategy.initials_match {
+  background-color: #f4f1f8;
+  color: #9b59b6;
+}
+
+.strategy.partial_match {
+  background-color: #fef9e7;
+  color: #f1c40f;
+}
+
+.strategy.no_match {
+  background-color: #fdeaea;
+  color: #e74c3c;
+}
+
+.strategy.validation_failed {
+  background-color: #fdeaea;
+  color: #e74c3c;
+}
+
+.matching-confidence {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+}
+
+.review-required {
+  font-size: 0.75rem;
+  color: #f39c12;
+  background-color: #fef5e7;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.no-matching {
+  font-size: 0.8rem;
+  color: #95a5a6;
+  font-style: italic;
+}
+
+/* Timeline Information */
+.timeline-info {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
-.date-info div:first-child {
+.timeline-info div:first-child {
   font-weight: 500;
   color: #2c3e50;
 }
 
-.date-info div:not(:first-child) {
+.timeline-info div:not(:first-child) {
   color: #7f8c8d;
-  font-size: 0.8rem;
-}
-
-.documents-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.document-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background-color: #f8f9fa;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.document-item:hover {
-  background-color: #e9ecef;
-}
-
-.download-icon {
-  color: #3498db;
-  font-size: 0.8rem;
-}
-
-.notes-cell {
-  font-size: 0.85rem;
-  color: #2c3e50;
-  line-height: 1.4;
-  max-width: 200px;
+  font-size: 0.75rem;
 }
 
 .actions-cell {
@@ -378,6 +532,15 @@
     height: 28px;
     font-size: 0.7rem;
   }
+  
+  .verification-info,
+  .name-matching-info {
+    font-size: 0.75rem;
+  }
+  
+  .verification-details {
+    font-size: 0.7rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -394,6 +557,6 @@
   }
   
   .kyc-table {
-    min-width: 800px;
+    min-width: 1000px;
   }
 } 

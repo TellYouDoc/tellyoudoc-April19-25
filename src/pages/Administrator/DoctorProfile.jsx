@@ -55,7 +55,6 @@ import "../../styles/Administrator/DoctorProfile.css";
 import apiService from "../../services/api";
 
 const { Title, Text } = Typography;
-const { TabPane } = Tabs;
 
 // Dummy doctors data - In real app, this would be fetched from an API
 const dummyDoctorsData = {
@@ -805,753 +804,769 @@ const DoctorProfile = () => {
 
         {/* Detailed information in tabs */}
         <Card className="profile-card profile-details">
-          <Tabs defaultActiveKey="personal" className="profile-tabs">
-            {/* Personal Details Tab */}
-            <TabPane tab="Personal Details" key="personal">
-              <div className="tab-content">
-                {" "}
-                <div className="section-header">
-                  <Title level={4}>Personal Information</Title>
-                  <Button
-                    type="primary"
-                    icon={<EditOutlined />}
-                    onClick={() => setPersonalInfoModalVisible(true)}
-                    className="edit-button"
-                  >
-                    Edit
-                  </Button>
-                </div>
-                <div className="section-container">
-                  <Descriptions
-                    bordered
-                    column={{ xs: 1, sm: 2, md: 3 }}
-                    className="description-list"
-                  >
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <UserOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          First Name
-                        </>
-                      }
-                    >
-                      {doctor.firstName}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <UserOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Middle Name
-                        </>
-                      }
-                    >
-                      {doctor.middleName || "-"}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <UserOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Last Name
-                        </>
-                      }
-                    >
-                      {doctor.lastName}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <TeamOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Gender
-                        </>
-                      }
-                    >
-                      {doctor.gender}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <CalendarOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Date of Birth
-                        </>
-                      }
-                    >
-                      {doctor.dateOfBirth}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </div>
-                <Divider />
-                <div className="section-title">
-                  <Title level={4}>Languages</Title>
-                </div>{" "}
-                <div className="section-container">
-                  <Descriptions
-                    bordered
-                    column={1}
-                    className="description-list"
-                  >
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <BookOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Understand
-                        </>
-                      }
-                    >
-                      {Array.isArray(doctor.languages?.understand) ? (
-                        doctor.languages.understand.map((lang) => (
-                          <Tag
-                            key={`understand-${lang}`}
-                            color="blue"
-                            className="language-tag"
-                          >
-                            {lang}
-                          </Tag>
-                        ))
-                      ) : (
-                        <Tag color="blue" className="language-tag">
-                          English
-                        </Tag>
-                      )}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <MessageOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Speak
-                        </>
-                      }
-                    >
-                      {Array.isArray(doctor.languages?.speak) ? (
-                        doctor.languages.speak.map((lang) => (
-                          <Tag
-                            key={`speak-${lang}`}
-                            color="green"
-                            className="language-tag"
-                          >
-                            {lang}
-                          </Tag>
-                        ))
-                      ) : (
-                        <Tag color="green" className="language-tag">
-                          English
-                        </Tag>
-                      )}
-                    </Descriptions.Item>{" "}
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <EditOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Write
-                        </>
-                      }
-                    >
-                      {Array.isArray(doctor.languages?.write) ? (
-                        doctor.languages.write.map((lang) => (
-                          <Tag
-                            key={`write-${lang}`}
-                            color="purple"
-                            className="language-tag"
-                          >
-                            {lang}
-                          </Tag>
-                        ))
-                      ) : (
-                        <Tag color="purple" className="language-tag">
-                          English
-                        </Tag>
-                      )}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </div>
-                <Divider />
-                <div className="section-title">
-                  <Title level={4}>Social Media Profiles</Title>
-                </div>
-                <div className="section-container">
-                  <List
-                    bordered
-                    className="social-media-list"
-                    itemLayout="horizontal"
-                    dataSource={[
-                      {
-                        icon: (
-                          <LinkedinOutlined className="social-list-icon linkedin" />
-                        ),
-                        title: "LinkedIn",
-                        url: doctor.socialMedia.linkedin,
-                        subtitle: "Professional Network",
-                      },
-                      {
-                        icon: (
-                          <FacebookOutlined className="social-list-icon facebook" />
-                        ),
-                        title: "Facebook",
-                        url: doctor.socialMedia.facebook,
-                        subtitle: "Social Network",
-                      },
-                      {
-                        icon: (
-                          <TwitterOutlined className="social-list-icon twitter" />
-                        ),
-                        title: "Twitter",
-                        url: doctor.socialMedia.twitter,
-                        subtitle: "Microblogging Platform",
-                      },
-                      {
-                        icon: (
-                          <InstagramOutlined className="social-list-icon instagram" />
-                        ),
-                        title: "Instagram",
-                        url: doctor.socialMedia.instagram,
-                        subtitle: "Photo & Video Sharing",
-                      },
-                    ]}
-                    renderItem={(item) => (
-                      <List.Item
-                        actions={[
-                          <Button
-                            type="link"
-                            icon={<GlobalOutlined />}
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Visit
-                          </Button>,
-                        ]}
+          <Tabs 
+            defaultActiveKey="personal" 
+            className="profile-tabs"
+            items={[
+              {
+                key: 'personal',
+                label: 'Personal Details',
+                children: (
+                  <div className="tab-content">
+                    {" "}
+                    <div className="section-header">
+                      <Title level={4}>Personal Information</Title>
+                      <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        onClick={() => setPersonalInfoModalVisible(true)}
+                        className="edit-button"
                       >
-                        <List.Item.Meta
-                          avatar={item.icon}
-                          title={
-                            <span style={{ fontSize: "16px", fontWeight: 500 }}>
-                              {item.title}
-                            </span>
-                          }
-                          description={
+                        Edit
+                      </Button>
+                    </div>
+                    <div className="section-container">
+                      <Descriptions
+                        bordered
+                        column={{ xs: 1, sm: 2, md: 3 }}
+                        className="description-list"
+                      >
+                        <Descriptions.Item
+                          label={
                             <>
-                              <div
-                                style={{ color: "#666", marginBottom: "4px" }}
+                              <UserOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              First Name
+                            </>
+                          }
+                        >
+                          {doctor.firstName}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <UserOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Middle Name
+                            </>
+                          }
+                        >
+                          {doctor.middleName || "-"}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <UserOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Last Name
+                            </>
+                          }
+                        >
+                          {doctor.lastName}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <TeamOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Gender
+                            </>
+                          }
+                        >
+                          {doctor.gender}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <CalendarOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Date of Birth
+                            </>
+                          }
+                        >
+                          {doctor.dateOfBirth}
+                        </Descriptions.Item>
+                      </Descriptions>
+                    </div>
+                    <Divider />
+                    <div className="section-title">
+                      <Title level={4}>Languages</Title>
+                    </div>{" "}
+                    <div className="section-container">
+                      <Descriptions
+                        bordered
+                        column={1}
+                        className="description-list"
+                      >
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <BookOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Understand
+                            </>
+                          }
+                        >
+                          {Array.isArray(doctor.languages?.understand) ? (
+                            doctor.languages.understand.map((lang) => (
+                              <Tag
+                                key={`understand-${lang}`}
+                                color="blue"
+                                className="language-tag"
                               >
-                                {item.subtitle}
-                              </div>
-                              <a
+                                {lang}
+                              </Tag>
+                            ))
+                          ) : (
+                            <Tag color="blue" className="language-tag">
+                              English
+                            </Tag>
+                          )}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <MessageOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Speak
+                            </>
+                          }
+                        >
+                          {Array.isArray(doctor.languages?.speak) ? (
+                            doctor.languages.speak.map((lang) => (
+                              <Tag
+                                key={`speak-${lang}`}
+                                color="green"
+                                className="language-tag"
+                              >
+                                {lang}
+                              </Tag>
+                            ))
+                          ) : (
+                            <Tag color="green" className="language-tag">
+                              English
+                            </Tag>
+                          )}
+                        </Descriptions.Item>{" "}
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <EditOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Write
+                            </>
+                          }
+                        >
+                          {Array.isArray(doctor.languages?.write) ? (
+                            doctor.languages.write.map((lang) => (
+                              <Tag
+                                key={`write-${lang}`}
+                                color="purple"
+                                className="language-tag"
+                              >
+                                {lang}
+                              </Tag>
+                            ))
+                          ) : (
+                            <Tag color="purple" className="language-tag">
+                              English
+                            </Tag>
+                          )}
+                        </Descriptions.Item>
+                      </Descriptions>
+                    </div>
+                    <Divider />
+                    <div className="section-title">
+                      <Title level={4}>Social Media Profiles</Title>
+                    </div>
+                    <div className="section-container">
+                      <List
+                        bordered
+                        className="social-media-list"
+                        itemLayout="horizontal"
+                        dataSource={[
+                          {
+                            icon: (
+                              <LinkedinOutlined className="social-list-icon linkedin" />
+                            ),
+                            title: "LinkedIn",
+                            url: doctor.socialMedia.linkedin,
+                            subtitle: "Professional Network",
+                          },
+                          {
+                            icon: (
+                              <FacebookOutlined className="social-list-icon facebook" />
+                            ),
+                            title: "Facebook",
+                            url: doctor.socialMedia.facebook,
+                            subtitle: "Social Network",
+                          },
+                          {
+                            icon: (
+                              <TwitterOutlined className="social-list-icon twitter" />
+                            ),
+                            title: "Twitter",
+                            url: doctor.socialMedia.twitter,
+                            subtitle: "Microblogging Platform",
+                          },
+                          {
+                            icon: (
+                              <InstagramOutlined className="social-list-icon instagram" />
+                            ),
+                            title: "Instagram",
+                            url: doctor.socialMedia.instagram,
+                            subtitle: "Photo & Video Sharing",
+                          },
+                        ]}
+                        renderItem={(item) => (
+                          <List.Item
+                            actions={[
+                              <Button
+                                type="link"
+                                icon={<GlobalOutlined />}
                                 href={item.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
-                                {item.url || "Not provided"}
-                              </a>
-                            </>
-                          }
-                        />
-                      </List.Item>
-                    )}
-                  />
-                </div>
-              </div>
-            </TabPane>
-            {/* Contact & Address Tab */}
-            <TabPane tab="Contact & Address" key="contact">
-              <div className="tab-content">
-                <div className="section-header">
-                  <Title level={4}>
-                    <PhoneOutlined
-                      style={{ marginRight: 8, color: "#0e9f6e" }}
-                    />{" "}
-                    Contact Information
-                  </Title>
-                  <Button
-                    type="primary"
-                    icon={<EditOutlined />}
-                    onClick={() => setContactModalVisible(true)}
-                    className="edit-button"
-                  >
-                    Edit
-                  </Button>
-                </div>
-
-                <div className="section-container">
-                  <Descriptions
-                    bordered
-                    column={{ xs: 1, sm: 2 }}
-                    className="description-list"
-                  >
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <PhoneOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Primary Number
-                        </>
-                      }
-                    >
-                      <a href={`tel:${doctor.contact.primaryNumber}`}>
-                        {doctor.contact.primaryNumber}
-                      </a>
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <PhoneOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Alternate Number
-                        </>
-                      }
-                    >
-                      {doctor.contact.alternateNumber ? (
-                        <a href={`tel:${doctor.contact.alternateNumber}`}>
-                          {doctor.contact.alternateNumber}
-                        </a>
-                      ) : (
-                        "-"
-                      )}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <PhoneOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          WhatsApp Number
-                        </>
-                      }
-                    >
-                      <a
-                        href={`https://wa.me/${doctor.contact.whatsappNumber.replace(
-                          /\s+/g,
-                          ""
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {doctor.contact.whatsappNumber}
-                      </a>
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <MailOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Email
-                        </>
-                      }
-                    >
-                      <a href={`mailto:${doctor.contact.email}`}>
-                        {doctor.contact.email}
-                      </a>
-                    </Descriptions.Item>
-                  </Descriptions>
-                </div>
-
-                <Divider />
-
-                <div className="section-title">
-                  <Title level={4}>
-                    <HomeOutlined
-                      style={{ marginRight: 8, color: "#0e9f6e" }}
-                    />{" "}
-                    Current Address
-                  </Title>
-                </div>
-                <div className="section-container address-container">
-                  <Descriptions
-                    bordered
-                    column={{ xs: 1, sm: 2 }}
-                    className="description-list"
-                  >
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <EnvironmentOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Address Line 1
-                        </>
-                      }
-                    >
-                      {doctor.currentAddress.addressLine1}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <EnvironmentOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Address Line 2
-                        </>
-                      }
-                    >
-                      {doctor.currentAddress.addressLine2 || "-"}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <IdcardOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Pincode
-                        </>
-                      }
-                    >
-                      {doctor.currentAddress.pincode}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <GlobalOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          State
-                        </>
-                      }
-                    >
-                      {doctor.currentAddress.state}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <GlobalOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          District
-                        </>
-                      }
-                    >
-                      {doctor.currentAddress.district}
-                    </Descriptions.Item>
-                    <Descriptions.Item
-                      label={
-                        <>
-                          <MailOutlined
-                            style={{ marginRight: 8, color: "#0e9f6e" }}
-                          />{" "}
-                          Post Office
-                        </>
-                      }
-                    >
-                      {doctor.currentAddress.postOffice || "-"}
-                    </Descriptions.Item>
-                  </Descriptions>
-                  <div className="address-map-link">
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                        `${doctor.currentAddress.addressLine1}, ${doctor.currentAddress.addressLine2}, ${doctor.currentAddress.district}, ${doctor.currentAddress.state}, ${doctor.currentAddress.pincode}`
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="map-link"
-                    >
-                      <EnvironmentOutlined /> View on Map
-                    </a>
-                  </div>
-                </div>
-
-                <Divider />
-                <div className="section-title">
-                  <Title level={4}>
-                    <HomeOutlined
-                      style={{ marginRight: 8, color: "#0e9f6e" }}
-                    />{" "}
-                    Permanent Address
-                  </Title>
-                </div>
-                {doctor.permanentAddressSameAsCurrent ? (
-                  <div className="same-as-current">
-                    <Checkbox
-                      checked
-                      disabled
-                      className="same-as-current-checkbox"
-                    >
-                      <Text strong>Same as Current Address</Text>
-                    </Checkbox>
-                  </div>
-                ) : doctor.permanentAddress ? (
-                  <div className="section-container address-container">
-                    <Descriptions
-                      bordered
-                      column={{ xs: 1, sm: 2 }}
-                      className="description-list"
-                    >
-                      <Descriptions.Item
-                        label={
-                          <>
-                            <EnvironmentOutlined
-                              style={{ marginRight: 8, color: "#0e9f6e" }}
-                            />{" "}
-                            Address Line 1
-                          </>
-                        }
-                      >
-                        {doctor.permanentAddress.addressLine1}
-                      </Descriptions.Item>
-                      <Descriptions.Item
-                        label={
-                          <>
-                            <EnvironmentOutlined
-                              style={{ marginRight: 8, color: "#0e9f6e" }}
-                            />{" "}
-                            Address Line 2
-                          </>
-                        }
-                      >
-                        {doctor.permanentAddress.addressLine2 || "-"}
-                      </Descriptions.Item>
-                      <Descriptions.Item
-                        label={
-                          <>
-                            <IdcardOutlined
-                              style={{ marginRight: 8, color: "#0e9f6e" }}
-                            />{" "}
-                            Pincode
-                          </>
-                        }
-                      >
-                        {doctor.permanentAddress.pincode}
-                      </Descriptions.Item>
-                      <Descriptions.Item
-                        label={
-                          <>
-                            <GlobalOutlined
-                              style={{ marginRight: 8, color: "#0e9f6e" }}
-                            />{" "}
-                            State
-                          </>
-                        }
-                      >
-                        {doctor.permanentAddress.state}
-                      </Descriptions.Item>
-                      <Descriptions.Item
-                        label={
-                          <>
-                            <GlobalOutlined
-                              style={{ marginRight: 8, color: "#0e9f6e" }}
-                            />{" "}
-                            District
-                          </>
-                        }
-                      >
-                        {doctor.permanentAddress.district}
-                      </Descriptions.Item>
-                      <Descriptions.Item
-                        label={
-                          <>
-                            <MailOutlined
-                              style={{ marginRight: 8, color: "#0e9f6e" }}
-                            />{" "}
-                            Post Office
-                          </>
-                        }
-                      >
-                        {doctor.permanentAddress.postOffice || "-"}
-                      </Descriptions.Item>
-                    </Descriptions>
-                    <div className="address-map-link">
-                      <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                          `${doctor.permanentAddress.addressLine1}, ${doctor.permanentAddress.addressLine2}, ${doctor.permanentAddress.district}, ${doctor.permanentAddress.state}, ${doctor.permanentAddress.pincode}`
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="map-link"
-                      >
-                        <EnvironmentOutlined /> View on Map
-                      </a>
+                                Visit
+                              </Button>,
+                            ]}
+                          >
+                            <List.Item.Meta
+                              avatar={item.icon}
+                              title={
+                                <span style={{ fontSize: "16px", fontWeight: 500 }}>
+                                  {item.title}
+                                </span>
+                              }
+                              description={
+                                <>
+                                  <div
+                                    style={{ color: "#666", marginBottom: "4px" }}
+                                  >
+                                    {item.subtitle}
+                                  </div>
+                                  <a
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                  >
+                                    {item.url || "Not provided"}
+                                  </a>
+                                </>
+                              }
+                            />
+                          </List.Item>
+                        )}
+                      />
                     </div>
                   </div>
-                ) : (
-                  <div className="no-data">
-                    <Text type="secondary">
-                      No permanent address information provided
-                    </Text>
+                ),
+              },
+              {
+                key: 'contact',
+                label: 'Contact & Address',
+                children: (
+                  <div className="tab-content">
+                    <div className="section-header">
+                      <Title level={4}>
+                        <PhoneOutlined
+                          style={{ marginRight: 8, color: "#0e9f6e" }}
+                        />{" "}
+                        Contact Information
+                      </Title>
+                      <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        onClick={() => setContactModalVisible(true)}
+                        className="edit-button"
+                      >
+                        Edit
+                      </Button>
+                    </div>
+
+                    <div className="section-container">
+                      <Descriptions
+                        bordered
+                        column={{ xs: 1, sm: 2 }}
+                        className="description-list"
+                      >
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <PhoneOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Primary Number
+                            </>
+                          }
+                        >
+                          <a href={`tel:${doctor.contact.primaryNumber}`}>
+                            {doctor.contact.primaryNumber}
+                          </a>
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <PhoneOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Alternate Number
+                            </>
+                          }
+                        >
+                          {doctor.contact.alternateNumber ? (
+                            <a href={`tel:${doctor.contact.alternateNumber}`}>
+                              {doctor.contact.alternateNumber}
+                            </a>
+                          ) : (
+                            "-"
+                          )}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <PhoneOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              WhatsApp Number
+                            </>
+                          }
+                        >
+                          <a
+                            href={`https://wa.me/${doctor.contact.whatsappNumber.replace(
+                              /\s+/g,
+                              ""
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {doctor.contact.whatsappNumber}
+                          </a>
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <MailOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Email
+                            </>
+                          }
+                        >
+                          <a href={`mailto:${doctor.contact.email}`}>
+                            {doctor.contact.email}
+                          </a>
+                        </Descriptions.Item>
+                      </Descriptions>
+                    </div>
+
+                    <Divider />
+
+                    <div className="section-title">
+                      <Title level={4}>
+                        <HomeOutlined
+                          style={{ marginRight: 8, color: "#0e9f6e" }}
+                        />{" "}
+                        Current Address
+                      </Title>
+                    </div>
+                    <div className="section-container address-container">
+                      <Descriptions
+                        bordered
+                        column={{ xs: 1, sm: 2 }}
+                        className="description-list"
+                      >
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <EnvironmentOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Address Line 1
+                            </>
+                          }
+                        >
+                          {doctor.currentAddress.addressLine1}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <EnvironmentOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Address Line 2
+                            </>
+                          }
+                        >
+                          {doctor.currentAddress.addressLine2 || "-"}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <IdcardOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Pincode
+                            </>
+                          }
+                        >
+                          {doctor.currentAddress.pincode}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <GlobalOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              State
+                            </>
+                          }
+                        >
+                          {doctor.currentAddress.state}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <GlobalOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              District
+                            </>
+                          }
+                        >
+                          {doctor.currentAddress.district}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
+                              <MailOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Post Office
+                            </>
+                          }
+                        >
+                          {doctor.currentAddress.postOffice || "-"}
+                        </Descriptions.Item>
+                      </Descriptions>
+                      <div className="address-map-link">
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                            `${doctor.currentAddress.addressLine1}, ${doctor.currentAddress.addressLine2}, ${doctor.currentAddress.district}, ${doctor.currentAddress.state}, ${doctor.currentAddress.pincode}`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="map-link"
+                        >
+                          <EnvironmentOutlined /> View on Map
+                        </a>
+                      </div>
+                    </div>
+
+                    <Divider />
+                    <div className="section-title">
+                      <Title level={4}>
+                        <HomeOutlined
+                          style={{ marginRight: 8, color: "#0e9f6e" }}
+                        />{" "}
+                        Permanent Address
+                      </Title>
+                    </div>
+                    {doctor.permanentAddressSameAsCurrent ? (
+                      <div className="same-as-current">
+                        <Checkbox
+                          checked
+                          disabled
+                          className="same-as-current-checkbox"
+                        >
+                          <Text strong>Same as Current Address</Text>
+                        </Checkbox>
+                      </div>
+                    ) : doctor.permanentAddress ? (
+                      <div className="section-container address-container">
+                        <Descriptions
+                          bordered
+                          column={{ xs: 1, sm: 2 }}
+                          className="description-list"
+                        >
+                          <Descriptions.Item
+                            label={
+                              <>
+                                <EnvironmentOutlined
+                                  style={{ marginRight: 8, color: "#0e9f6e" }}
+                                />{" "}
+                                Address Line 1
+                              </>
+                            }
+                          >
+                            {doctor.permanentAddress.addressLine1}
+                          </Descriptions.Item>
+                          <Descriptions.Item
+                            label={
+                              <>
+                                <EnvironmentOutlined
+                                  style={{ marginRight: 8, color: "#0e9f6e" }}
+                                />{" "}
+                                Address Line 2
+                              </>
+                            }
+                          >
+                            {doctor.permanentAddress.addressLine2 || "-"}
+                          </Descriptions.Item>
+                          <Descriptions.Item
+                            label={
+                              <>
+                                <IdcardOutlined
+                                  style={{ marginRight: 8, color: "#0e9f6e" }}
+                                />{" "}
+                                Pincode
+                              </>
+                            }
+                          >
+                            {doctor.permanentAddress.pincode}
+                          </Descriptions.Item>
+                          <Descriptions.Item
+                            label={
+                              <>
+                                <GlobalOutlined
+                                  style={{ marginRight: 8, color: "#0e9f6e" }}
+                                />{" "}
+                                State
+                              </>
+                            }
+                          >
+                            {doctor.permanentAddress.state}
+                          </Descriptions.Item>
+                          <Descriptions.Item
+                            label={
+                              <>
+                                <GlobalOutlined
+                                  style={{ marginRight: 8, color: "#0e9f6e" }}
+                                />{" "}
+                                District
+                              </>
+                            }
+                          >
+                            {doctor.permanentAddress.district}
+                          </Descriptions.Item>
+                          <Descriptions.Item
+                            label={
+                              <>
+                                <MailOutlined
+                                  style={{ marginRight: 8, color: "#0e9f6e" }}
+                                />{" "}
+                                Post Office
+                              </>
+                            }
+                          >
+                            {doctor.permanentAddress.postOffice || "-"}
+                          </Descriptions.Item>
+                        </Descriptions>
+                        <div className="address-map-link">
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                              `${doctor.permanentAddress.addressLine1}, ${doctor.permanentAddress.addressLine2}, ${doctor.permanentAddress.district}, ${doctor.permanentAddress.state}, ${doctor.permanentAddress.pincode}`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="map-link"
+                          >
+                            <EnvironmentOutlined /> View on Map
+                          </a>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="no-data">
+                        <Text type="secondary">
+                          No permanent address information provided
+                        </Text>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </TabPane>
-
-            {/* Medical Certification Tab */}
-            <TabPane tab="Medical Certification" key="certification">
-              <div className="tab-content">
-                {" "}
-                <div className="section-header">
-                  <Title level={4}>Medical Certification</Title>
-                  <Button
-                    type="primary"
-                    icon={<EditOutlined />}
-                    onClick={() => setMedicalCertModalVisible(true)}
-                    className="edit-button"
-                  >
-                    Edit
-                  </Button>
-                </div>
-                <Card className="certification-card">
-                  {" "}
-                  <Descriptions
-                    bordered
-                    column={{ xs: 1, sm: 2 }}
-                    className="description-list"
-                  >
-                    <Descriptions.Item label="Registration Number">
-                      {doctor.medicalCertification?.registrationNumber ||
-                        doctor.professionalDetails?.registrationNumber ||
-                        "Not specified"}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Medical Council">
-                      {doctor.medicalCertification?.medicalCouncil ||
-                        "Not specified"}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Year of Registration">
-                      {doctor.medicalCertification?.yearOfRegistration ||
-                        doctor.professionalDetails?.yearOfRegistration ||
-                        "Not specified"}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Years of Experience">
-                      {doctor.medicalCertification?.yearsOfExperience ||
-                        doctor.professionalDetails?.yearsOfExperience ||
-                        "Not specified"}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </Card>
-              </div>
-            </TabPane>
-
-            {/* Qualifications & Expertise Tab */}
-            <TabPane tab="Qualifications & Expertise" key="qualifications">
-              <div className="tab-content">
-                {" "}
-                <div className="section-header">
-                  <Title level={4}>Qualifications & Expertise</Title>
-                  <Button
-                    type="primary"
-                    icon={<EditOutlined />}
-                    onClick={() => setQualificationsModalVisible(true)}
-                    className="edit-button"
-                  >
-                    Edit
-                  </Button>
-                </div>
-                <div className="section-title">
-                  <Title level={5}>
-                    <MedicineBoxOutlined
-                      style={{ marginRight: 8, color: "#0e9f6e" }}
-                    />{" "}
-                    Specialization
-                  </Title>
-                </div>
-                <div className="specialization section-container">
-                  <Tag
-                    color="magenta"
-                    key="specialization"
-                    className="specialization-tag"
-                  >
-                    {doctor.specialization}
-                  </Tag>
-                </div>
-                <Divider />
-                <div className="section-title">
-                  <Title level={5}>
-                    <TrophyOutlined
-                      style={{ marginRight: 8, color: "#0e9f6e" }}
-                    />{" "}
-                    Areas of Expertise
-                  </Title>
-                </div>
-                <div className="expertise-tags section-container">
-                  {doctor.expertise.map((exp) => (
-                    <Tag color="cyan" key={exp} className="expertise-tag">
-                      {exp}
-                    </Tag>
-                  ))}
-                </div>
-                <Divider />
-                <Title level={5}>Qualifications</Title>
-                <List
-                  bordered
-                  className="qualifications-list"
-                  dataSource={doctor.qualifications}
-                  renderItem={(qualification) => (
-                    <List.Item>
-                      <GlobalOutlined className="qualification-icon" />{" "}
-                      {qualification}
-                    </List.Item>
-                  )}
-                />
-              </div>
-            </TabPane>
-
-            {/* Practice Details Tab */}
-            <TabPane tab="Practice Details" key="practice">
-              <div className="tab-content">
-                {" "}
-                <div className="section-header">
-                  <Title level={4}>Practice Information</Title>
-                  <Button
-                    type="primary"
-                    icon={<EditOutlined />}
-                    onClick={() => setPracticeModalVisible(true)}
-                    className="edit-button"
-                  >
-                    Edit
-                  </Button>
-                </div>
-                <Card className="practice-card">
-                  <Title level={5}>
-                    <HomeOutlined /> {doctor.practiceDetails.hospitalName}
-                  </Title>
-                  <Descriptions
-                    bordered
-                    column={{ xs: 1, sm: 2 }}
-                    className="description-list"
-                  >
-                    <Descriptions.Item label="Designation">
-                      {doctor.practiceDetails.designation}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Department">
-                      {doctor.practiceDetails.department}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Address">
-                      {doctor.practiceDetails.address}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Pincode">
-                      {doctor.practiceDetails.pincode}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="State">
-                      {doctor.practiceDetails.state}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="District">
-                      {doctor.practiceDetails.district}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Post Office">
-                      {doctor.practiceDetails.postOffice}
-                    </Descriptions.Item>
-                  </Descriptions>
-                </Card>
-              </div>
-            </TabPane>
-          </Tabs>
+                ),
+              },
+              {
+                key: 'certification',
+                label: 'Medical Certification',
+                children: (
+                  <div className="tab-content">
+                    {" "}
+                    <div className="section-header">
+                      <Title level={4}>Medical Certification</Title>
+                      <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        onClick={() => setMedicalCertModalVisible(true)}
+                        className="edit-button"
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                    <Card className="certification-card">
+                      {" "}
+                      <Descriptions
+                        bordered
+                        column={{ xs: 1, sm: 2 }}
+                        className="description-list"
+                      >
+                        <Descriptions.Item label="Registration Number">
+                          {doctor.medicalCertification?.registrationNumber ||
+                            doctor.professionalDetails?.registrationNumber ||
+                            "Not specified"}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Medical Council">
+                          {doctor.medicalCertification?.medicalCouncil ||
+                            "Not specified"}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Year of Registration">
+                          {doctor.medicalCertification?.yearOfRegistration ||
+                            doctor.professionalDetails?.yearOfRegistration ||
+                            "Not specified"}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Years of Experience">
+                          {doctor.medicalCertification?.yearsOfExperience ||
+                            doctor.professionalDetails?.yearsOfExperience ||
+                            "Not specified"}
+                        </Descriptions.Item>
+                      </Descriptions>
+                    </Card>
+                  </div>
+                ),
+              },
+              {
+                key: 'qualifications',
+                label: 'Qualifications & Expertise',
+                children: (
+                  <div className="tab-content">
+                    {" "}
+                    <div className="section-header">
+                      <Title level={4}>Qualifications & Expertise</Title>
+                      <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        onClick={() => setQualificationsModalVisible(true)}
+                        className="edit-button"
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                    <div className="section-title">
+                      <Title level={5}>
+                        <MedicineBoxOutlined
+                          style={{ marginRight: 8, color: "#0e9f6e" }}
+                        />{" "}
+                        Specialization
+                      </Title>
+                    </div>
+                    <div className="specialization section-container">
+                      <Tag
+                        color="magenta"
+                        key="specialization"
+                        className="specialization-tag"
+                      >
+                        {doctor.specialization}
+                      </Tag>
+                    </div>
+                    <Divider />
+                    <div className="section-title">
+                      <Title level={5}>
+                        <TrophyOutlined
+                          style={{ marginRight: 8, color: "#0e9f6e" }}
+                        />{" "}
+                        Areas of Expertise
+                      </Title>
+                    </div>
+                    <div className="expertise-tags section-container">
+                      {doctor.expertise.map((exp) => (
+                        <Tag color="cyan" key={exp} className="expertise-tag">
+                          {exp}
+                        </Tag>
+                      ))}
+                    </div>
+                    <Divider />
+                    <Title level={5}>Qualifications</Title>
+                    <List
+                      bordered
+                      className="qualifications-list"
+                      dataSource={doctor.qualifications}
+                      renderItem={(qualification) => (
+                        <List.Item>
+                          <GlobalOutlined className="qualification-icon" />{" "}
+                          {qualification}
+                        </List.Item>
+                      )}
+                    />
+                  </div>
+                ),
+              },
+              {
+                key: 'practice',
+                label: 'Practice Details',
+                children: (
+                  <div className="tab-content">
+                    {" "}
+                    <div className="section-header">
+                      <Title level={4}>Practice Information</Title>
+                      <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        onClick={() => setPracticeModalVisible(true)}
+                        className="edit-button"
+                      >
+                        Edit
+                      </Button>
+                    </div>
+                    <Card className="practice-card">
+                      <Title level={5}>
+                        <HomeOutlined /> {doctor.practiceDetails.hospitalName}
+                      </Title>
+                      <Descriptions
+                        bordered
+                        column={{ xs: 1, sm: 2 }}
+                        className="description-list"
+                      >
+                        <Descriptions.Item label="Designation">
+                          {doctor.practiceDetails.designation}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Department">
+                          {doctor.practiceDetails.department}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Address">
+                          {doctor.practiceDetails.address}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Pincode">
+                          {doctor.practiceDetails.pincode}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="State">
+                          {doctor.practiceDetails.state}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="District">
+                          {doctor.practiceDetails.district}
+                        </Descriptions.Item>
+                        <Descriptions.Item label="Post Office">
+                          {doctor.practiceDetails.postOffice}
+                        </Descriptions.Item>
+                      </Descriptions>
+                    </Card>
+                  </div>
+                ),
+              },
+            ]}
+          />
         </Card>
 
         {/* Modals for editing information */}
         <PersonalInfoModal
-          visible={personalInfoModalVisible}
+          open={personalInfoModalVisible}
           onCancel={() => setPersonalInfoModalVisible(false)}
           onSubmit={handlePersonalInfoSubmit}
           doctor={doctor}
@@ -1561,7 +1576,7 @@ const DoctorProfile = () => {
 
         {/* Contact Address Modal */}
         <ContactAddressModal
-          visible={contactModalVisible}
+          open={contactModalVisible}
           onCancel={() => setContactModalVisible(false)}
           onSubmit={handleContactInfoSubmit}
           doctor={doctor}
@@ -1571,7 +1586,7 @@ const DoctorProfile = () => {
 
         {/* Medical Certification Modal */}
         <MedicalCertificationModal
-          visible={medicalCertModalVisible}
+          open={medicalCertModalVisible}
           onCancel={() => setMedicalCertModalVisible(false)}
           onSubmit={handleMedicalCertSubmit}
           doctor={doctor}
@@ -1581,7 +1596,7 @@ const DoctorProfile = () => {
 
         {/* Qualifications Modal */}
         <QualificationsModal
-          visible={qualificationsModalVisible}
+          open={qualificationsModalVisible}
           onCancel={() => setQualificationsModalVisible(false)}
           onSubmit={handleQualificationsSubmit}
           doctor={doctor}
@@ -1591,7 +1606,7 @@ const DoctorProfile = () => {
 
         {/* Practice Details Modal */}
         <PracticeDetailsModal
-          visible={practiceModalVisible}
+          open={practiceModalVisible}
           onCancel={() => setPracticeModalVisible(false)}
           onSubmit={handlePracticeDetailsSubmit}
           doctor={doctor}
@@ -1605,7 +1620,7 @@ const DoctorProfile = () => {
 
 // Personal Information Modal
 const PersonalInfoModal = ({
-  visible,
+  open,
   onCancel,
   onSubmit,
   doctor,
@@ -1614,7 +1629,7 @@ const PersonalInfoModal = ({
 }) => {
   // Set form values when modal becomes visible
   useEffect(() => {
-    if (visible && doctor) {
+    if (open && doctor) {
       form.setFieldsValue({
         firstName: doctor.firstName,
         middleName: doctor.middleName,
@@ -1625,10 +1640,10 @@ const PersonalInfoModal = ({
         socialMedia: doctor.socialMedia,
       });
     }
-  }, [visible, doctor, form]);
+  }, [open, doctor, form]);
   return (
     <Modal
-      visible={visible}
+      open={open}
       title={
         <div className="modal-title-with-icon">
           <UserOutlined className="modal-title-icon" />
@@ -1651,7 +1666,7 @@ const PersonalInfoModal = ({
       ]}
       className="green-theme-modal"
       width={800}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}
@@ -1999,7 +2014,7 @@ const PersonalInfoModal = ({
 
 // Contact & Address Modal
 const ContactAddressModal = ({
-  visible,
+  open,
   onCancel,
   onSubmit,
   doctor,
@@ -2008,7 +2023,7 @@ const ContactAddressModal = ({
 }) => {
   // Set form values when modal becomes visible
   useEffect(() => {
-    if (visible && doctor) {
+    if (open && doctor) {
       form.setFieldsValue({
         contact: doctor.contact,
         currentAddress: doctor.currentAddress,
@@ -2016,11 +2031,11 @@ const ContactAddressModal = ({
         permanentAddress: doctor.permanentAddress,
       });
     }
-  }, [visible, doctor, form]);
+  }, [open, doctor, form]);
 
   return (
     <Modal
-      visible={visible}
+      open={open}
       title={
         <div className="modal-title-with-icon">
           <PhoneOutlined className="modal-title-icon" />
@@ -2042,7 +2057,7 @@ const ContactAddressModal = ({
         </Button>,
       ]}
       width={800}
-      destroyOnClose
+      destroyOnHidden
       className="green-theme-modal"
     >
       <Form
@@ -2411,7 +2426,7 @@ const ContactAddressModal = ({
 
 // Medical Certification Modal
 const MedicalCertificationModal = ({
-  visible,
+  open,
   onCancel,
   onSubmit,
   doctor,
@@ -2420,16 +2435,16 @@ const MedicalCertificationModal = ({
 }) => {
   // Set form values when modal becomes visible
   useEffect(() => {
-    if (visible && doctor) {
+    if (open && doctor) {
       form.setFieldsValue({
         medicalCertification: doctor.medicalCertification,
       });
     }
-  }, [visible, doctor, form]);
+  }, [open, doctor, form]);
 
   return (
     <Modal
-      visible={visible}
+      open={open}
       title={
         <div className="modal-title-with-icon">
           <MedicineBoxOutlined className="modal-title-icon" />
@@ -2452,7 +2467,7 @@ const MedicalCertificationModal = ({
       ]}
       width={600}
       className="green-theme-modal"
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}
@@ -2511,7 +2526,7 @@ const MedicalCertificationModal = ({
 
 // Qualifications & Expertise Modal
 const QualificationsModal = ({
-  visible,
+  open,
   onCancel,
   onSubmit,
   doctor,
@@ -2520,18 +2535,18 @@ const QualificationsModal = ({
 }) => {
   // Set form values when modal becomes visible
   useEffect(() => {
-    if (visible && doctor) {
+    if (open && doctor) {
       form.setFieldsValue({
         specialization: doctor.specialization,
         expertise: doctor.expertise,
         qualifications: doctor.qualifications,
       });
     }
-  }, [visible, doctor, form]);
+  }, [open, doctor, form]);
 
   return (
     <Modal
-      visible={visible}
+      open={open}
       title={
         <div className="modal-title-with-icon">
           <TrophyOutlined className="modal-title-icon" />
@@ -2554,7 +2569,7 @@ const QualificationsModal = ({
       ]}
       width={700}
       className="green-theme-modal"
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}
@@ -2629,7 +2644,7 @@ const QualificationsModal = ({
 
 // Practice Details Modal
 const PracticeDetailsModal = ({
-  visible,
+  open,
   onCancel,
   onSubmit,
   doctor,
@@ -2638,16 +2653,16 @@ const PracticeDetailsModal = ({
 }) => {
   // Set form values when modal becomes visible
   useEffect(() => {
-    if (visible && doctor) {
+    if (open && doctor) {
       form.setFieldsValue({
         practiceDetails: doctor.practiceDetails,
       });
     }
-  }, [visible, doctor, form]);
+  }, [open, doctor, form]);
 
   return (
     <Modal
-      visible={visible}
+      open={open}
       title={
         <div className="modal-title-with-icon">
           <HomeOutlined className="modal-title-icon" />
@@ -2670,7 +2685,7 @@ const PracticeDetailsModal = ({
       ]}
       width={700}
       className="green-theme-modal"
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}
