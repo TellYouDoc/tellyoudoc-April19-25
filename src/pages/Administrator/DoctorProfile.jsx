@@ -25,6 +25,7 @@ import {
   Switch,
   Tooltip,
   Checkbox,
+  Popconfirm,
 } from "antd";
 import {
   PhoneOutlined,
@@ -49,146 +50,14 @@ import {
   IdcardOutlined,
   TrophyOutlined,
   MessageOutlined,
+  DeleteOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import AdminLayout from "../../components/AdminLayout";
 import "../../styles/Administrator/DoctorProfile.css";
 import apiService from "../../services/api";
 
 const { Title, Text } = Typography;
-
-// Dummy doctors data - In real app, this would be fetched from an API
-const dummyDoctorsData = {
-  1: {
-    id: 1,
-    profilePhoto: "https://xsgames.co/randomusers/avatar.php?g=male",
-    fullName: "Dr. Rajesh Kumar",
-    firstName: "Rajesh",
-    middleName: "Kumar",
-    lastName: "Singh",
-    gender: "Male",
-    dateOfBirth: "15/07/1978",
-    status: "active",
-    subscription: "Beta Partner",
-    languages: {
-      understand: ["English", "Hindi", "Bengali"],
-      speak: ["English", "Hindi"],
-      write: ["English", "Hindi", "Bengali"],
-    },
-    socialMedia: {
-      linkedin: "https://linkedin.com/in/dr-rajesh-kumar",
-      facebook: "https://facebook.com/dr.rajeshkumar",
-      twitter: "https://twitter.com/dr_rajeshkumar",
-      instagram: "https://instagram.com/dr.rajeshkumar",
-    },
-    contact: {
-      primaryNumber: "+91 98765 43210",
-      alternateNumber: "+91 98123 45678",
-      whatsappNumber: "+91 98765 43210",
-      email: "dr.rajesh@tellyoudoc.com",
-    },
-    currentAddress: {
-      addressLine1: "123, Millennium Tower",
-      addressLine2: "Salt Lake, Sector V",
-      pincode: "700091",
-      state: "West Bengal",
-      district: "Kolkata",
-      postOffice: "Salt Lake",
-    },
-    permanentAddressSameAsCurrent: true,
-    medicalCertification: {
-      registrationNumber: "MCI-12345-2008",
-      medicalCouncil: "Medical Council of India",
-      yearOfRegistration: "2008",
-      yearsOfExperience: "14 years",
-    },
-    qualifications: [
-      "MBBS - AIIMS, Delhi (2004)",
-      "MD in Neurology - PGIMER, Chandigarh (2008)",
-      "Fellowship in Neuro-Oncology - Johns Hopkins, USA (2012)",
-    ],
-    expertise: ["Neurology", "Neuro-Oncology", "Brain Tumor Surgery"],
-    specialization: "Neurologist",
-    practiceDetails: {
-      hospitalName: "Care Neuroscience Center",
-      address: "456, Apollo Medical Complex, Park Street",
-      designation: "Senior Consultant Neurologist",
-      department: "Neurology",
-      pincode: "700016",
-      state: "West Bengal",
-      district: "Kolkata",
-      postOffice: "Park Street",
-    },
-  },
-  2: {
-    id: 2,
-    profilePhoto: "https://xsgames.co/randomusers/avatar.php?g=female",
-    fullName: "Dr. Sarah Johnson",
-    firstName: "Sarah",
-    middleName: "",
-    lastName: "Johnson",
-    gender: "Female",
-    dateOfBirth: "23/04/1985",
-    status: "active",
-    subscription: "Not Subscribed",
-    languages: {
-      understand: ["English", "French"],
-      speak: ["English", "French"],
-      write: ["English", "French"],
-    },
-    socialMedia: {
-      linkedin: "https://linkedin.com/in/dr-sarah-johnson",
-      facebook: "https://facebook.com/dr.sarahjohnson",
-      twitter: "https://twitter.com/dr_sarahjohnson",
-      instagram: "https://instagram.com/dr.sarahjohnson",
-    },
-    contact: {
-      primaryNumber: "+91 87654 32109",
-      alternateNumber: "+91 87123 45678",
-      whatsappNumber: "+91 87654 32109",
-      email: "dr.sarah@tellyoudoc.com",
-    },
-    currentAddress: {
-      addressLine1: "456, Greenwood Apartments",
-      addressLine2: "Andheri West",
-      pincode: "400053",
-      state: "Maharashtra",
-      district: "Mumbai",
-      postOffice: "Andheri",
-    },
-    permanentAddressSameAsCurrent: false,
-    permanentAddress: {
-      addressLine1: "789, Oakville Heights",
-      addressLine2: "Koramangala",
-      pincode: "560034",
-      state: "Karnataka",
-      district: "Bengaluru",
-      postOffice: "Koramangala",
-    },
-    medicalCertification: {
-      registrationNumber: "MCI-78901-2010",
-      medicalCouncil: "Medical Council of India",
-      yearOfRegistration: "2010",
-      yearsOfExperience: "10 years",
-    },
-    qualifications: [
-      "MBBS - University of Mumbai (2007)",
-      "MD in Radiology - AIIMS, Delhi (2010)",
-      "Fellowship in MRI & CT Imaging - Stanford, USA (2012)",
-    ],
-    expertise: ["Radiology", "MRI", "CT Scan", "Ultrasound"],
-    specialization: "Radiologist",
-    practiceDetails: {
-      hospitalName: "City Imaging Center",
-      address: "789, Healthcare Hub, Bandra",
-      designation: "Consultant Radiologist",
-      department: "Radiology",
-      pincode: "400050",
-      state: "Maharashtra",
-      district: "Mumbai",
-      postOffice: "Bandra",
-    },
-  },
-};
 
 const DoctorProfile = () => {
   const { id } = useParams();
@@ -208,6 +77,12 @@ const DoctorProfile = () => {
     useState(false);
   const [practiceModalVisible, setPracticeModalVisible] = useState(false);
 
+  // Practice Locations and Time Slots modals
+  const [practiceLocationModalVisible, setPracticeLocationModalVisible] = useState(false);
+  const [practiceTimeSlotModalVisible, setPracticeTimeSlotModalVisible] = useState(false);
+  const [editingPracticeLocation, setEditingPracticeLocation] = useState(null);
+  const [editingPracticeTimeSlot, setEditingPracticeTimeSlot] = useState(null);
+
   useEffect(() => {
     // Get doctor data from API
     const fetchDoctorData = async () => {
@@ -219,11 +94,13 @@ const DoctorProfile = () => {
           id
         );
 
+        console.log("Doctor Profile: " + JSON.stringify(response.data, null, 2));
+
         if (response.status === 200) {
           // Map the API response to the expected structure
           const doctorData = response.data.data;
 
-          // Create a properly structured doctor object
+          // Create a properly structured doctor object based on the new API response
           const mappedDoctor = {
             id: doctorData._id || doctorData.id,
             profilePhoto:
@@ -231,136 +108,88 @@ const DoctorProfile = () => {
               doctorData.profilePhoto ||
               "https://xsgames.co/randomusers/avatar.php?g=male",
             fullName:
-              doctorData.name ||
-              `${doctorData.firstName || ""} ${
-                doctorData.middleName ? doctorData.middleName + " " : ""
-              }${doctorData.lastName || ""}`.trim(),
-            firstName:
-              doctorData.firstName ||
-              (doctorData.name ? doctorData.name.split(" ")[0] : ""),
+              `${doctorData.firstName || ""} ${doctorData.middleName ? doctorData.middleName + " " : ""
+                }${doctorData.lastName || ""}`.trim(),
+            firstName: doctorData.firstName || "",
             middleName: doctorData.middleName || "",
-            lastName:
-              doctorData.lastName ||
-              (doctorData.name && doctorData.name.split(" ").length > 1
-                ? doctorData.name.split(" ").slice(1).join(" ")
-                : ""),
+            lastName: doctorData.lastName || "",
             gender: doctorData.gender || "Not specified",
-            dateOfBirth:
-              doctorData.dateOfBirth || doctorData.dob || "Not specified",
-            isActive: doctorData.isActive ?? true,
-            status:
-              doctorData.status ||
-              (doctorData.isActive ? "active" : "inactive"),
-            subscription:
-              doctorData.subscription || doctorData.isBetaPartner
-                ? "Beta Partner"
-                : "Not Subscribed",
-            createdYear: doctorData.createdAt
-              ? new Date(doctorData.createdAt).getFullYear()
-              : null,
+            dateOfBirth: doctorData.dob || "Not specified", // Need to format the date
+            age: doctorData.age || "",
+            isVerified: doctorData.isVerified ?? false,
+            status: doctorData.isActive ? "active" : "inactive",
 
             // Map languages or set defaults
             languages: doctorData.languages || {
-              understand: doctorData.languagesUnderstood || ["English"],
-              speak: doctorData.languagesSpoken || ["English"],
-              write: doctorData.languagesWritten || ["English"],
+              understand: ["English"],
+              speak: ["English"],
+              write: ["English"],
             },
 
             // Map social media or set defaults
-            socialMedia: doctorData.socialMedia || {
-              linkedin: doctorData.linkedin || "",
-              facebook: doctorData.facebook || "",
-              twitter: doctorData.twitter || "",
-              instagram: doctorData.instagram || "",
+            socialMedia: {
+              linkedin: "",
+              facebook: "",
+              twitter: "",
+              instagram: "",
             },
 
-            // Map contact information or set defaults
-            contact: doctorData.contact || {
-              primaryNumber:
-                doctorData.phone ||
-                doctorData.contactNumber ||
-                doctorData.primaryNumber ||
-                "",
-              alternateNumber:
-                doctorData.alternateNumber || doctorData.secondaryPhone || "",
-              whatsappNumber:
-                doctorData.whatsappNumber || doctorData.phone || "",
-              email: doctorData.email || "",
+            // Map contact information from the new API structure
+            contact: {
+              primaryNumber: doctorData.doctorId?.phoneNumber || "",
+              alternateNumber: doctorData.contactDetails?.alternatePhoneNumber || "",
+              whatsappNumber: doctorData.contactDetails?.whatsappNumber || "",
+              email: doctorData.doctorId?.email || "",
             },
 
-            // Map address information
-            currentAddress: doctorData.currentAddress ||
-              doctorData.address || {
-                addressLine1: doctorData.addressLine1 || "",
-                addressLine2: doctorData.addressLine2 || "",
-                pincode: doctorData.pincode || "",
-                state: doctorData.state || "",
-                district: doctorData.district || doctorData.city || "",
-                postOffice: doctorData.postOffice || "",
-              },
+            // Map address information from the new API structure
+            currentAddress: doctorData.currentAddress || {
+              addressLine1: "",
+              addressLine2: "",
+              pincode: "",
+              state: "",
+              district: "",
+              postOffice: "",
+            },
 
-            permanentAddressSameAsCurrent:
-              doctorData.permanentAddressSameAsCurrent || true,
-            permanentAddress:
-              doctorData.permanentAddress || doctorData.currentAddress || {},
+            permanentAddressSameAsCurrent: true,
+            permanentAddress: doctorData.currentAddress || {},
 
-            // Map medical certification
-            medicalCertification: doctorData.medicalCertification ||
-              doctorData.professionalDetails || {
-                registrationNumber: doctorData.registrationNumber || "",
-                medicalCouncil: doctorData.medicalCouncil || "",
-                yearOfRegistration: doctorData.yearOfRegistration || "",
-                yearsOfExperience:
-                  doctorData.experience || doctorData.yearsOfExperience || "",
-              },
+            // Map medical certification from professionalDetails
+            medicalCertification: {
+              registrationNumber: doctorData.professionalDetails?.registrationNumber || "",
+              medicalCouncil: doctorData.professionalDetails?.medicalCouncil || "",
+              yearOfRegistration: doctorData.professionalDetails?.yearOfRegistration || "",
+              yearsOfExperience: doctorData.professionalDetails?.yearsOfExperience || "",
+            },
 
-            // Map qualifications
-            qualifications:
-              doctorData.qualifications || doctorData.qualification
-                ? Array.isArray(doctorData.qualification)
-                  ? doctorData.qualification
-                  : [doctorData.qualification]
-                : [],
+            // Map qualifications from professionalDetails
+            qualifications: doctorData.professionalDetails?.qualification || [],
 
-            // Map expertise and specialization
-            expertise:
-              doctorData.expertise ||
-              (doctorData.specialization &&
-              Array.isArray(doctorData.specialization)
-                ? doctorData.specialization
-                : doctorData.specialization
-                ? [doctorData.specialization]
-                : []),
+            // Map expertise and specialization from professionalDetails
+            expertise: doctorData.professionalDetails?.areaOfExpertise || [],
+            specialization: doctorData.professionalDetails?.specialization?.[0] || "",
 
-            specialization: doctorData.specialization
-              ? Array.isArray(doctorData.specialization)
-                ? doctorData.specialization[0]
-                : doctorData.specialization
-              : "",
-
-            // Map practice details
-            practiceDetails: doctorData.practiceDetails || {
-              hospitalName:
-                doctorData.hospitalName || doctorData.hospital || "",
-              address: doctorData.practiceAddress || "",
-              designation: doctorData.designation || "",
-              department: doctorData.department || "",
-              pincode: doctorData.practicePincode || doctorData.pincode || "",
-              state: doctorData.practiceState || doctorData.state || "",
-              district:
-                doctorData.practiceDistrict ||
-                doctorData.district ||
-                doctorData.city ||
-                "",
-              postOffice:
-                doctorData.practicePostOffice || doctorData.postOffice || "",
+            // Map practice details from practiceInfo array
+            practiceDetails: {
+              hospitalName: doctorData.practiceInfo?.[0]?.hospitalName || "",
+              address: doctorData.practiceInfo?.[0]?.practiceAddress || "",
+              designation: "",
+              department: "",
+              pincode: "",
+              state: "",
+              district: "",
+              postOffice: "",
             },
 
             // Map professional details
-            professionalDetails: doctorData.professionalDetails || {
-              yearsOfExperience:
-                doctorData.experience || doctorData.yearsOfExperience || "",
+            professionalDetails: {
+              yearsOfExperience: doctorData.professionalDetails?.yearsOfExperience || "",
             },
+
+            // Map practice information arrays
+            practiceInfo: doctorData.practiceInfo || [],
+            practiceTimeSlots: doctorData.practiceTimeSlots || [],
           };
 
           setDoctor(mappedDoctor);
@@ -401,43 +230,15 @@ const DoctorProfile = () => {
   }
   const getStatusTag = (status) => {
     const statusColors = {
-      true: "#0e9f6e", // Green for active
-      false: "#e02424", // Red for inactive
-      pending: "#c27803", // Amber for pending
+      active: "#0e9f6e", // Green for active
+      inactive: "#e02424", // Red for inactive
     };
 
     // Convert boolean value to appropriate text display
     const statusText =
-      status === true ? "Active" : status === false ? "Inactive" : status;
+      status === "active" ? "Active" : status === "inactive" ? "Inactive" : status;
 
     return <Tag color={statusColors[status]}>{statusText}</Tag>;
-  };
-  const getSubscriptionBadge = (subscription) => {
-    return subscription === "Beta Partner" ? (
-      <Badge
-        color="#0e9f6e"
-        text={
-          <span
-            style={{
-              color: "white",
-              fontWeight: 500,
-              background: "rgba(14, 159, 110, 0.8)",
-              padding: "2px 8px",
-              borderRadius: "4px",
-            }}
-          >
-            Beta Partner
-          </span>
-        }
-        className="subscription-badge"
-      />
-    ) : (
-      <Badge
-        color="#d9d9d9"
-        text="Not Subscribed"
-        className="subscription-badge"
-      />
-    );
   };
 
   // Event Handlers
@@ -571,6 +372,247 @@ const DoctorProfile = () => {
     }
   };
 
+  // Practice Location handlers
+  const handleAddPracticeLocation = () => {
+    setEditingPracticeLocation(null);
+    setPracticeLocationModalVisible(true);
+  };
+
+  const handleEditPracticeLocation = (location) => {
+    setEditingPracticeLocation(location);
+    setPracticeLocationModalVisible(true);
+  };
+
+  const handleDeletePracticeLocation = async (locationId) => {
+    try {
+      Modal.confirm({
+        title: 'Delete Practice Location',
+        content: 'Are you sure you want to delete this practice location?',
+        okText: 'Delete',
+        okType: 'danger',
+        cancelText: 'Cancel',
+        onOk: async () => {
+          setSaving(true);
+          // Filter out the location to be deleted
+          const updatedLocations = doctor.practiceInfo.filter(
+            location => location._id !== locationId
+          );
+
+          const response = await apiService.AdministratorService.updateDoctor(
+            doctor.id,
+            { practiceInfo: updatedLocations }
+          );
+
+          if (response.status === 200) {
+            message.success("Practice location deleted successfully!");
+            // Refresh doctor data
+            window.location.reload();
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error deleting practice location:", error);
+      message.error("Failed to delete practice location");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePracticeLocationSubmit = async () => {
+    try {
+      setSaving(true);
+      const values = await form.validateFields();
+
+      let updatedLocations = [...(doctor.practiceInfo || [])];
+
+      if (editingPracticeLocation) {
+        // Update existing location
+        const index = updatedLocations.findIndex(
+          loc => loc._id === editingPracticeLocation._id
+        );
+        if (index !== -1) {
+          updatedLocations[index] = {
+            ...editingPracticeLocation,
+            hospitalName: values.hospitalName,
+            practiceAddress: values.practiceAddress,
+          };
+        }
+      } else {
+        // Add new location
+        updatedLocations.push({
+          _id: Date.now().toString(), // Temporary ID
+          hospitalName: values.hospitalName,
+          practiceAddress: values.practiceAddress,
+        });
+      }
+
+      const response = await apiService.AdministratorService.updateDoctor(
+        doctor.id,
+        { practiceInfo: updatedLocations }
+      );
+
+      if (response.status === 200) {
+        message.success(
+          editingPracticeLocation
+            ? "Practice location updated successfully!"
+            : "Practice location added successfully!"
+        );
+        setPracticeLocationModalVisible(false);
+        setEditingPracticeLocation(null);
+        // Refresh doctor data
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error saving practice location:", error);
+      message.error("Failed to save practice location");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Practice Time Slot handlers
+  const handleAddPracticeTimeSlot = () => {
+    setEditingPracticeTimeSlot(null);
+    setPracticeTimeSlotModalVisible(true);
+  };
+
+  const handleEditPracticeTimeSlot = (timeSlot) => {
+    setEditingPracticeTimeSlot(timeSlot);
+    setPracticeTimeSlotModalVisible(true);
+  };
+
+  const handleDeletePracticeTimeSlot = async (timeSlotId) => {
+    try {
+      Modal.confirm({
+        title: 'Delete Practice Time Slot',
+        content: 'Are you sure you want to delete this practice time slot?',
+        okText: 'Delete',
+        okType: 'danger',
+        cancelText: 'Cancel',
+        onOk: async () => {
+          setSaving(true);
+          // Filter out the time slot to be deleted
+          const updatedTimeSlots = doctor.practiceTimeSlots.filter(
+            timeSlot => timeSlot._id !== timeSlotId
+          );
+
+          const response = await apiService.AdministratorService.updateDoctor(
+            doctor.id,
+            { practiceTimeSlots: updatedTimeSlots }
+          );
+
+          if (response.status === 200) {
+            message.success("Practice time slot deleted successfully!");
+            // Refresh doctor data
+            window.location.reload();
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error deleting practice time slot:", error);
+      message.error("Failed to delete practice time slot");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePracticeTimeSlotSubmit = async () => {
+    try {
+      setSaving(true);
+      const values = await form.validateFields();
+
+      let updatedTimeSlots = [...(doctor.practiceTimeSlots || [])];
+
+      if (editingPracticeTimeSlot) {
+        // Update existing time slot
+        const index = updatedTimeSlots.findIndex(
+          slot => slot._id === editingPracticeTimeSlot._id
+        );
+        if (index !== -1) {
+          updatedTimeSlots[index] = {
+            ...editingPracticeTimeSlot,
+            startTime: values.startTime,
+            endTime: values.endTime,
+          };
+        }
+      } else {
+        // Add new time slot
+        updatedTimeSlots.push({
+          _id: Date.now().toString(), // Temporary ID
+          startTime: values.startTime,
+          endTime: values.endTime,
+        });
+      }
+
+      const response = await apiService.AdministratorService.updateDoctor(
+        doctor.id,
+        { practiceTimeSlots: updatedTimeSlots }
+      );
+
+      if (response.status === 200) {
+        message.success(
+          editingPracticeTimeSlot
+            ? "Practice time slot updated successfully!"
+            : "Practice time slot added successfully!"
+        );
+        setPracticeTimeSlotModalVisible(false);
+        setEditingPracticeTimeSlot(null);
+        // Refresh doctor data
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error saving practice time slot:", error);
+      message.error("Failed to save practice time slot");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Delete All handlers
+  const handleDeleteAllPracticeLocations = async () => {
+    try {
+      setSaving(true);
+
+      const response = await apiService.AdministratorService.updateDoctor(
+        doctor.id,
+        { practiceInfo: [] }
+      );
+
+      if (response.status === 200) {
+        message.success("All practice locations deleted successfully!");
+        // Refresh doctor data
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error deleting all practice locations:", error);
+      message.error("Failed to delete all practice locations");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteAllPracticeTimeSlots = async () => {
+    try {
+      setSaving(true);
+
+      const response = await apiService.AdministratorService.updateDoctor(
+        doctor.id,
+        { practiceTimeSlots: [] }
+      );
+
+      if (response.status === 200) {
+        message.success("All practice time slots deleted successfully!");
+        // Refresh doctor data
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error deleting all practice time slots:", error);
+      message.error("Failed to delete all practice time slots");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="doctor-profile-container">
@@ -589,13 +631,10 @@ const DoctorProfile = () => {
 
         {/* Header - Photo and basic info - Profile Overview */}
         <Card
-          className="profile-card profile-header"
-          style={{
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
-            overflow: "visible",
-            background: "linear-gradient(135deg, #0e9f6e 0%, #057a55 100%)",
-          }}
+          className="doctor-profile-header"
         >
+
+          {/* Profile Overview Card */}
           <Row gutter={[32, 24]} align="middle">
             <Col xs={24} sm={8} md={6} style={{ textAlign: "center" }}>
               <div
@@ -657,9 +696,8 @@ const DoctorProfile = () => {
                   className="doctor-badges"
                   style={{ marginBottom: "12px" }}
                 >
-                  {getStatusTag(doctor.isActive)}
-                  {getSubscriptionBadge(doctor.subscription)}
-                </Space>{" "}
+                  {getStatusTag(doctor.status)}
+                </Space>
                 <Text
                   className="doctor-specialization"
                   style={{
@@ -697,58 +735,11 @@ const DoctorProfile = () => {
                     </Text>
                   </Space>
                 </div>
-                <div
-                  className="social-media-links"
-                  style={{ marginTop: "8px", display: "flex", gap: "12px" }}
-                >
-                  {doctor?.socialMedia?.linkedin && (
-                    <Tooltip title="LinkedIn Profile">
-                      <a
-                        href={doctor.socialMedia.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <LinkedinOutlined className="social-icon linkedin" />
-                      </a>
-                    </Tooltip>
-                  )}
-                  {doctor?.socialMedia?.facebook && (
-                    <Tooltip title="Facebook Profile">
-                      <a
-                        href={doctor.socialMedia.facebook}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <FacebookOutlined className="social-icon facebook" />
-                      </a>
-                    </Tooltip>
-                  )}
-                  {doctor?.socialMedia?.twitter && (
-                    <Tooltip title="Twitter Profile">
-                      <a
-                        href={doctor.socialMedia.twitter}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <TwitterOutlined className="social-icon twitter" />
-                      </a>
-                    </Tooltip>
-                  )}
-                  {doctor?.socialMedia?.instagram && (
-                    <Tooltip title="Instagram Profile">
-                      <a
-                        href={doctor.socialMedia.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <InstagramOutlined className="social-icon instagram" />
-                      </a>
-                    </Tooltip>
-                  )}
-                </div>
               </div>
             </Col>
           </Row>
+
+          {/* The Floating labels for  specializations and experience */}
           <div
             className="profile-header-badges"
             style={{
@@ -802,19 +793,20 @@ const DoctorProfile = () => {
           </div>
         </Card>
 
-        {/* Detailed information in tabs */}
-        <Card className="profile-card profile-details">
-          <Tabs 
-            defaultActiveKey="personal" 
+        {/* Tabs for detailed information */}
+        <Card className="profile-details">
+          <Tabs
+            defaultActiveKey="personal"
             className="profile-tabs"
             items={[
               {
                 key: 'personal',
                 label: 'Personal Details',
                 children: (
+
+                  // Personal Details Section
                   <div className="tab-content">
-                    {" "}
-                    <div className="section-header">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", padding: "0 16px" }}>
                       <Title level={4}>Personal Information</Title>
                       <Button
                         type="primary"
@@ -825,10 +817,16 @@ const DoctorProfile = () => {
                         Edit
                       </Button>
                     </div>
+
+                    <Divider />
+                    {/* The Descriptions for the personal details */}
+                    <div className="section-title">
+                      <Title level={4}>Name, Date of Birth and Gender</Title>
+                    </div>
                     <div className="section-container">
                       <Descriptions
                         bordered
-                        column={{ xs: 1, sm: 2, md: 3 }}
+                        column={1}
                         className="description-list"
                       >
                         <Descriptions.Item
@@ -870,6 +868,18 @@ const DoctorProfile = () => {
                         <Descriptions.Item
                           label={
                             <>
+                              <CalendarOutlined
+                                style={{ marginRight: 8, color: "#0e9f6e" }}
+                              />{" "}
+                              Date of Birth
+                            </>
+                          }
+                        >
+                          {doctor.dateOfBirth ? new Date(doctor.dateOfBirth).toLocaleDateString('en-GB') : "-"}
+                        </Descriptions.Item>
+                        <Descriptions.Item
+                          label={
+                            <>
                               <TeamOutlined
                                 style={{ marginRight: 8, color: "#0e9f6e" }}
                               />{" "}
@@ -882,21 +892,23 @@ const DoctorProfile = () => {
                         <Descriptions.Item
                           label={
                             <>
-                              <CalendarOutlined
+                              <UserOutlined
                                 style={{ marginRight: 8, color: "#0e9f6e" }}
                               />{" "}
-                              Date of Birth
+                              Age
                             </>
                           }
                         >
-                          {doctor.dateOfBirth}
+                          {doctor.age || "-"}
                         </Descriptions.Item>
                       </Descriptions>
                     </div>
                     <Divider />
+
+                    {/* Languages Section */}
                     <div className="section-title">
                       <Title level={4}>Languages</Title>
-                    </div>{" "}
+                    </div>
                     <div className="section-container">
                       <Descriptions
                         bordered
@@ -954,7 +966,7 @@ const DoctorProfile = () => {
                               English
                             </Tag>
                           )}
-                        </Descriptions.Item>{" "}
+                        </Descriptions.Item>
                         <Descriptions.Item
                           label={
                             <>
@@ -983,8 +995,9 @@ const DoctorProfile = () => {
                         </Descriptions.Item>
                       </Descriptions>
                     </div>
-                    <Divider />
-                    <div className="section-title">
+
+                    {/* Social Media Section */}
+                    {/* <div className="section-title">
                       <Title level={4}>Social Media Profiles</Title>
                     </div>
                     <div className="section-container">
@@ -1067,7 +1080,7 @@ const DoctorProfile = () => {
                           </List.Item>
                         )}
                       />
-                    </div>
+                    </div> */}
                   </div>
                 ),
               },
@@ -1076,7 +1089,7 @@ const DoctorProfile = () => {
                 label: 'Contact & Address',
                 children: (
                   <div className="tab-content">
-                    <div className="section-header">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", padding: "0 16px" }}>
                       <Title level={4}>
                         <PhoneOutlined
                           style={{ marginRight: 8, color: "#0e9f6e" }}
@@ -1096,7 +1109,7 @@ const DoctorProfile = () => {
                     <div className="section-container">
                       <Descriptions
                         bordered
-                        column={{ xs: 1, sm: 2 }}
+                        column={1}
                         className="description-list"
                       >
                         <Descriptions.Item
@@ -1179,10 +1192,10 @@ const DoctorProfile = () => {
                         Current Address
                       </Title>
                     </div>
-                    <div className="section-container address-container">
+                    <div className="section-container">
                       <Descriptions
                         bordered
-                        column={{ xs: 1, sm: 2 }}
+                        column={1}
                         className="description-list"
                       >
                         <Descriptions.Item
@@ -1258,7 +1271,9 @@ const DoctorProfile = () => {
                           {doctor.currentAddress.postOffice || "-"}
                         </Descriptions.Item>
                       </Descriptions>
-                      <div className="address-map-link">
+
+                      {/* View on Map Button - Commented for now */}
+                      {/* <div className="address-map-link">
                         <a
                           href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                             `${doctor.currentAddress.addressLine1}, ${doctor.currentAddress.addressLine2}, ${doctor.currentAddress.district}, ${doctor.currentAddress.state}, ${doctor.currentAddress.pincode}`
@@ -1269,7 +1284,7 @@ const DoctorProfile = () => {
                         >
                           <EnvironmentOutlined /> View on Map
                         </a>
-                      </div>
+                      </div> */}
                     </div>
 
                     <Divider />
@@ -1295,7 +1310,7 @@ const DoctorProfile = () => {
                       <div className="section-container address-container">
                         <Descriptions
                           bordered
-                          column={{ xs: 1, sm: 2 }}
+                          column={1}
                           className="description-list"
                         >
                           <Descriptions.Item
@@ -1399,8 +1414,7 @@ const DoctorProfile = () => {
                 label: 'Medical Certification',
                 children: (
                   <div className="tab-content">
-                    {" "}
-                    <div className="section-header">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", padding: "0 16px" }}>
                       <Title level={4}>Medical Certification</Title>
                       <Button
                         type="primary"
@@ -1415,7 +1429,7 @@ const DoctorProfile = () => {
                       {" "}
                       <Descriptions
                         bordered
-                        column={{ xs: 1, sm: 2 }}
+                        column={1}
                         className="description-list"
                       >
                         <Descriptions.Item label="Registration Number">
@@ -1447,8 +1461,7 @@ const DoctorProfile = () => {
                 label: 'Qualifications & Expertise',
                 children: (
                   <div className="tab-content">
-                    {" "}
-                    <div className="section-header">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", padding: "0 16px" }}>
                       <Title level={4}>Qualifications & Expertise</Title>
                       <Button
                         type="primary"
@@ -1513,50 +1526,182 @@ const DoctorProfile = () => {
                 label: 'Practice Details',
                 children: (
                   <div className="tab-content">
-                    {" "}
-                    <div className="section-header">
-                      <Title level={4}>Practice Information</Title>
-                      <Button
-                        type="primary"
-                        icon={<EditOutlined />}
-                        onClick={() => setPracticeModalVisible(true)}
-                        className="edit-button"
-                      >
-                        Edit
-                      </Button>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", padding: "0 16px" }}>
+                      <Title level={4}>Practice Details</Title>
                     </div>
-                    <Card className="practice-card">
-                      <Title level={5}>
-                        <HomeOutlined /> {doctor.practiceDetails.hospitalName}
-                      </Title>
-                      <Descriptions
-                        bordered
-                        column={{ xs: 1, sm: 2 }}
-                        className="description-list"
-                      >
-                        <Descriptions.Item label="Designation">
-                          {doctor.practiceDetails.designation}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Department">
-                          {doctor.practiceDetails.department}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Address">
-                          {doctor.practiceDetails.address}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Pincode">
-                          {doctor.practiceDetails.pincode}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="State">
-                          {doctor.practiceDetails.state}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="District">
-                          {doctor.practiceDetails.district}
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Post Office">
-                          {doctor.practiceDetails.postOffice}
-                        </Descriptions.Item>
-                      </Descriptions>
-                    </Card>
+                    {/* Practice Locations */}
+                    <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Title level={4}>Practice Locations</Title>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={handleAddPracticeLocation}
+                          className="edit-button"
+                        >
+                          Add Location
+                        </Button>
+                        {doctor.practiceInfo && doctor.practiceInfo.length > 0 && (
+                          <Popconfirm
+                            title="Delete All Practice Locations"
+                            description="Are you sure you want to delete all practice locations? This action cannot be undone."
+                            onConfirm={handleDeleteAllPracticeLocations}
+                            okText="Delete All"
+                            cancelText="Cancel"
+                            okType="danger"
+                          >
+                            <Button
+                              type="primary"
+                              danger
+                              icon={<DeleteOutlined />}
+                              className="edit-button"
+                            >
+                              Delete All
+                            </Button>
+                          </Popconfirm>
+                        )}
+                      </div>
+                    </div>
+                    {doctor.practiceInfo && doctor.practiceInfo.length > 0 ? (
+                      doctor.practiceInfo.map((practice) => (
+                        <Card key={practice._id} className="admin-doctor-practice-card" style={{ marginBottom: '16px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                            <div style={{ flex: 1 }}>
+                              <Descriptions
+                                bordered
+                                column={1}
+                                className="description-list"
+                              >
+                                <Descriptions.Item label="Clinic/Hospital Name">
+                                  {practice.hospitalName}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Address">
+                                  {practice.practiceAddress}
+                                </Descriptions.Item>
+                              </Descriptions>
+                            </div>
+                            <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
+                              <Button
+                                type="primary"
+                                icon={<EditOutlined />}
+                                onClick={() => handleEditPracticeLocation(practice)}
+                                size="small"
+                              >
+                                Edit
+                              </Button>
+                              <Popconfirm
+                                title="Delete Practice Location"
+                                description="Are you sure you want to delete this practice location?"
+                                onConfirm={() => handleDeletePracticeLocation(practice._id)}
+                                okText="Delete"
+                                cancelText="Cancel"
+                                okType="danger"
+                              >
+                                <Button
+                                  type="primary"
+                                  danger
+                                  icon={<DeleteOutlined />}
+                                  size="small"
+                                >
+                                  Delete
+                                </Button>
+                              </Popconfirm>
+                            </div>
+                          </div>
+                        </Card>
+                      ))
+                    ) : (
+                      <div className="no-data">
+                        <Text type="secondary">No practice locations available</Text>
+                      </div>
+                    )}
+
+                    {/* Practice Time Slots */}
+                    <div className="section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Title level={4}>Practice Time Slots</Title>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={handleAddPracticeTimeSlot}
+                          className="edit-button"
+                        >
+                          Add Time Slot
+                        </Button>
+                        {doctor.practiceTimeSlots && doctor.practiceTimeSlots.length > 0 && (
+                          <Popconfirm
+                            title="Delete All Practice Time Slots"
+                            description="Are you sure you want to delete all practice time slots? This action cannot be undone."
+                            onConfirm={handleDeleteAllPracticeTimeSlots}
+                            okText="Delete All"
+                            cancelText="Cancel"
+                            okType="danger"
+                          >
+                            <Button
+                              type="primary"
+                              danger
+                              icon={<DeleteOutlined />}
+                              className="edit-button"
+                            >
+                              Delete All
+                            </Button>
+                          </Popconfirm>
+                        )}
+                      </div>
+                    </div>
+                    {doctor.practiceTimeSlots && doctor.practiceTimeSlots.length > 0 ? (
+                      doctor.practiceTimeSlots.map((timeSlot) => (
+                        <Card key={timeSlot._id} className="admin-doctor-practice-card" style={{ marginBottom: '16px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                            <div style={{ flex: 1 }}>
+                              <Descriptions
+                                bordered
+                                column={1}
+                                className="description-list"
+                              >
+                                <Descriptions.Item label="Start Time">
+                                  {timeSlot.startTime}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="End Time">
+                                  {timeSlot.endTime}
+                                </Descriptions.Item>
+                              </Descriptions>
+                            </div>
+                            <div style={{ display: 'flex', gap: '8px', marginLeft: '12px' }}>
+                              <Button
+                                type="primary"
+                                icon={<EditOutlined />}
+                                onClick={() => handleEditPracticeTimeSlot(timeSlot)}
+                                size="small"
+                              >
+                                Edit
+                              </Button>
+                              <Popconfirm
+                                title="Delete Practice Time Slot"
+                                description="Are you sure you want to delete this practice time slot?"
+                                onConfirm={() => handleDeletePracticeTimeSlot(timeSlot._id)}
+                                okText="Delete"
+                                cancelText="Cancel"
+                                okType="danger"
+                              >
+                                <Button
+                                  type="primary"
+                                  danger
+                                  icon={<DeleteOutlined />}
+                                  size="small"
+                                >
+                                  Delete
+                                </Button>
+                              </Popconfirm>
+                            </div>
+                          </div>
+                        </Card>
+                      ))
+                    ) : (
+                      <div className="no-data">
+                        <Text type="secondary">No practice time slots available</Text>
+                      </div>
+                    )}
                   </div>
                 ),
               },
@@ -1612,7 +1757,33 @@ const DoctorProfile = () => {
           doctor={doctor}
           form={form}
           loading={saving}
-        />{" "}
+        />
+
+        {/* Practice Location Modal */}
+        <PracticeLocationModal
+          open={practiceLocationModalVisible}
+          onCancel={() => {
+            setPracticeLocationModalVisible(false);
+            setEditingPracticeLocation(null);
+          }}
+          onSubmit={handlePracticeLocationSubmit}
+          form={form}
+          loading={saving}
+          editingLocation={editingPracticeLocation}
+        />
+
+        {/* Practice Time Slot Modal */}
+        <PracticeTimeSlotModal
+          open={practiceTimeSlotModalVisible}
+          onCancel={() => {
+            setPracticeTimeSlotModalVisible(false);
+            setEditingPracticeTimeSlot(null);
+          }}
+          onSubmit={handlePracticeTimeSlotSubmit}
+          form={form}
+          loading={saving}
+          editingTimeSlot={editingPracticeTimeSlot}
+        />
       </div>
     </AdminLayout>
   );
@@ -1683,12 +1854,12 @@ const PersonalInfoModal = ({
             speak: [],
             write: [],
           },
-          socialMedia: doctor?.socialMedia || {
-            linkedin: "",
-            facebook: "",
-            twitter: "",
-            instagram: "",
-          },
+          // socialMedia: doctor?.socialMedia || {
+          //   linkedin: "",
+          //   facebook: "",
+          //   twitter: "",
+          //   instagram: "",
+          // },
         }}
       >
         <Row gutter={16}>
@@ -1975,7 +2146,8 @@ const PersonalInfoModal = ({
           </Select>
         </Form.Item>
 
-        <Divider orientation="left">Social Media</Divider>
+        {/* Social Media Section */}
+        {/* <Divider orientation="left">Social Media</Divider>
 
         <Form.Item label="LinkedIn Profile" name={["socialMedia", "linkedin"]}>
           <Input
@@ -2006,7 +2178,7 @@ const PersonalInfoModal = ({
             prefix={<InstagramOutlined className="social-icon instagram" />}
             placeholder="Instagram URL"
           />
-        </Form.Item>
+        </Form.Item> */}
       </Form>
     </Modal>
   );
@@ -2695,17 +2867,11 @@ const PracticeDetailsModal = ({
           practiceDetails: doctor?.practiceDetails || {
             hospitalName: "",
             address: "",
-            designation: "",
-            department: "",
-            pincode: "",
-            state: "",
-            district: "",
-            postOffice: "",
           },
         }}
       >
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               name={["practiceDetails", "hospitalName"]}
               label="Hospital/Clinic Name"
@@ -2719,71 +2885,213 @@ const PracticeDetailsModal = ({
               <Input placeholder="Hospital/Clinic Name" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+        </Row>
+        <Row gutter={16}>
+          <Col span={24}>
             <Form.Item
               name={["practiceDetails", "address"]}
               label="Address"
               rules={[{ required: true, message: "Please enter address" }]}
             >
-              <Input placeholder="Practice Address" />
+              <Input.TextArea
+                placeholder="Practice Address"
+                rows={4}
+                maxLength={200}
+                showCount
+                style={{ resize: 'vertical' }}
+              />
             </Form.Item>
           </Col>
         </Row>
+      </Form>
+    </Modal>
+  );
+};
 
+// Practice Location Modal
+const PracticeLocationModal = ({
+  open,
+  onCancel,
+  onSubmit,
+  form,
+  loading,
+  editingLocation,
+}) => {
+  // Set form values when modal becomes visible
+  useEffect(() => {
+    if (open) {
+      if (editingLocation) {
+        form.setFieldsValue({
+          hospitalName: editingLocation.hospitalName,
+          practiceAddress: editingLocation.practiceAddress,
+        });
+      } else {
+        form.setFieldsValue({
+          hospitalName: "",
+          practiceAddress: "",
+        });
+      }
+    }
+  }, [open, editingLocation, form]);
+
+  return (
+    <Modal
+      open={open}
+      title={
+        <div className="modal-title-with-icon">
+          <EnvironmentOutlined className="modal-title-icon" />
+          {editingLocation ? "Edit Practice Location" : "Add Practice Location"}
+        </div>
+      }
+      onCancel={onCancel}
+      footer={[
+        <Button key="cancel" onClick={onCancel}>
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={onSubmit}
+        >
+          <SaveOutlined /> {editingLocation ? "Update" : "Add"} Location
+        </Button>,
+      ]}
+      width={700}
+      className="green-theme-modal"
+      destroyOnHidden
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        name="practiceLocationForm"
+      >
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item
+              name="hospitalName"
+              label="Hospital/Clinic Name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter hospital/clinic name",
+                },
+              ]}
+            >
+              <Input placeholder="Hospital/Clinic Name" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item
+              name="practiceAddress"
+              label="Address"
+              rules={[{ required: true, message: "Please enter address" }]}
+            >
+              <Input.TextArea
+                placeholder="Practice Address"
+                rows={4}
+                maxLength={200}
+                showCount
+                style={{ resize: 'vertical' }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+    </Modal>
+  );
+};
+
+// Practice Time Slot Modal
+const PracticeTimeSlotModal = ({
+  open,
+  onCancel,
+  onSubmit,
+  form,
+  loading,
+  editingTimeSlot,
+}) => {
+  // Set form values when modal becomes visible
+  useEffect(() => {
+    if (open) {
+      if (editingTimeSlot) {
+        form.setFieldsValue({
+          startTime: editingTimeSlot.startTime,
+          endTime: editingTimeSlot.endTime,
+        });
+      } else {
+        form.setFieldsValue({
+          startTime: "",
+          endTime: "",
+        });
+      }
+    }
+  }, [open, editingTimeSlot, form]);
+
+  return (
+    <Modal
+      open={open}
+      title={
+        <div className="modal-title-with-icon">
+          <CalendarOutlined className="modal-title-icon" />
+          {editingTimeSlot ? "Edit Practice Time Slot" : "Add Practice Time Slot"}
+        </div>
+      }
+      onCancel={onCancel}
+      footer={[
+        <Button key="cancel" onClick={onCancel}>
+          Cancel
+        </Button>,
+        <Button
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={onSubmit}
+        >
+          <SaveOutlined /> {editingTimeSlot ? "Update" : "Add"} Time Slot
+        </Button>,
+      ]}
+      width={700}
+      className="green-theme-modal"
+      destroyOnHidden
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        name="practiceTimeSlotForm"
+      >
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              name={["practiceDetails", "designation"]}
-              label="Designation"
-              rules={[{ required: true, message: "Please enter designation" }]}
+              name="startTime"
+              label="Start Time"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter start time",
+                },
+              ]}
             >
-              <Input placeholder="Designation" />
+              <Input placeholder="e.g., 09:00 AM" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              name={["practiceDetails", "department"]}
-              label="Department"
-              rules={[{ required: true, message: "Please enter department" }]}
+              name="endTime"
+              label="End Time"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter end time",
+                },
+              ]}
             >
-              <Input placeholder="Department" />
+              <Input placeholder="e.g., 05:00 PM" />
             </Form.Item>
           </Col>
         </Row>
-
-        <Row gutter={16}>
-          <Col span={8}>
-            <Form.Item
-              name={["practiceDetails", "pincode"]}
-              label="Pincode"
-              rules={[{ required: true, message: "Please enter pincode" }]}
-            >
-              <Input placeholder="Pincode" />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item
-              name={["practiceDetails", "state"]}
-              label="State"
-              rules={[{ required: true, message: "Please enter state" }]}
-            >
-              <Input placeholder="State" />
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item
-              name={["practiceDetails", "district"]}
-              label="District"
-              rules={[{ required: true, message: "Please enter district" }]}
-            >
-              <Input placeholder="District" />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Form.Item name={["practiceDetails", "postOffice"]} label="Post Office">
-          <Input placeholder="Post Office" />
-        </Form.Item>
       </Form>
     </Modal>
   );

@@ -21,8 +21,6 @@ import {
     InfoCircleOutlined,
     SearchOutlined,
     MedicineBoxOutlined,
-    SortAscendingOutlined,
-    SortDescendingOutlined,
 } from "@ant-design/icons";
 import AdminLayout from "../../components/AdminLayout";
 

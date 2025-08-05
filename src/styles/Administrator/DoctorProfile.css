@@ -67,10 +67,11 @@
   margin-bottom: 24px;
 }
 
-.profile-header {
+.doctor-profile-header {
   border-bottom: none;
   background: linear-gradient(to right, #0e9f6e, #057a55);
   color: white;
+  padding: 24px;
 }
 
 /* Back Navigation */
@@ -102,10 +103,6 @@
 .profile-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(14, 159, 110, 0.15);
-}
-
-.profile-header {
-  padding: 24px;
 }
 
 /* Doctor Header Info */
@@ -220,7 +217,7 @@
 }
 
 .tab-content {
-  padding: 24px 0;
+  /* padding: 24px 0; */
   animation: fadeIn 0.5s ease;
 }
 
@@ -246,6 +243,12 @@
 .ant-descriptions-item-label {
   font-weight: 500;
   color: #666;
+  width: 25% !important;
+  min-width: 120px;
+}
+
+.ant-descriptions-item-content {
+  width: 75% !important;
 }
 
 /* Social Media List */
@@ -452,9 +455,8 @@
 }
 
 /* Practice Card */
-.practice-card {
+.admin-doctor-practice-card {
   background-color: #fafafa;
-  border: 1px solid #f0f0f0;
 }
 
 /* Subscription Badge */
@@ -649,7 +651,7 @@
   color: var(--profile-primary-dark);
   position: relative;
   padding-left: 16px;
-  margin-bottom: 20px;
+  margin: 10px;
 }
 
 .section-title::before {
@@ -805,6 +807,21 @@
 .green-theme-modal .ant-modal-title {
   color: white;
   font-weight: 600;
+}
+
+/* Modal Close Button Positioning */
+.green-theme-modal .ant-modal-close {
+  position: absolute;
+  top: 35px;
+  right: 30px;
+  color: white;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.green-theme-modal .ant-modal-close:hover {
+  color: #f0f0f0;
+  transform: scale(1.1);
 }
 
 .modal-title-with-icon {
