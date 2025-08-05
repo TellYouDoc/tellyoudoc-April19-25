@@ -405,68 +405,6 @@ function Login() {
           <div className="auth-header">
             <h2 className="animated-item fade-in">Welcome to</h2>
             <img src={tellyouDocLogo} alt="tellyouDoc" className="logo-icon" />
-            <div className="beta-warning animated-item fade-in delay-1" style={{
-              border: '2px solid rgba(46, 43, 167, 0.15)',
-              borderRadius: '10px',
-              padding: '14px',
-              background: 'linear-gradient(135deg, rgba(46, 43, 167, 0.03) 0%, rgba(73, 69, 228, 0.08) 100%)',
-              boxShadow: '0 6px 16px rgba(46, 43, 167, 0.08), 0 2px 4px rgba(46, 43, 167, 0.04)',
-              marginBottom: '12px',
-              display: 'flex',
-              flexDirection: 'column', /* Changed from row to column */
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              overflow: 'hidden',
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '4px',
-                background: 'linear-gradient(90deg, rgba(46, 43, 167, 0.92) 0%, rgba(73, 69, 228, 0.92) 100%)'
-              }}></div>
-
-              <p style={{
-                fontSize: '1.25rem',
-                color: 'rgba(46, 43, 167, 0.92)',
-                fontWeight: '700',
-                margin: '0',
-                textAlign: 'center',
-                textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)'
-              }}>Restricted to Beta Users</p>
-
-              <button
-                className="animated-item fade-in delay-2"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(46, 43, 167, 0.92) 0%, rgba(73, 69, 228, 0.92) 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '14px 16px',
-                  fontSize: '0.95rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 10px rgba(46, 43, 167, 0.25)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  whiteSpace: 'nowrap',
-                  width: '220px' /* Set a specific width for the button */
-                }}
-                onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
-                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
-                onClick={() => navigate('/partner')}
-              >
-                <span style={{ marginRight: '8px', marginLeft: '20px' }}>Join Beta</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ marginLeft: '4px' }}>
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-            </div>
-            <img src={MeLogo} alt="MeLogo" className="logo-icon-me" />
             {!showOtpVerification && !showFullForm && (
               <p className="animated-item fade-in delay-1" style={{
                 fontSize: '1.05rem',  // Adjust this value to change the font size
@@ -474,7 +412,7 @@ function Login() {
                 lineHeight: '1',    // Optional: better line spacing
                 color: '#444',        // Optional: softer color for better contrast
                 margin: '4px 0'       // Optional: adjust spacing around the text
-              }}>Enter the mobile number registered for beta program</p>
+              }}>Enter your mobile number</p>
             )}
             {showOtpVerification && !showFullForm && (
               <p className="animated-item fade-in delay-1">
@@ -484,7 +422,7 @@ function Login() {
               </p>
             )}
             {showFullForm && (
-              <p className="animated-item fade-in delay-1">Complete your registration to access breast cancer patient management</p>
+              <p className="animated-item fade-in delay-1">Complete your registration</p>
             )}
           </div>
 
@@ -501,26 +439,6 @@ function Login() {
               }}>
                 {error}
               </div>
-              {error === 'Only for Beta User.' && (
-                <span
-                  className="error-link"
-                  style={{
-                    color: 'rgba(18, 18, 20, 0.78)',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem',
-                    backgroundColor: 'rgba(213, 200, 183, 0.82)',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    whiteSpace: 'nowrap',
-                    position: 'absolute',
-                    fontWeight: '500',
-                    right: '15px'
-                  }}
-                  onClick={() => navigate('/partner')}
-                >
-                  Join Beta
-                </span>
-              )}
             </div>
           )}
           {successMessage && <div className="auth-success animated-item fade-in">{successMessage}</div>}
