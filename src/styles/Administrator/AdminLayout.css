@@ -516,6 +516,54 @@
   color: var(--admin-primary-color);
 }
 
+/* Recent Searches Styles */
+.recent-searches {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.recent-search-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color var(--admin-transition-speed);
+  border-bottom: 1px solid var(--admin-border-color);
+}
+
+.recent-search-item:last-child {
+  border-bottom: none;
+}
+
+.recent-search-item:hover {
+  background-color: var(--admin-primary-light);
+  color: var(--admin-primary-color);
+}
+
+.recent-search-icon {
+  font-size: 0.875rem;
+  color: var(--admin-text-secondary);
+  flex-shrink: 0;
+}
+
+.recent-search-item:hover .recent-search-icon {
+  color: var(--admin-primary-color);
+}
+
+.clear-recent {
+  color: var(--admin-danger);
+  font-weight: 500;
+  border-top: 1px solid var(--admin-border-color);
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.clear-recent:hover {
+  background-color: #fee2e2;
+  color: var(--admin-danger);
+}
+
 /* Notifications Dropdown */
 .notifications-dropdown {
   position: absolute;

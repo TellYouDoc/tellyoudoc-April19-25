@@ -2,9 +2,9 @@ import axios from "axios";
 
 // Environment configuration
 // const DEV_URL = "https://staging.api.tellyoudoc.com/api/v1"; //   Using relative URL for dev to work with the proxy
-const DEV_URL = "/api/v1"; // Use relative URL to work with Vite proxy
+const DEV_URL = "http://172.16.14.108:3000/api/v1"; // Use relative URL to work with Vite proxy
 // const PROD_URL = "https://staging.api.tellyoudoc.com/api/v1";
-const PROD_URL = "http://172.16.14.99:3000/api/v1";
+const PROD_URL = "http://172.16.14.108:3000/api/v1";
 
 // Determine if we're in development mode based on the environment
 const isDevelopment = import.meta.env.MODE === "development";
@@ -87,10 +87,12 @@ api.interceptors.response.use(
         const { AccessToken, newRefreshToken } = response.data;
 
         // Store the new tokens in cookies
-        document.cookie = `AccessToken=${AccessToken}; path=/; max-age=${60 * 60 * 24 * 30
-          }; samesite=strict`;
-        document.cookie = `RefreshToken=${newRefreshToken}; path=/; max-age=${60 * 60 * 24 * 30
-          }; samesite=strict`;
+        document.cookie = `AccessToken=${AccessToken}; path=/; max-age=${
+          60 * 60 * 24 * 30
+        }; samesite=strict`;
+        document.cookie = `RefreshToken=${newRefreshToken}; path=/; max-age=${
+          60 * 60 * 24 * 30
+        }; samesite=strict`;
 
         // Retry the original request
         return api(originalRequest);
@@ -280,7 +282,6 @@ const appointmentService = {
   // Method to create appointment slots
   createAppointmentSlots: (payload) =>
     api.post(`/appointments/doctor/slots`, payload),
-
 };
 
 const AdministratorService = {
@@ -350,7 +351,7 @@ const AdministratorService = {
   // Get Appointments by Doctor ID
   getAppointmentsByDoctorId: (doctorId, statuses) =>
     api.get(`/admin/appointments/statuses/${doctorId}`, {
-      params: statuses || {}
+      params: statuses || {},
     }),
 
   // Specialization Management
@@ -362,13 +363,19 @@ const AdministratorService = {
     return api.get("/admin/content/doctor/specializations", { params });
   },
   // Create specialization
-  createSpecialization: (data) => api.post("/admin/content/doctor/specializations", data),
+  createSpecialization: (data) =>
+    api.post("/admin/content/doctor/specializations", data),
   // Update specialization
   updateSpecialization: (documentId, specializationId, data) =>
-    api.put(`/admin/content/doctor/specializations/${documentId}/update/${specializationId}`, data),
+    api.put(
+      `/admin/content/doctor/specializations/${documentId}/update/${specializationId}`,
+      data
+    ),
   // Delete specialization
   deleteSpecialization: (documentId, specializationId) =>
-    api.delete(`/admin/content/doctor/specializations/${documentId}/remove/${specializationId}`),
+    api.delete(
+      `/admin/content/doctor/specializations/${documentId}/remove/${specializationId}`
+    ),
   // Get specialization by ID
   getSpecializationById: (specializationId) =>
     api.get(`/admin/content/doctor/specializations/${specializationId}`),
@@ -377,18 +384,32 @@ const AdministratorService = {
   // Get terms and conditions content
   getTermsAndConditions: () => api.get("/admin/content/terms-and-conditions"),
   // Update terms and conditions content
-  updateTermsAndConditions: (data) => api.put("/admin/content/terms-and-conditions", data),
+  updateTermsAndConditions: (data) =>
+    api.put("/admin/content/terms-and-conditions", data),
   // Get terms and conditions content for public display
   getPublicTermsAndConditions: () => api.get("/content/terms-and-conditions"),
 
   // Terminal Command Execution
-  executeCommand: async (command, timeout = 30000) => api.post("/admin/monitoring/terminal/exec", { command, timeout }),
+  executeCommand: async (command, timeout = 30000) =>
+    api.post("/admin/monitoring/terminal/exec", { command, timeout }),
   // WebSocket Monitoring
   getWebSocketStatus: () => api.get("/admin/monitoring/websocket/status"),
-  getWebSocketConnections: (params = {}) => api.get("/admin/monitoring/websocket/connections", { params }),
-  disconnectWebSocketUser: (userId) => api.post(`/admin/monitoring/websocket/disconnect/${userId}`),
-  sendWebSocketRegistrationReminders: () => api.post("/admin/monitoring/websocket/broadcast/registration-reminder"),
-  getWebSocketAnalytics: (params = {}) => api.get("/admin/monitoring/websocket/analytics", { params }),
+  getWebSocketConnections: (params = {}) =>
+    api.get("/admin/monitoring/websocket/connections", { params }),
+  disconnectWebSocketUser: (userId) =>
+    api.post(`/admin/monitoring/websocket/disconnect/${userId}`),
+  sendWebSocketRegistrationReminders: () =>
+    api.post("/admin/monitoring/websocket/broadcast/registration-reminder"),
+  getWebSocketAnalytics: (params = {}) =>
+    api.get("/admin/monitoring/websocket/analytics", { params }),
+
+  // Activity Logs Management
+  getActivityLogs: (params = {}) =>
+    api.get("/admin/activity/activity-logs", { params }),
+  getActivityLogsStats: (params = {}) =>
+    api.get("/admin/activity/activity-logs/stats", { params }),
+  getUserActivityLogs: (userId, params = {}) =>
+    api.get(`/admin/activity/activity-logs/user/${userId}`, { params }),
 };
 
 // Create the API service object

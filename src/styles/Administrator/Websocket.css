@@ -1,0 +1,184 @@
+/* WebSocket Monitoring Page Styles */
+
+.websocket-card:hover {
+    cursor: pointer;
+}
+
+/* Status indicators */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-indicator.online {
+  background: #f0f9ff;
+  color: #0369a1;
+}
+
+.status-indicator.offline {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+/* Table row styles */
+.ant-table-tbody > tr.disconnected-row {
+  background-color: #fafafa !important;
+  opacity: 0.7;
+}
+
+.ant-table-tbody > tr.disconnected-row:hover > td {
+  background-color: #f5f5f5 !important;
+}
+
+/* Enhanced table styling */
+.websocket-connections-table .ant-table-thead > tr > th {
+  background-color: #fafbfc !important;
+  border-bottom: 2px solid #f1f5f9 !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  padding: 16px 16px !important;
+}
+
+.websocket-connections-table .ant-table-tbody > tr > td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.websocket-connections-table .ant-table-tbody > tr:hover > td {
+  background-color: #f8fafc !important;
+}
+
+/* Filter section */
+.table-filters {
+  background: #fafbfc;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Button enhancements */
+.refresh-btn {
+  border: 1px solid #e5e7eb;
+  background: white;
+  color: #374151;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.refresh-btn:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+  transform: translateY(-1px);
+}
+
+.primary-action-btn {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 4px rgba(14, 159, 110, 0.2);
+}
+
+.primary-action-btn:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  box-shadow: 0 4px 8px rgba(14, 159, 110, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Socket ID styling */
+.socket-id {
+  background: #f6f8fa !important;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 4px !important;
+  padding: 4px 8px !important;
+  font-family: 'Monaco', 'Consolas', 'Ubuntu Mono', monospace !important;
+  font-size: 12px !important;
+  color: #24292e !important;
+}
+
+/* Tag improvements */
+.connection-tag {
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  font-size: 12px !important;
+  padding: 4px 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+/* Empty state */
+.ant-empty {
+  padding: 48px 20px !important;
+}
+
+.ant-empty-description {
+  color: var(--text-secondary) !important;
+  font-size: 14px !important;
+}
+
+/* Loading states */
+.ant-spin-container {
+  min-height: 200px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .websocket-connections-table .ant-table-thead > tr > th,
+  .websocket-connections-table .ant-table-tbody > tr > td {
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+  }
+  
+  .connection-tag {
+    font-size: 11px !important;
+    padding: 2px 8px !important;
+  }
+  
+  .socket-id {
+    font-size: 10px !important;
+    padding: 2px 6px !important;
+  }
+  
+  /* Make dashboard responsive */
+  .websocket-dashboard-flex {
+    flex-direction: column !important;
+  }
+  
+  .websocket-status-section {
+    width: 100% !important;
+    margin-bottom: 24px;
+  }
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.websocket-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.websocket-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.websocket-card:nth-child(3) {
+  animation-delay: 0.2s;
+}

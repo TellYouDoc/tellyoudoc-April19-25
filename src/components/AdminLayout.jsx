@@ -24,6 +24,150 @@ import tellyouDocLogo from "../assets/tellyoudoc.png";
 import { apiService } from "../services/api.jsx";
 import "../styles/Administrator/AdminLayout.css";
 
+// Menu configuration data structure
+const menuConfig = [
+  {
+    type: "single",
+    path: "/admin/dashboard",
+    icon: FaTachometerAlt,
+    text: "Dashboard"
+  },
+  {
+    type: "group",
+    key: "userManagement",
+    title: "User Management",
+    icon: FaUsers,
+    paths: ["/admin/administrators", "/admin/patients", "/admin/doctors"],
+    items: [
+      {
+        path: "/admin/administrators",
+        icon: FaUserShield,
+        text: "Administrators"
+      },
+      {
+        path: "/admin/doctors",
+        icon: FaUserMd,
+        text: "Doctors"
+      },
+      {
+        path: "/admin/patients",
+        icon: FaUsers,
+        text: "Patients"
+      }
+    ]
+  },
+  {
+    type: "group",
+    key: "appointmentManagement",
+    title: "Manage Appointments",
+    icon: FaCalendarAlt,
+    paths: ["/admin/appointments", "/admin/appointment-analytics"],
+    items: [
+      {
+        path: "/admin/appointments",
+        icon: FaCalendarAlt,
+        text: "Appointments"
+      },
+      {
+        path: "/admin/appointment-analytics",
+        icon: FaChartBar,
+        text: "Analytics"
+      }
+    ]
+  },
+  {
+    type: "group",
+    key: "kycManagement",
+    title: "KYC Management",
+    icon: FaUserCheck,
+    paths: ["/admin/kyc"],
+    items: [
+      {
+        path: "/admin/kyc",
+        icon: FaUserMd,
+        text: "Doctors"
+      }
+    ]
+  },
+  {
+    type: "group",
+    key: "feedbackManagement",
+    title: "Feedback Management",
+    icon: FaChartBar,
+    paths: ["/admin/doctor-feedbacks", "/admin/patient-feedbacks"],
+    items: [
+      {
+        path: "/admin/doctor-feedbacks",
+        icon: FaUserMd,
+        text: "Doctor Feedbacks"
+      },
+      {
+        path: "/admin/patient-feedbacks",
+        icon: FaUsers,
+        text: "Patient Feedbacks"
+      }
+    ]
+  },
+  {
+    type: "group",
+    key: "appManagement",
+    title: "App Management",
+    icon: FaMobile,
+    paths: ["/admin/doctor-app-content", "/admin/notifications"],
+    items: [
+      {
+        path: "/admin/doctor-app-content",
+        icon: FaUserMd,
+        text: "Doctor App"
+      },
+      {
+        path: "/admin/notifications",
+        icon: FaBell,
+        text: "Notifications"
+      }
+    ]
+  },
+  {
+    type: "group",
+    key: "contentManagement",
+    title: "Website Management",
+    icon: FaFileAlt,
+    paths: ["/admin/content"],
+    items: [
+      {
+        path: "/admin/content",
+        icon: FaFileAlt,
+        text: "Content"
+      }
+    ]
+  },
+  {
+    type: "group",
+    key: "systemManagement",
+    title: "System Management",
+    icon: FaFileAlt,
+    paths: ["/admin/websocket", "/admin/activity-logs"],
+    items: [
+      {
+        path: "/admin/websocket",
+        icon: FaFileAlt,
+        text: "WebSocket"
+      },
+      {
+        path: "/admin/activity-logs",
+        icon: FaHistory,
+        text: "Activity Logs"
+      }
+    ]
+  },
+  {
+    type: "single",
+    path: "/admin/settings",
+    icon: FaCog,
+    text: "Settings"
+  }
+];
+
 const AdminLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,10 +177,12 @@ const AdminLayout = ({ children }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [recentSearches, setRecentSearches] = useState([]);
+  const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [expandedMenus, setExpandedMenus] = useState({
     userManagement: false,
     contentManagement: false,
-    analytics: false,
+    feedbackManagement: false,
     appointmentManagement: false,
     kycManagement: false,
     appManagement: false,
@@ -86,6 +232,40 @@ const AdminLayout = ({ children }) => {
     };
   }, []);
 
+  // Load recent searches from localStorage on component mount
+  useEffect(() => {
+    const savedSearches = localStorage.getItem('adminRecentSearches');
+    if (savedSearches) {
+      try {
+        setRecentSearches(JSON.parse(savedSearches));
+      } catch (error) {
+        console.error('Error parsing recent searches:', error);
+        setRecentSearches([]);
+      }
+    }
+  }, []);
+
+  // Auto-expand menu groups based on current location
+  useEffect(() => {
+    const currentPath = location.pathname;
+
+    // Auto-expand System Management when WebSocket or Activity Logs page is active
+    if (currentPath === "/admin/websocket" || currentPath === "/admin/activity-logs") {
+      setExpandedMenus(prev => ({
+        ...prev,
+        systemManagement: true
+      }));
+    }
+
+    // Auto-expand Feedback Management when feedback pages are active
+    if (currentPath === "/admin/doctor-feedbacks" || currentPath === "/admin/patient-feedbacks") {
+      setExpandedMenus(prev => ({
+        ...prev,
+        feedbackManagement: true
+      }));
+    }
+  }, [location.pathname]);
+
   const toggleMenuExpand = (menuKey) => {
     setExpandedMenus({
       ...expandedMenus,
@@ -101,38 +281,87 @@ const AdminLayout = ({ children }) => {
     );
   };
 
+  // Function to save search to recent searches
+  const saveSearchToHistory = (query) => {
+    if (query.trim()) {
+      const newSearch = query.trim();
+      setRecentSearches(prevSearches => {
+        const filteredSearches = prevSearches.filter(search => search !== newSearch);
+        const updatedSearches = [newSearch, ...filteredSearches].slice(0, 5); // Keep only 5 most recent
+        localStorage.setItem('adminRecentSearches', JSON.stringify(updatedSearches));
+        return updatedSearches;
+      });
+    }
+  };
+
   const handleGlobalSearch = (query) => {
     setSearchQuery(query);
 
     if (!query.trim()) {
       setSearchResults([]);
+      setShowRecentSearches(false);
       return;
     }
 
     const searchableItems = [
       {
-        type: "Doctors",
+        type: "Dashboard",
         items: [
-          { title: "Doctor Management", path: "/admin/doctors" },
-          { title: "Dr. Sarah Johnson", path: "/admin/doctors" },
-          { title: "Dr. Rajesh Kumar", path: "/admin/doctors" },
+          { title: "Admin Dashboard", path: "/admin/dashboard" },
         ],
       },
       {
-        type: "Patients",
-        items: [{ title: "Patient Management", path: "/admin/patients" }],
+        type: "User Management",
+        items: [
+          { title: "Administrators", path: "/admin/administrators" },
+          { title: "Doctors", path: "/admin/doctors" },
+          { title: "Patients", path: "/admin/patients" },
+        ],
       },
       {
-        type: "Reports",
-        items: [{ title: "Reports and Feedbacks", path: "/admin/reports" }],
+        type: "Appointments & Reports",
+        items: [
+          { title: "Appointments", path: "/admin/appointments" },
+          { title: "Reports", path: "/admin/reports" },
+        ],
       },
       {
-        type: "Settings",
-        items: [{ title: "Admin Settings", path: "/admin/settings" }],
+        type: "Feedback Management",
+        items: [
+          { title: "Doctor Feedbacks", path: "/admin/doctor-feedbacks" },
+          { title: "Patient Feedbacks", path: "/admin/patient-feedbacks" }
+        ],
       },
       {
-        type: "Activity",
-        items: [{ title: "Activity Logs", path: "/admin/activity-logs" }],
+        type: "Content Management",
+        items: [
+          { title: "Content", path: "/admin/content" },
+          { title: "Terms & Conditions", path: "/admin/terms-conditions" },
+          { title: "FAQs", path: "/admin/faqs" },
+          { title: "Privacy Policy", path: "/admin/privacy-policy" },
+          { title: "Doctor App Content", path: "/admin/doctor-app-content" },
+        ],
+      },
+      {
+        type: "System Management",
+        items: [
+          { title: "Settings", path: "/admin/settings" },
+          { title: "Activity Logs", path: "/admin/activity-logs" },
+          { title: "WebSocket", path: "/admin/websocket" },
+        ],
+      },
+      {
+        type: "Verification & Subscriptions",
+        items: [
+          { title: "KYC Management", path: "/admin/kyc" },
+          { title: "Specializations", path: "/admin/specializations" },
+        ],
+      },
+      {
+        type: "Notifications",
+        items: [
+          { title: "Notifications", path: "/admin/notifications" },
+        ],
       },
     ];
 
@@ -163,19 +392,20 @@ const AdminLayout = ({ children }) => {
 
     // Check which menu group should be expanded based on current path
     const userManagementPaths = ['/admin/administrators', '/admin/patients', '/admin/doctors'];
-    const analyticsPaths = ['/admin/reports', '/admin/activity-logs'];
+    const feedbackManagementPaths = ['/admin/doctor-feedbacks', '/admin/patient-feedbacks'];
     const contentManagementPaths = ['/admin/content', '/admin/notifications'];
     const appointmentManagementPaths = ['/admin/appointments', '/admin/appointment-analytics'];
     const kycManagementPaths = ['/admin/kyc'];
-    const appManagementPaths = ['/admin/doctor-app-content', '/admin/specializations'];
+    const appManagementPaths = ['/admin/doctor-app-content', '/admin/notifications'];
 
     setExpandedMenus({
       userManagement: userManagementPaths.includes(path),
-      analytics: analyticsPaths.includes(path),
+      feedbackManagement: feedbackManagementPaths.includes(path),
       contentManagement: contentManagementPaths.includes(path),
       appointmentManagement: appointmentManagementPaths.includes(path),
       kycManagement: kycManagementPaths.includes(path),
       appManagement: appManagementPaths.includes(path),
+      systemManagement: path === "/admin/websocket" || path === "/admin/activity-logs", // Auto-expand System Management when WebSocket or Activity Logs page is active
     });
   }, [location.pathname]);
 
@@ -312,10 +542,28 @@ const AdminLayout = ({ children }) => {
             <FaSearch className="admin-search-icon" />
             <input
               type="text"
-              placeholder="Search anything in admin panel..."
+              placeholder="Search any pages in admin panel"
               aria-label="Search"
               value={searchQuery}
               onChange={(e) => handleGlobalSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  saveSearchToHistory(searchQuery);
+                }
+              }}
+              onFocus={() => {
+                if (!searchQuery.trim() && recentSearches.length > 0) {
+                  setShowRecentSearches(true);
+                }
+              }}
+              onBlur={() => {
+                // Save search when user finishes typing and leaves the input
+                if (searchQuery.trim()) {
+                  saveSearchToHistory(searchQuery);
+                }
+                // Delay hiding recent searches to allow clicking on them
+                setTimeout(() => setShowRecentSearches(false), 200);
+              }}
             />
             {searchResults.length > 0 && searchQuery && (
               <div className="search-results-dropdown">
@@ -327,6 +575,7 @@ const AdminLayout = ({ children }) => {
                         key={itemIdx}
                         className="search-result-item"
                         onClick={() => {
+                          saveSearchToHistory(searchQuery);
                           navigate(item.path);
                           setSearchQuery("");
                           setSearchResults([]);
@@ -339,12 +588,43 @@ const AdminLayout = ({ children }) => {
                 ))}
               </div>
             )}
+            {showRecentSearches && !searchQuery && recentSearches.length > 0 && (
+              <div className="search-results-dropdown recent-searches">
+                <div className="search-category">
+                  <div className="category-title">Recent Searches</div>
+                  {recentSearches.map((search, idx) => (
+                    <div
+                      key={idx}
+                      className="search-result-item recent-search-item"
+                      onClick={() => {
+                        setSearchQuery(search);
+                        handleGlobalSearch(search);
+                        setShowRecentSearches(false);
+                      }}
+                    >
+                      <FaHistory className="recent-search-icon" />
+                      {search}
+                    </div>
+                  ))}
+                  <div
+                    className="search-result-item clear-recent"
+                    onClick={() => {
+                      setRecentSearches([]);
+                      localStorage.removeItem('adminRecentSearches');
+                      setShowRecentSearches(false);
+                    }}
+                  >
+                    Clear Recent Searches
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="admin-navbar-right">
           {/* Notification icon */}
-          <div className="admin-notification-icon">
+          {/* <div className="admin-notification-icon">
             <div
               onClick={(e) => {
                 e.stopPropagation();
@@ -413,7 +693,8 @@ const AdminLayout = ({ children }) => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
+
           {/* Terminal icon */}
           <div className="admin-terminal-icon">
             <div
@@ -523,6 +804,7 @@ const AdminLayout = ({ children }) => {
           )}
         </div>
       )}
+
       {/* Sidebar */}
       <aside
         className={`admin-sidebar ${sidebarCollapsed ? "collapsed" : ""} ${mobileMenuOpen ? "mobile-open" : ""
@@ -549,396 +831,65 @@ const AdminLayout = ({ children }) => {
         {/* Menu */}
         <nav className="admin-sidebar-menu">
           <ul>
-            <li
-              className={
-                location.pathname === "/admin/dashboard" ? "active" : ""
+            {menuConfig.map((item) => {
+              if (item.type === "single") {
+                return (
+                  <li
+                    key={item.path}
+                    className={location.pathname === item.path ? "active" : ""}
+                  >
+                    <Link to={item.path}>
+                      <span className="admin-menu-icon">
+                        <item.icon />
+                      </span>
+                      <span className="admin-menu-text">{item.text}</span>
+                    </Link>
+                  </li>
+                );
+              } else if (item.type === "group") {
+                return (
+                  <li
+                    key={item.key}
+                    className={`menu-group ${expandedMenus[item.key] ? "expanded" : ""
+                      } ${item.paths.some(path => location.pathname.startsWith(path))
+                        ? "active-group"
+                        : ""
+                      }`}
+                  >
+                    <div
+                      className="menu-group-header"
+                      onClick={() => toggleMenuExpand(item.key)}
+                    >
+                      <div className="menu-group-title">
+                        <span className="admin-menu-icon">
+                          <item.icon />
+                        </span>
+                        <span className="admin-menu-text">{item.title}</span>
+                      </div>
+                      <div className="menu-expand-icon">
+                        {expandedMenus[item.key] ? "−" : "+"}
+                      </div>
+                    </div>
+                    <ul className="submenu">
+                      {item.items.map((subItem) => (
+                        <li
+                          key={subItem.path}
+                          className={location.pathname === subItem.path ? "active" : ""}
+                        >
+                          <Link to={subItem.path}>
+                            <span className="admin-menu-icon">
+                              <subItem.icon />
+                            </span>
+                            <span className="admin-menu-text">{subItem.text}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                );
               }
-            >
-              <Link to="/admin/dashboard">
-                <span className="admin-menu-icon">
-                  <FaTachometerAlt />
-                </span>
-                <span className="admin-menu-text">Dashboard</span>
-              </Link>
-            </li>
-
-            {/* User Management Group */}
-            <li
-              className={`menu-group ${expandedMenus.userManagement ? "expanded" : ""
-                } ${[
-                  "/admin/administrators",
-                  "/admin/patients",
-                  "/admin/doctors",
-                ].includes(location.pathname)
-                  ? "active-group"
-                  : ""
-                }`}
-            >
-              <div
-                className="menu-group-header"
-                onClick={() => toggleMenuExpand("userManagement")}
-              >
-                <div className="menu-group-title">
-                  <span className="admin-menu-icon">
-                    <FaUsers />
-                  </span>
-                  <span className="admin-menu-text">User Management</span>
-                </div>
-                <div className="menu-expand-icon">
-                  {expandedMenus.userManagement ? "−" : "+"}
-                </div>
-              </div>
-              <ul className="submenu">
-                <li
-                  className={
-                    location.pathname === "/admin/administrators"
-                      ? "active"
-                      : ""
-                  }
-                >
-                  <Link to="/admin/administrators">
-                    <span className="admin-menu-icon">
-                      <FaUserShield />
-                    </span>
-                    <span className="admin-menu-text">Administrators</span>
-                  </Link>
-                </li>
-                <li
-                  className={
-                    location.pathname === "/admin/doctors" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/doctors">
-                    <span className="admin-menu-icon">
-                      <FaUserMd />
-                    </span>
-                    <span className="admin-menu-text">Doctors</span>
-                  </Link>
-                </li>
-                <li
-                  className={
-                    location.pathname === "/admin/patients" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/patients">
-                    <span className="admin-menu-icon">
-                      <FaUsers />
-                    </span>
-                    <span className="admin-menu-text">Patients</span>
-                  </Link>
-                </li>
-                {/* Future additions can be added here:
-                <li className={location.pathname === '/admin/organizations' ? 'active' : ''}>
-                  <Link to="/admin/organizations">
-                    <span className="admin-menu-icon"><FaHandshake /></span>
-                    <span className="admin-menu-text">Organizations</span>
-                  </Link>
-                </li>
-                <li className={location.pathname === '/admin/subscribers' ? 'active' : ''}>
-                  <Link to="/admin/subscribers">
-                    <span className="admin-menu-icon"><FaHandshake /></span>
-                    <span className="admin-menu-text">Subscribers</span>
-                  </Link>
-                </li> */}
-              </ul>
-            </li>
-
-            {/* Appointment Management Group */}
-            <li
-              className={`menu-group ${expandedMenus.appointmentManagement ? "expanded" : ""
-                } ${["/admin/appointments", "/admin/appointment-analytics"].includes(
-                  location.pathname
-                )
-                  ? "active-group"
-                  : ""
-                }`}
-            >
-              <div
-                className="menu-group-header"
-                onClick={() => toggleMenuExpand("appointmentManagement")}
-              >
-                <div className="menu-group-title">
-                  <span className="admin-menu-icon">
-                    <FaCalendarAlt />
-                  </span>
-                  <span className="admin-menu-text">Manage Appointments</span>
-                </div>
-                <div className="menu-expand-icon">
-                  {expandedMenus.appointmentManagement ? "−" : "+"}
-                </div>
-              </div>
-              <ul className="submenu">
-                <li
-                  className={
-                    location.pathname === "/admin/appointments" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/appointments">
-                    <span className="admin-menu-icon">
-                      <FaCalendarAlt />
-                    </span>
-                    <span className="admin-menu-text">Appointments</span>
-                  </Link>
-                </li>
-                <li
-                  className={
-                    location.pathname === "/admin/appointment-analytics" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/appointment-analytics">
-                    <span className="admin-menu-icon">
-                      <FaChartBar />
-                    </span>
-                    <span className="admin-menu-text">Analytics</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* KYC Management Group */}
-            <li
-              className={`menu-group ${expandedMenus.kycManagement ? "expanded" : ""
-                } ${["/admin/kyc"].includes(
-                  location.pathname
-                )
-                  ? "active-group"
-                  : ""
-                }`}
-            >
-              <div
-                className="menu-group-header"
-                onClick={() => toggleMenuExpand("kycManagement")}
-              >
-                <div className="menu-group-title">
-                  <span className="admin-menu-icon">
-                    <FaUserCheck />
-                  </span>
-                  <span className="admin-menu-text">KYC Management</span>
-                </div>
-                <div className="menu-expand-icon">
-                  {expandedMenus.kycManagement ? "−" : "+"}
-                </div>
-              </div>
-              <ul className="submenu">
-                <li
-                  className={
-                    location.pathname === "/admin/kyc" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/kyc">
-                    <span className="admin-menu-icon">
-                      <FaUserMd />
-                    </span>
-                    <span className="admin-menu-text">Doctors</span>
-                  </Link>
-                </li>
-                {/* Future KYC items can be added here:
-                <li className={location.pathname === '/admin/kyc/patients' ? 'active' : ''}>
-                  <Link to="/admin/kyc/patients">
-                    <span className="admin-menu-icon"><FaUsers /></span>
-                    <span className="admin-menu-text">Patients</span>
-                  </Link>
-                </li>
-                <li className={location.pathname === '/admin/kyc/organizations' ? 'active' : ''}>
-                  <Link to="/admin/kyc/organizations">
-                    <span className="admin-menu-icon"><FaHandshake /></span>
-                    <span className="admin-menu-text">Organizations</span>
-                  </Link>
-                </li> */}
-              </ul>
-            </li>
-
-            {/* Analytics & Reports Group */}
-            <li
-              className={`menu-group ${expandedMenus.analytics ? "expanded" : ""
-                } ${["/admin/reports", "/admin/activity-logs"].includes(
-                  location.pathname
-                )
-                  ? "active-group"
-                  : ""
-                }`}
-            >
-              <div
-                className="menu-group-header"
-                onClick={() => toggleMenuExpand("analytics")}
-              >
-                <div className="menu-group-title">
-                  <span className="admin-menu-icon">
-                    <FaChartBar />
-                  </span>
-                  <span className="admin-menu-text">Analytics & Reports</span>
-                </div>
-                <div className="menu-expand-icon">
-                  {expandedMenus.analytics ? "−" : "+"}
-                </div>
-              </div>
-              <ul className="submenu">
-                <li
-                  className={
-                    location.pathname === "/admin/reports" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/reports">
-                    <span className="admin-menu-icon">
-                      <FaChartBar />
-                    </span>
-                    <span className="admin-menu-text">Reports & Feedbacks</span>
-                  </Link>
-                </li>
-                <li
-                  className={
-                    location.pathname === "/admin/activity-logs" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/activity-logs">
-                    <span className="admin-menu-icon">
-                      <FaHistory />
-                    </span>
-                    <span className="admin-menu-text">Activity Logs</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* App Management Group */}
-            <li
-              className={`menu-group ${expandedMenus.appManagement ? "expanded" : ""
-                } ${["/admin/doctor-app-content"].includes(
-                  location.pathname
-                )
-                  ? "active-group"
-                  : ""
-                }`}
-            >
-              <div
-                className="menu-group-header"
-                onClick={() => toggleMenuExpand("appManagement")}
-              >
-                <div className="menu-group-title">
-                  <span className="admin-menu-icon">
-                    <FaMobile />
-                  </span>
-                  <span className="admin-menu-text">App Management</span>
-                </div>
-                <div className="menu-expand-icon">
-                  {expandedMenus.appManagement ? "−" : "+"}
-                </div>
-              </div>
-              <ul className="submenu">
-                <li
-                  className={
-                    location.pathname === "/admin/doctor-app-content" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/doctor-app-content">
-                    <span className="admin-menu-icon">
-                      <FaUserMd />
-                    </span>
-                    <span className="admin-menu-text">Doctor App</span>
-                  </Link>
-                </li>
-                {/* Future App Management items can be added here:
-                <li className={location.pathname === '/admin/app-management/patients' ? 'active' : ''}>
-                  <Link to="/admin/app-management/patients">
-                    <span className="admin-menu-icon"><FaUsers /></span>
-                    <span className="admin-menu-text">Patients</span>
-                  </Link>
-                </li> */}
-              </ul>
-            </li>
-
-            {/* Content Management Group */}
-            <li
-              className={`menu-group ${expandedMenus.contentManagement ? "expanded" : ""
-                } ${["/admin/content", "/admin/notifications"].includes(
-                  location.pathname
-                )
-                  ? "active-group"
-                  : ""
-                }`}
-            >
-              <div
-                className="menu-group-header"
-                onClick={() => toggleMenuExpand("contentManagement")}
-              >
-                <div className="menu-group-title">
-                  <span className="admin-menu-icon">
-                    <FaFileAlt />
-                  </span>
-                  <span className="admin-menu-text">Website Management</span>
-                </div>
-                <div className="menu-expand-icon">
-                  {expandedMenus.contentManagement ? "−" : "+"}
-                </div>
-              </div>
-              <ul className="submenu">
-                <li
-                  className={
-                    location.pathname === "/admin/content" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/content">
-                    <span className="admin-menu-icon">
-                      <FaFileAlt />
-                    </span>
-                    <span className="admin-menu-text">Content</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-            {/* System Management Group */}
-            <li
-              className={`menu-group ${expandedMenus.systemManagement ? "expanded" : ""
-                } ${["/admin/websocket"].includes(
-                  location.pathname
-                )
-                  ? "active-group"
-                  : ""
-                }`}
-            >
-              <div
-                className="menu-group-header"
-                onClick={() => toggleMenuExpand("systemManagement")}
-              >
-                <div className="menu-group-title">
-                  <span className="admin-menu-icon">
-                    <FaFileAlt />
-                  </span>
-                  <span className="admin-menu-text">System Management</span>
-                </div>
-                <div className="menu-expand-icon">
-                  {expandedMenus.systemManagement ? "−" : "+"}
-                </div>
-              </div>
-              <ul className="submenu">
-                <li
-                  className={
-                    location.pathname === "/admin/websocket" ? "active" : ""
-                  }
-                >
-                  <Link to="/admin/websocket">
-                    <span className="admin-menu-icon">
-                      <FaFileAlt />
-                    </span>
-                    <span className="admin-menu-text">webSocket</span>
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Settings */}
-            <li
-              className={
-                location.pathname === "/admin/settings" ? "active" : ""
-              }
-            >
-              <Link to="/admin/settings">
-                <span className="admin-menu-icon">
-                  <FaCog />
-                </span>
-                <span className="admin-menu-text">Settings</span>
-              </Link>
-            </li>
+              return null;
+            })}
           </ul>
         </nav>
       </aside>
@@ -1003,7 +954,7 @@ function TerminalContent({ onStateChange, initialState, commandTab, onReset }) {
       'dir', 'cls', 'ipconfig', 'tasklist', 'taskkill', 'systeminfo', 'ver', 'hostname',
       'whoami', 'netstat', 'ping', 'tracert', 'nslookup', 'copy', 'move', 'del', 'rmdir',
       'mkdir', 'type', 'findstr', 'tree', 'chkdsk', 'sfc', 'dism', 'shutdown', 'reg',
-      'sc', 'net', 'gpupdate', 'gpresult', 'wmic'
+      'sc', 'net', 'gpupdate', 'gpresult', 'wmic', 'cd'
     ];
 
     // Linux/macOS-specific commands

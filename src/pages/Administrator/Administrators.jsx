@@ -507,10 +507,7 @@ function Administrators() {
 
       setIsLoading(true);
       const response =
-        await apiService.AdministratorService.getAllAdministrators(
-          page,
-          limit
-        );
+        await apiService.AdministratorService.getAllAdministrators(page, limit);
 
       if (response && response.status === 200) {
         setAdministrators(response.data.data);
@@ -520,8 +517,7 @@ function Administrators() {
     } catch (error) {
       console.error("Error fetching administrators:", error);
       message.error(
-        "Failed to fetch administrators: " +
-        (error.message || "Unknown error")
+        "Failed to fetch administrators: " + (error.message || "Unknown error")
       );
     } finally {
       setIsLoading(false);
@@ -1546,8 +1542,9 @@ function Administrators() {
                     <div style={customStyles.permissionDescription}>
                       {selectedAdmin.role === "superadmin"
                         ? "All Permissions (Super Admin)"
-                        : `${selectedAdmin.permissions?.length || 0
-                        } active permissions`}
+                        : `${
+                            selectedAdmin.permissions?.length || 0
+                          } active permissions`}
                     </div>
                   </div>
                 </div>
@@ -1814,7 +1811,7 @@ function Administrators() {
                             </pre>
                           );
                         }
-                      } catch (e) { }
+                      } catch (e) {}
                       return text;
                     },
                   },
