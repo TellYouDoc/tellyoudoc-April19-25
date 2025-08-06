@@ -109,6 +109,7 @@ const AdminOrganizations = lazy(() =>
 const KYC = lazy(() => import("./pages/Administrator/DoctorKYC"));
 const Specializations = lazy(() => import("./pages/Administrator/Specializations"));
 const DoctorAppContent = lazy(() => import("./pages/Administrator/DoctorAppContent"));
+const Websocket = lazy(() => import("./pages/Administrator/Websocket"));
 
 // Organization Login Pages
 const OrganizationLogin = lazy(() => import("./pages/Organization/Login"));
@@ -555,6 +556,17 @@ function AppRoutes() {
               )
             }
           />
+          <Route
+            path="/admin/websocket"
+            element={
+              !isAdminAuthenticated ? (
+                <Navigate to="/admin" replace />
+              ) : (
+                <Websocket />
+              )
+            }
+          />
+          
 
           {/* Routes for Organization */}
           <Route

@@ -38,6 +38,7 @@ const AdminLayout = ({ children }) => {
     appointmentManagement: false,
     kycManagement: false,
     appManagement: false,
+    systemManagement: false,
   });
 
   const toggleMenuExpand = (menuKey) => {
@@ -643,6 +644,45 @@ const AdminLayout = ({ children }) => {
                       <FaFileAlt />
                     </span>
                     <span className="admin-menu-text">Content</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+            {/* System Management Group */}
+            <li
+              className={`menu-group ${expandedMenus.systemManagement ? "expanded" : ""
+                } ${["/admin/websocket"].includes(
+                  location.pathname
+                )
+                  ? "active-group"
+                  : ""
+                }`}
+            >
+              <div
+                className="menu-group-header"
+                onClick={() => toggleMenuExpand("systemManagement")}
+              >
+                <div className="menu-group-title">
+                  <span className="admin-menu-icon">
+                    <FaFileAlt />
+                  </span>
+                  <span className="admin-menu-text">System Management</span>
+                </div>
+                <div className="menu-expand-icon">
+                  {expandedMenus.systemManagement ? "−" : "+"}
+                </div>
+              </div>
+              <ul className="submenu">
+                <li
+                  className={
+                    location.pathname === "/admin/websocket" ? "active" : ""
+                  }
+                >
+                  <Link to="/admin/websocket">
+                    <span className="admin-menu-icon">
+                      <FaFileAlt />
+                    </span>
+                    <span className="admin-menu-text">webSocket</span>
                   </Link>
                 </li>
               </ul>
