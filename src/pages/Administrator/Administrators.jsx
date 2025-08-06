@@ -269,34 +269,59 @@ function Administrators() {
   // Define available permissions and their descriptions centrally
   const permissionConfig = {
     manage_doctors: {
-      label: "Doctors",
+      label: "Manage Doctors",
       description: "Can create, edit, and manage doctor accounts",
       icon: <TeamOutlined />,
     },
     manage_patients: {
-      label: "Patients",
+      label: "Manage Patients",
       description: "Can access and manage patient records",
       icon: <TeamOutlined />,
     },
     manage_appointments: {
-      label: "Appointments",
+      label: "Manage Appointments",
       description: "Can schedule, view and modify appointments",
       icon: <FileTextOutlined />,
     },
     manage_notifications: {
-      label: "Notifications",
+      label: "Manage Notifications",
       description: "Can send notifications to users",
       icon: <MailOutlined />,
     },
     view_analytics: {
-      label: "Analytics",
+      label: "View Analytics",
       description: "Can view and download system reports and analytics",
       icon: <BarChartOutlined />,
     },
     manage_content: {
-      label: "Content",
+      label: "Manage Content",
       description: "Can manage and modify website content",
       icon: <FileTextOutlined />,
+    },
+    view_content: {
+      label: "View Content",
+      description: "Can view website content",
+      icon: <FileTextOutlined />,
+    },
+    view_activity_logs: {
+      label: "View Activity Logs",
+      description: "Can view system activity logs",
+      icon: <FileTextOutlined />,
+    },
+    system_monitoring: {
+      label: "System Monitoring",
+      description: "Can monitor system health and status",
+      icon: <BarChartOutlined />,
+    },
+    terminal_commands: {
+      label: "Terminal Commands",
+      description: "Can execute terminal commands on the server",
+      icon: <FileTextOutlined />,
+    },
+    manage_admins: {
+      label: "Manage Admins",
+      description: "Can create, edit, and manage administrator accounts",
+      icon: <TeamOutlined />,
     },
   };
 
@@ -475,6 +500,34 @@ function Administrators() {
     },
   ];
 
+  const fetchAdministrators = async () => {
+    try {
+      let page = currentPage;
+      let limit = 10;
+
+      setIsLoading(true);
+      const response =
+        await apiService.AdministratorService.getAllAdministrators(
+          page,
+          limit
+        );
+
+      if (response && response.status === 200) {
+        setAdministrators(response.data.data);
+        setFilteredAdministrators(response.data.data);
+        setTotalAdministrators(response.data.pagination.total);
+      }
+    } catch (error) {
+      console.error("Error fetching administrators:", error);
+      message.error(
+        "Failed to fetch administrators: " +
+        (error.message || "Unknown error")
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     // Load current admin data from localStorage
     try {
@@ -485,34 +538,6 @@ function Administrators() {
     } catch (err) {
       console.error("Error loading admin data:", err);
     }
-
-    const fetchAdministrators = async () => {
-      try {
-        let page = currentPage;
-        let limit = 10;
-
-        setIsLoading(true);
-        const response =
-          await apiService.AdministratorService.getAllAdministrators(
-            page,
-            limit
-          );
-
-        if (response && response.status === 200) {
-          setAdministrators(response.data.data);
-          setFilteredAdministrators(response.data.data);
-          setTotalAdministrators(response.data.pagination.total);
-        }
-      } catch (error) {
-        console.error("Error fetching administrators:", error);
-        message.error(
-          "Failed to fetch administrators: " +
-            (error.message || "Unknown error")
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
     fetchAdministrators();
   }, [currentPage]);
@@ -557,6 +582,8 @@ function Administrators() {
         // If successful, use the returned admin from API
         if (response && response.data) {
           createdAdmin = response.data;
+
+          fetchAdministrators();
         }
       } catch (apiError) {
         console.error("API Error:", apiError);
@@ -567,6 +594,9 @@ function Administrators() {
           id: administrators.length + 1,
           addedOn: new Date().toISOString(),
         };
+
+        // Refresh the administrators list even when API fails
+        fetchAdministrators();
       }
 
       // Update the administrators list with the new administrator
@@ -809,13 +839,9 @@ function Administrators() {
 
       return `${day}/${month}/${year} ${hours}:${minutes}`;
     } catch (error) {
+      console.error("Error formatting date:", error);
       return "Invalid Date";
     }
-  };
-
-  // Helper function to get permission description
-  const getPermissionDescription = (key) => {
-    return permissionConfig[key]?.description || "";
   };
 
   // Generate username suggestions based on email
@@ -883,17 +909,12 @@ function Administrators() {
   };
 
   // Update search handler to include single date filtering
-  const handleSearch = (value, date = selectedDate) => {
+  const handleSearch = (value) => {
     setSearchText(value);
-    filterAdministrators(value, date);
+    filterAdministrators(value);
   };
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    filterAdministrators(searchText, date);
-  };
-
-  const filterAdministrators = (text, date) => {
+  const filterAdministrators = (text) => {
     let filtered = [...administrators];
 
     // Text search
@@ -1525,9 +1546,8 @@ function Administrators() {
                     <div style={customStyles.permissionDescription}>
                       {selectedAdmin.role === "superadmin"
                         ? "All Permissions (Super Admin)"
-                        : `${
-                            selectedAdmin.permissions?.length || 0
-                          } active permissions`}
+                        : `${selectedAdmin.permissions?.length || 0
+                        } active permissions`}
                     </div>
                   </div>
                 </div>
@@ -1794,7 +1814,7 @@ function Administrators() {
                             </pre>
                           );
                         }
-                      } catch (e) {}
+                      } catch (e) { }
                       return text;
                     },
                   },

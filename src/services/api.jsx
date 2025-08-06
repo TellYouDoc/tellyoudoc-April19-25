@@ -7,7 +7,7 @@ const DEV_URL = "/api/v1"; // Use relative URL to work with Vite proxy
 const PROD_URL = "http://172.16.14.99:3000/api/v1";
 
 // Determine if we're in development mode based on the environment
-const isDevelopment = process.env.NODE_ENV === "development";
+const isDevelopment = import.meta.env.MODE === "development";
 const BASE_URL = isDevelopment ? DEV_URL : PROD_URL;
 
 // Create axios instance with default config
@@ -372,6 +372,23 @@ const AdministratorService = {
   // Get specialization by ID
   getSpecializationById: (specializationId) =>
     api.get(`/admin/content/doctor/specializations/${specializationId}`),
+
+  // Content Management - Terms and Conditions
+  // Get terms and conditions content
+  getTermsAndConditions: () => api.get("/admin/content/terms-and-conditions"),
+  // Update terms and conditions content
+  updateTermsAndConditions: (data) => api.put("/admin/content/terms-and-conditions", data),
+  // Get terms and conditions content for public display
+  getPublicTermsAndConditions: () => api.get("/content/terms-and-conditions"),
+
+  // Terminal Command Execution
+  executeCommand: async (command, timeout = 30000) => api.post("/admin/monitoring/terminal/exec", { command, timeout }),
+  // WebSocket Monitoring
+  getWebSocketStatus: () => api.get("/admin/monitoring/websocket/status"),
+  getWebSocketConnections: (params = {}) => api.get("/admin/monitoring/websocket/connections", { params }),
+  disconnectWebSocketUser: (userId) => api.post(`/admin/monitoring/websocket/disconnect/${userId}`),
+  sendWebSocketRegistrationReminders: () => api.post("/admin/monitoring/websocket/broadcast/registration-reminder"),
+  getWebSocketAnalytics: (params = {}) => api.get("/admin/monitoring/websocket/analytics", { params }),
 };
 
 // Create the API service object

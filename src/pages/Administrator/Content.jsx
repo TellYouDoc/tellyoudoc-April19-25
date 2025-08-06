@@ -10,10 +10,11 @@ import {
 const Content = () => {
   return (
     <AdminLayout>
-      <div className="admin-content-container">        <div className="admin-content-header">
-          <h1>Content Management</h1>
-          <p>Manage website content pages and information</p>
-        </div>
+      <div className="admin-content-container">        
+        <div className="admin-content-header">
+        <h1>Content Management</h1>
+        <p>Manage website content pages and information</p>
+      </div>
         <div className="content-boxes-wrapper">
           <div className="content-boxes">
             <Link to="/admin/terms-conditions" className="content-box">
