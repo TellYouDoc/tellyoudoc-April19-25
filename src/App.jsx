@@ -81,6 +81,9 @@ const AdminPatients = lazy(() => import("./pages/Administrator/Patients"));
 const AdminAppointments = lazy(() =>
   import("./pages/Administrator/Appointments")
 );
+const AppointmentAnalytics = lazy(() =>
+  import("./pages/Administrator/AppointmentAnalytics")
+);
 const AdminReports = lazy(() => import("./pages/Administrator/Reports"));
 const DoctorFeedbacks = lazy(() => import("./pages/Administrator/DoctorFeedbacks"));
 const PatientFeedbacks = lazy(() => import("./pages/Administrator/PatientFeedbacks"));
@@ -415,6 +418,16 @@ function AppRoutes() {
                 <Navigate to="/admin" replace />
               ) : (
                 <AdminAppointments />
+              )
+            }
+          />
+          <Route
+            path="/admin/appointment-analytics"
+            element={
+              !isAdminAuthenticated ? (
+                <Navigate to="/admin" replace />
+              ) : (
+                <AppointmentAnalytics />
               )
             }
           />

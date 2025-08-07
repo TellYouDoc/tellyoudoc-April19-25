@@ -9,6 +9,9 @@ import {
   Select,
   Popconfirm,
   Avatar,
+  Modal,
+  Typography,
+  Empty,
 } from "antd";
 import {
   EyeOutlined,
@@ -17,7 +20,10 @@ import {
   SearchOutlined,
   FilterOutlined,
   LoadingOutlined,
+  ArrowLeftOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
+import moment from "moment";
 import AdminLayout from "../../components/AdminLayout";
 import "../../styles/Administrator/Patients.css";
 import "../../styles/Administrator/pin-code-filter.css";
@@ -52,6 +58,13 @@ const Patients = () => {
     hasNextPage: false,
     hasPrevPage: false,
   });
+
+  // Logs state variables
+  const [activeTab, setActiveTab] = useState("patients");
+  const [logs, setLogs] = useState([]);
+  const [selectedPatientForLogs, setSelectedPatientForLogs] = useState(null);
+  const [logDetailsModalVisible, setLogDetailsModalVisible] = useState(false);
+  const [selectedLogRecord, setSelectedLogRecord] = useState(null);
 
   // Action button styles (same as Doctors.jsx)
   const actionButtonStyle = {
@@ -199,6 +212,64 @@ const Patients = () => {
     console.log("View patient profile:", patient);
   };
 
+  // Handle logs for a patient
+  const handleLogs = async (patient) => {
+    try {
+      const response = await apiService.AdministratorService.getPatientLogs(patient.patientId);
+      console.log("response", JSON.stringify(response.data, null, 2));
+      if (response && response.status === 200) {
+        setLogs(response.data.data.logs || []);
+        setSelectedPatientForLogs(patient);
+        setActiveTab("logs");
+      }
+    } catch (error) {
+      console.error("Error fetching logs:", error);
+      message.error("Failed to fetch logs: " + (error.message || "Unknown error"));
+    }
+  };
+
+  // Handle view log details
+  const handleViewLogDetails = (record) => {
+    try {
+      console.log("View log details clicked for record:", record);
+      if (!record) {
+        console.error("No record provided to handleViewLogDetails");
+        message.error("No log data available");
+        return;
+      }
+      setSelectedLogRecord(record);
+      setLogDetailsModalVisible(true);
+    } catch (error) {
+      console.error("Error in handleViewLogDetails:", error);
+      message.error("Failed to display log details: " + (error.message || "Unknown error"));
+    }
+  };
+
+  // Helper functions for logs table
+  const getStatusColor = (statusCode) => {
+    if (statusCode >= 200 && statusCode < 300) return "success";
+    if (statusCode >= 400 && statusCode < 500) return "warning";
+    if (statusCode >= 500) return "error";
+    return "default";
+  };
+
+  const getMethodColor = (method) => {
+    switch (method?.toUpperCase()) {
+      case "GET":
+        return "blue";
+      case "POST":
+        return "green";
+      case "PUT":
+        return "orange";
+      case "DELETE":
+        return "red";
+      case "PATCH":
+        return "purple";
+      default:
+        return "default";
+    }
+  };
+
   // Handle status change
   const handleStatusChange = async (patientId, newStatus) => {
     // Object to send
@@ -301,7 +372,7 @@ const Patients = () => {
     {
       title: "Actions",
       key: "actions",
-      width: 200,
+      width: 280,
       render: (_, record) => (
         <div style={{ display: "flex", gap: 8 }}>
           <Button
@@ -315,6 +386,19 @@ const Patients = () => {
             }}
           >
             View
+          </Button>
+
+          <Button
+            icon={<HistoryOutlined style={actionIconStyle} />}
+            onClick={() => handleLogs(record)}
+            style={{
+              ...actionButtonStyle,
+              background: "#1890ff",
+              borderColor: "#1890ff",
+              color: "white",
+            }}
+          >
+            Logs
           </Button>
 
           {/* Block/Activate Action */}
@@ -347,61 +431,317 @@ const Patients = () => {
     },
   ];
 
+  // Logs table columns
+  const logsColumns = [
+    {
+      title: "Sl No",
+      key: "slNo",
+      width: 70,
+      render: (_, __, index) => index + 1,
+      align: "center",
+    },
+    {
+      title: "Method",
+      dataIndex: "method",
+      key: "method",
+      width: 100,
+      render: (method) => (
+        <Tag color={getMethodColor(method)} style={{ fontWeight: "bold" }}>
+          {method}
+        </Tag>
+      ),
+      align: "center",
+    },
+    {
+      title: "Path",
+      dataIndex: "path",
+      key: "path",
+      render: (path) => (
+        <div
+          style={{
+            fontFamily: "monospace",
+            fontSize: "12px",
+            color: "var(--text-primary)",
+            wordBreak: "break-all",
+          }}
+        >
+          {path}
+        </div>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "statusCode",
+      key: "statusCode",
+      width: 100,
+      render: (statusCode) => (
+        <Tag color={getStatusColor(statusCode)} style={{ fontWeight: "bold" }}>
+          {statusCode}
+        </Tag>
+      ),
+      align: "center",
+    },
+    {
+      title: "Response Time",
+      dataIndex: "responseTime",
+      key: "responseTime",
+      width: 120,
+      render: (responseTime) => `${responseTime}ms`,
+      align: "center",
+    },
+    {
+      title: "IP Address",
+      dataIndex: "ip",
+      key: "ip",
+      width: 120,
+      render: (ip) => (
+        <div style={{ fontFamily: "monospace", fontSize: "12px" }}>
+          {ip}
+        </div>
+      ),
+    },
+    {
+      title: "Time",
+      dataIndex: "timestamp",
+      key: "timestamp",
+      width: 150,
+      render: (timestamp) => (
+        <div style={{ fontSize: "12px" }}>
+          {moment(timestamp).format("DD/MM/YYYY HH:mm:ss")}
+        </div>
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      width: 100,
+      render: (_, record) => (
+        <Button
+          icon={<EyeOutlined style={{ color: "var(--text-primary)" }} />}
+          onClick={() => {
+            console.log("View button clicked for record:", record);
+            handleViewLogDetails(record);
+          }}
+          style={{
+            borderColor: "var(--border-color)",
+            background: "transparent",
+            cursor: "pointer",
+          }}
+          className="btn-premium btn-sm"
+          title="View details"
+          type="default"
+        />
+      ),
+      align: "center",
+    },
+  ];
+
   return (
     <AdminLayout>
       <div className="patient-container">
-        <div className="patient-header">
-          <h1 className="patient-title">Patient Management</h1>
+        {activeTab === "patients" ? (
+          <>
+            <div className="patient-header">
+              <h1 className="patient-title">Patient Management</h1>
 
-          <div className="patient-header-actions">
-            {/* Search Bar */}
-            <Input
-              placeholder="Search by name, age, gender and pincode"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              prefix={<SearchOutlined />}
-              className="search-input"
-            />{" "}
-            <Select
-              value={statusFilter}
-              onChange={(value) => {
-                setFilterLoading(true);
-                setStatusFilter(value);
+              <div className="patient-header-actions">
+                {/* Search Bar */}
+                <Input
+                  placeholder="Search by name, age, gender and pincode"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  prefix={<SearchOutlined />}
+                  className="search-input"
+                />{" "}
+                <Select
+                  value={statusFilter}
+                  onChange={(value) => {
+                    setFilterLoading(true);
+                    setStatusFilter(value);
+                  }}
+                  className="status-filter"
+                  suffixIcon={
+                    filterLoading && statusFilter !== "all" ? (
+                      <LoadingOutlined spin />
+                    ) : (
+                      <FilterOutlined />
+                    )
+                  }
+                  disabled={loading}
+                >
+                  <Select.Option value="all">All Status</Select.Option>
+                  <Select.Option value="active">Active</Select.Option>
+                  <Select.Option value="inactive">Inactive</Select.Option>
+                </Select>
+              </div>
+            </div>{" "}
+            {/* Patient Table */}
+            <Table
+              columns={columns}
+              dataSource={filteredPatients}
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                current: pagination.page,
+                pageSize: pagination.limit,
+                total: pagination.totalCount,
+                showSizeChanger: false,
+                showTotal: (total) => `Total ${total} patients`,
+                onChange: (page) => {
+                  setCurrentPage(page);
+                },
               }}
-              className="status-filter"
-              suffixIcon={
-                filterLoading && statusFilter !== "all" ? (
-                  <LoadingOutlined spin />
-                ) : (
-                  <FilterOutlined />
-                )
-              }
-              disabled={loading}
+              className="patient-table"
+            />
+          </>
+        ) : activeTab === "logs" ? (
+          <>
+            <div
+              style={{
+                marginBottom: "24px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              <Select.Option value="all">All Status</Select.Option>
-              <Select.Option value="active">Active</Select.Option>
-              <Select.Option value="inactive">Inactive</Select.Option>
-            </Select>
-          </div>
-        </div>{" "}
-        {/* Patient Table */}
-        <Table
-          columns={columns}
-          dataSource={filteredPatients}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            current: pagination.page,
-            pageSize: pagination.limit,
-            total: pagination.totalCount,
-            showSizeChanger: false,
-            showTotal: (total) => `Total ${total} patients`,
-            onChange: (page) => {
-              setCurrentPage(page);
-            },
-          }}
-          className="patient-table"
-        />
+              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <Button
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => setActiveTab("patients")}
+                  style={{
+                    borderColor: "var(--border-color)",
+                    background: "transparent",
+                  }}
+                >
+                  Back to Patients
+                </Button>
+                <div>
+                  <h1 style={{ margin: 0, fontSize: "24px", fontWeight: 600 }}>
+                    Activity Logs
+                  </h1>
+                  <Typography.Text type="secondary">
+                    {selectedPatientForLogs
+                      ? `${selectedPatientForLogs.name}`
+                      : "Patient"}
+                  </Typography.Text>
+                </div>
+              </div>
+              <div>
+                <Typography.Text strong>
+                  Total Logs: {logs.length}
+                </Typography.Text>
+              </div>
+            </div>
+
+            <Table
+              columns={logsColumns}
+              dataSource={logs}
+              rowKey="_id"
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: false,
+                showQuickJumper: true,
+                showTotal: (total, range) =>
+                  `Showing ${range[0]}-${range[1]} of ${total} logs`,
+              }}
+              locale={{
+                emptyText: (
+                  <Empty
+                    description="No logs found"
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  />
+                ),
+              }}
+              style={{
+                backgroundColor: "white",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+              }}
+            />
+
+            {/* Log Details Modal */}
+            <Modal
+              title="Log Details"
+              open={logDetailsModalVisible}
+              onCancel={() => {
+                setLogDetailsModalVisible(false);
+                setSelectedLogRecord(null);
+              }}
+              footer={[
+                <Button key="close" onClick={() => {
+                  setLogDetailsModalVisible(false);
+                  setSelectedLogRecord(null);
+                }}>
+                  Close
+                </Button>
+              ]}
+              width={800}
+              centered
+            >
+              {selectedLogRecord && (
+                <div>
+                  <div style={{ marginBottom: "16px" }}>
+                    <strong>Request Information:</strong>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "16px" }}>
+                    <div><strong>Method:</strong> <Tag color={getMethodColor(selectedLogRecord.method)}>{selectedLogRecord.method}</Tag></div>
+                    <div><strong>Status:</strong> <Tag color={getStatusColor(selectedLogRecord.statusCode)}>{selectedLogRecord.statusCode}</Tag></div>
+                    <div><strong>Response Time:</strong> {selectedLogRecord.responseTime}ms</div>
+                    <div><strong>IP Address:</strong> {selectedLogRecord.ip}</div>
+                    {selectedLogRecord.userId && <div><strong>User ID:</strong> {selectedLogRecord.userId}</div>}
+                    {selectedLogRecord.userType && <div><strong>User Type:</strong> <Tag color={selectedLogRecord.userType === "admin" ? "red" : selectedLogRecord.userType === "doctor" ? "blue" : "green"}>{selectedLogRecord.userType?.toUpperCase()}</Tag></div>}
+                  </div>
+                  <div style={{ marginBottom: "8px" }}>
+                    <strong>Path:</strong>
+                  </div>
+                  <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px", marginBottom: "16px", fontFamily: "monospace" }}>
+                    {selectedLogRecord.path}
+                  </div>
+                  {selectedLogRecord.userAgent && (
+                    <>
+                      <div style={{ marginBottom: "8px" }}>
+                        <strong>User Agent:</strong>
+                      </div>
+                      <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px", marginBottom: "16px", fontSize: "12px" }}>
+                        {selectedLogRecord.userAgent}
+                      </div>
+                    </>
+                  )}
+                  <div style={{ marginBottom: "8px" }}>
+                    <strong>Timestamp:</strong>
+                  </div>
+                  <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px" }}>
+                    {moment(selectedLogRecord.timestamp).format("DD/MM/YYYY HH:mm:ss")}
+                  </div>
+                  {selectedLogRecord.requestBody && (
+                    <>
+                      <div style={{ marginBottom: "8px" }}>
+                        <strong>Request Body:</strong>
+                      </div>
+                      <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px", marginBottom: "16px", fontSize: "12px", fontFamily: "monospace" }}>
+                        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                          {JSON.stringify(selectedLogRecord.requestBody, null, 2)}
+                        </pre>
+                      </div>
+                    </>
+                  )}
+                  {selectedLogRecord.responseBody && (
+                    <>
+                      <div style={{ marginBottom: "8px" }}>
+                        <strong>Response Body:</strong>
+                      </div>
+                      <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px", fontSize: "12px", fontFamily: "monospace" }}>
+                        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                          {JSON.stringify(selectedLogRecord.responseBody, null, 2)}
+                        </pre>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </Modal>
+          </>
+        ) : null}
       </div>
     </AdminLayout>
   );

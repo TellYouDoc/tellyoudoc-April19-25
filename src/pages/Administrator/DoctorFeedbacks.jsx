@@ -16,6 +16,11 @@ import {
   Card,
   Divider,
   Radio,
+  Rate,
+  Avatar,
+  Row,
+  Col,
+  Statistic,
 } from "antd";
 import {
   CheckCircleOutlined,
@@ -27,8 +32,13 @@ import {
   FilterOutlined,
   MailOutlined,
   UserOutlined,
+  StarOutlined,
+  PhoneOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import AdminLayout from "../../components/AdminLayout";
+import ProfileAvatar from "../../components/ProfileAvatar";
+import { apiService } from "../../services/api";
 import "../../styles/Administrator/Reports.css";
 
 const { Option } = Select;
@@ -36,135 +46,75 @@ const { TextArea } = Input;
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 
-// Mock data for doctor feedbacks
-const mockDoctorFeedbacks = [
-  {
-    id: "DFB-1001",
-    type: "app_feedback",
-    subject: "Great experience with the new appointment system",
-    description: "The new appointment booking interface is much more intuitive and user-friendly. I can now manage my schedule more efficiently.",
-    reportedBy: {
-      id: "DOC-1001",
-      name: "Dr. Sarah Johnson",
-      email: "sarah.johnson@example.com",
-      role: "doctor",
-      specialization: "Cardiology",
-    },
-    date: "2025-05-10T14:25:00",
-    status: "resolved",
-    priority: "low",
-    assignedTo: "ADM-101",
-    comments: [
-      {
-        id: "CMT-1001",
-        content: "Thank you for your positive feedback! We're glad the new system is working well for you.",
-        author: "Admin",
-        date: "2025-05-11T10:30:00",
-      },
-    ],
-  },
-  {
-    id: "DFB-1002",
-    type: "bug_report",
-    subject: "Patient data not loading in consultation room",
-    description: "When I try to access patient medical history during virtual consultations, the data takes too long to load or sometimes doesn't load at all.",
-    reportedBy: {
-      id: "DOC-1002",
-      name: "Dr. Rajesh Kumar",
-      email: "rajesh.kumar@example.com",
-      role: "doctor",
-      specialization: "Pediatrics",
-    },
-    date: "2025-05-12T09:15:00",
-    status: "in_progress",
-    priority: "high",
-    assignedTo: "ADM-102",
-    comments: [
-      {
-        id: "CMT-1002",
-        content: "We are investigating this issue. Our technical team is working on optimizing the data loading process.",
-        author: "Admin",
-        date: "2025-05-12T11:30:00",
-      },
-    ],
-  },
-  {
-    id: "DFB-1003",
-    type: "feature_request",
-    subject: "Request for prescription template feature",
-    description: "It would be very helpful to have customizable prescription templates that I can save and reuse for common medications.",
-    reportedBy: {
-      id: "DOC-1003",
-      name: "Dr. Emily Chen",
-      email: "emily.chen@example.com",
-      role: "doctor",
-      specialization: "General Medicine",
-    },
-    date: "2025-05-09T16:45:00",
-    status: "pending",
-    priority: "medium",
-    assignedTo: null,
-    comments: [],
-  },
-  {
-    id: "DFB-1004",
-    type: "complaint",
-    subject: "Difficulty with video call quality",
-    description: "The video call quality during consultations is often poor, making it difficult to properly assess patients.",
-    reportedBy: {
-      id: "DOC-1004",
-      name: "Dr. Michael Brown",
-      email: "michael.brown@example.com",
-      role: "doctor",
-      specialization: "Dermatology",
-    },
-    date: "2025-05-08T13:20:00",
-    status: "resolved",
-    priority: "high",
-    assignedTo: "ADM-101",
-    comments: [
-      {
-        id: "CMT-1003",
-        content: "We have upgraded our video infrastructure. Please test the new system and let us know if the quality has improved.",
-        author: "Admin",
-        date: "2025-05-09T09:15:00",
-      },
-    ],
-  },
-];
-
 const DoctorFeedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isResponseModalVisible, setIsResponseModalVisible] = useState(false);
-  const [responseText, setResponseText] = useState("");
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [filters, setFilters] = useState({
-    status: "all",
-    priority: "all",
-    type: "all",
+    overallSatisfaction: "all",
+    professionalImpact: "all",
   });
   const [searchText, setSearchText] = useState("");
+  const [stats, setStats] = useState({
+    totalFeedbacks: 0,
+    averageSatisfaction: 0,
+    averageProfessionalImpact: 0,
+    totalRecommendations: 0,
+  });
 
   useEffect(() => {
     fetchFeedbacks();
-  }, []);
+  }, [pagination.current, pagination.pageSize]);
 
   const fetchFeedbacks = async () => {
     setLoading(true);
     try {
-      // In a real app, this would be an API call
-      // const response = await apiService.get('/admin/doctor-feedbacks');
-      // setFeedbacks(response.data);
+      const response = await apiService.AdministratorService.getAdminDoctorFeedbacks(
+        pagination.current,
+        pagination.pageSize
+      );
       
-      // For now, using mock data
-      setTimeout(() => {
-        setFeedbacks(mockDoctorFeedbacks);
-        setLoading(false);
-      }, 1000);
-    } catch {
+      const { feedback, pagination: apiPagination } = response.data;
+      setFeedbacks(feedback || []);
+      setPagination(prev => ({
+        ...prev,
+        total: apiPagination.totalRecords,
+        current: apiPagination.currentPage,
+      }));
+
+      // Calculate stats
+      if (feedback && feedback.length > 0) {
+        const totalSatisfaction = feedback.reduce((sum, item) => sum + (Number(item.overall_satisfaction) || 0), 0);
+        const totalImpact = feedback.reduce((sum, item) => sum + (Number(item.professional_impact) || 0), 0);
+        const totalRecs = feedback.filter(item => item.recommendations && item.recommendations.trim()).length;
+        
+        const avgSatisfaction = feedback.length > 0 ? (totalSatisfaction / feedback.length).toFixed(1) : "0.0";
+        const avgImpact = feedback.length > 0 ? (totalImpact / feedback.length).toFixed(1) : "0.0";
+        
+        setStats({
+          totalFeedbacks: apiPagination.totalRecords,
+          averageSatisfaction: avgSatisfaction,
+          averageProfessionalImpact: avgImpact,
+          totalRecommendations: totalRecs,
+        });
+      } else {
+        setStats({
+          totalFeedbacks: apiPagination.totalRecords,
+          averageSatisfaction: "0.0",
+          averageProfessionalImpact: "0.0",
+          totalRecommendations: 0,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching feedbacks:', error);
       message.error("Failed to fetch doctor feedbacks");
+    } finally {
       setLoading(false);
     }
   };
@@ -174,6 +124,7 @@ const DoctorFeedbacks = () => {
       ...filters,
       [filterType]: value,
     });
+    setPagination(prev => ({ ...prev, current: 1 }));
   };
 
   const handleSearchChange = (e) => {
@@ -181,8 +132,16 @@ const DoctorFeedbacks = () => {
   };
 
   const handleSearch = () => {
-    // Implement search functionality
-    console.log("Searching for:", searchText);
+    setPagination(prev => ({ ...prev, current: 1 }));
+    fetchFeedbacks();
+  };
+
+  const handleTableChange = (paginationInfo) => {
+    setPagination(prev => ({
+      ...prev,
+      current: paginationInfo.current,
+      pageSize: paginationInfo.pageSize,
+    }));
   };
 
   const handleViewDetails = (record) => {
@@ -190,198 +149,169 @@ const DoctorFeedbacks = () => {
     setIsModalVisible(true);
   };
 
-  const handleAction = (record) => {
-    setSelectedFeedback(record);
-    setIsResponseModalVisible(true);
+  const getRatingColor = (rating) => {
+    if (rating >= 4) return "green";
+    if (rating >= 3) return "orange";
+    return "red";
   };
 
-  const handleSendResponse = async () => {
-    if (!responseText.trim()) {
-      message.warning("Please enter a response");
-      return;
-    }
-
-    try {
-      // In a real app, this would be an API call
-      // await apiService.post(`/admin/doctor-feedbacks/${selectedFeedback.id}/respond`, {
-      //   response: responseText
-      // });
-      
-      message.success("Response sent successfully");
-      setResponseText("");
-      setIsResponseModalVisible(false);
-      fetchFeedbacks(); // Refresh the list
-    } catch {
-      message.error("Failed to send response");
-    }
+  const getRatingText = (rating) => {
+    if (rating >= 4) return "Excellent";
+    if (rating >= 3) return "Good";
+    if (rating >= 2) return "Fair";
+    return "Poor";
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "pending":
-        return "orange";
-      case "in_progress":
-        return "blue";
-      case "resolved":
-        return "green";
-      case "closed":
-        return "red";
-      default:
-        return "default";
-    }
+  const getImpactText = (impact) => {
+    if (impact >= 4) return "High Impact";
+    if (impact >= 3) return "Moderate Impact";
+    if (impact >= 2) return "Low Impact";
+    return "Minimal Impact";
   };
-
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "high":
-        return "red";
-      case "medium":
-        return "orange";
-      case "low":
-        return "green";
-      default:
-        return "default";
-    }
-  };
-
-  const getTypeColor = (type) => {
-    switch (type) {
-      case "bug_report":
-        return "red";
-      case "feature_request":
-        return "blue";
-      case "app_feedback":
-        return "green";
-      case "complaint":
-        return "orange";
-      default:
-        return "default";
-    }
-  };
-
-  const getTypeLabel = (type) => {
-    switch (type) {
-      case "bug_report":
-        return "Bug Report";
-      case "feature_request":
-        return "Feature Request";
-      case "app_feedback":
-        return "App Feedback";
-      case "complaint":
-        return "Complaint";
-      default:
-        return type;
-    }
-  };
-
-  const renderComment = (comment) => (
-    <div key={comment.id} style={{ marginBottom: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-        <Text strong>{comment.author}</Text>
-        <Text type="secondary">{new Date(comment.date).toLocaleString()}</Text>
-      </div>
-      <div style={{ 
-        background: "#f5f5f5", 
-        padding: 12, 
-        borderRadius: 6,
-        borderLeft: "3px solid #1890ff"
-      }}>
-        {comment.content}
-      </div>
-    </div>
-  );
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 120,
-    },
-    {
       title: "Doctor",
-      dataIndex: "reportedBy",
+      dataIndex: "doctorInfo",
       key: "doctor",
-      render: (reportedBy) => (
-        <div>
-          <div style={{ fontWeight: 500 }}>{reportedBy.name}</div>
-          <div style={{ fontSize: 12, color: "#666" }}>{reportedBy.specialization}</div>
+      width: 250,
+      render: (doctorInfo) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <ProfileAvatar
+            name={doctorInfo?.name || "Unknown"}
+            imageUrl={doctorInfo?.profileImage}
+            size="medium"
+          />
+          <div>
+            <div style={{ fontWeight: 500, fontSize: 14 }}>{doctorInfo?.name || "Unknown"}</div>
+            <div style={{ fontSize: 12, color: "#666", display: "flex", alignItems: "center", gap: 4 }}>
+              <PhoneOutlined />
+              {doctorInfo?.contactNumber || "N/A"}
+            </div>
+          </div>
         </div>
       ),
     },
     {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      render: (type) => (
-        <Tag color={getTypeColor(type)}>{getTypeLabel(type)}</Tag>
+      title: "Overall Satisfaction",
+      dataIndex: "overall_satisfaction",
+      key: "overall_satisfaction",
+      width: 150,
+      render: (rating) => (
+        <div>
+          <Rate disabled defaultValue={rating || 0} style={{ fontSize: 12 }} />
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+            {getRatingText(rating || 0)}
+          </div>
+        </div>
       ),
     },
     {
-      title: "Subject",
-      dataIndex: "subject",
-      key: "subject",
+      title: "Professional Impact",
+      dataIndex: "professional_impact",
+      key: "professional_impact",
+      width: 140,
+      render: (impact) => (
+        <div>
+          <Rate disabled defaultValue={impact || 0} style={{ fontSize: 12 }} />
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+            {getImpactText(impact || 0)}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Most Used Features",
+      dataIndex: "most_used_features",
+      key: "most_used_features",
+      width: 180,
+      render: (features) => (
+        <div style={{ maxWidth: 160 }}>
+          {features && features.length > 0 ? (
+            <Text ellipsis={{ tooltip: features.join(", ") }}>
+              {features.join(", ")}
+            </Text>
+          ) : (
+            <Text type="secondary" italic>No features listed</Text>
+          )}
+        </div>
+      ),
+    },
+    {
+      title: "Recommendations",
+      dataIndex: "recommendations",
+      key: "recommendations",
       ellipsis: true,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={getStatusColor(status)}>
-          {status.replace("_", " ").toUpperCase()}
-        </Tag>
+      render: (recommendations) => (
+        <div style={{ maxWidth: 200 }}>
+          {recommendations ? (
+            <Text ellipsis={{ tooltip: recommendations }}>
+              {recommendations}
+            </Text>
+          ) : (
+            <Text type="secondary" italic>No recommendations</Text>
+          )}
+        </div>
       ),
     },
     {
-      title: "Priority",
-      dataIndex: "priority",
-      key: "priority",
-      render: (priority) => (
-        <Tag color={getPriorityColor(priority)}>
-          {priority.toUpperCase()}
-        </Tag>
+      title: "Bug Reports",
+      dataIndex: "bug_reports",
+      key: "bug_reports",
+      ellipsis: true,
+      render: (bugReports) => (
+        <div style={{ maxWidth: 180 }}>
+          {bugReports ? (
+            <Text ellipsis={{ tooltip: bugReports }}>
+              {bugReports}
+            </Text>
+          ) : (
+            <Text type="secondary" italic>No bug reports</Text>
+          )}
+        </div>
       ),
     },
     {
       title: "Date",
-      dataIndex: "date",
+      dataIndex: "createdAt",
       key: "date",
-      render: (date) => new Date(date).toLocaleDateString(),
+      width: 120,
+      render: (date) => (
+        <div style={{ fontSize: 12 }}>
+          <div>{new Date(date).toLocaleDateString()}</div>
+          <div style={{ color: "#666" }}>
+            {new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        </div>
+      ),
     },
     {
       title: "Actions",
       key: "actions",
+      width: 80,
       render: (_, record) => (
-        <Space>
-          <Tooltip title="View Details">
-            <Button
-              type="text"
-              icon={<EyeOutlined />}
-              onClick={() => handleViewDetails(record)}
-            />
-          </Tooltip>
-          <Tooltip title="Respond">
-            <Button
-              type="text"
-              icon={<MessageOutlined />}
-              onClick={() => handleAction(record)}
-            />
-          </Tooltip>
-        </Space>
+        <Tooltip title="View Details">
+          <Button
+            type="text"
+            icon={<EyeOutlined />}
+            onClick={() => handleViewDetails(record)}
+          />
+        </Tooltip>
       ),
     },
   ];
 
   const filteredFeedbacks = feedbacks.filter((feedback) => {
-    const matchesStatus = filters.status === "all" || feedback.status === filters.status;
-    const matchesPriority = filters.priority === "all" || feedback.priority === filters.priority;
-    const matchesType = filters.type === "all" || feedback.type === filters.type;
-    const matchesSearch = searchText === "" || 
-      feedback.subject.toLowerCase().includes(searchText.toLowerCase()) ||
-      feedback.reportedBy.name.toLowerCase().includes(searchText.toLowerCase());
+    const matchesSatisfaction = filters.overallSatisfaction === "all" || 
+      (feedback.overall_satisfaction && feedback.overall_satisfaction >= parseInt(filters.overallSatisfaction));
+    const matchesImpact = filters.professionalImpact === "all" || 
+      (feedback.professional_impact && feedback.professional_impact >= parseInt(filters.professionalImpact));
+    const matchesSearch = searchText === "" ||
+      (feedback.doctorInfo?.name?.toLowerCase().includes(searchText.toLowerCase())) ||
+      (feedback.recommendations?.toLowerCase().includes(searchText.toLowerCase())) ||
+      (feedback.bug_reports?.toLowerCase().includes(searchText.toLowerCase()));
 
-    return matchesStatus && matchesPriority && matchesType && matchesSearch;
+    return matchesSatisfaction && matchesImpact && matchesSearch;
   });
 
   return (
@@ -393,63 +323,96 @@ const DoctorFeedbacks = () => {
             Doctor Feedbacks
           </Title>
           <Text type="secondary">
-            Manage and respond to feedback from doctors using the platform
+            View and analyze feedback from doctors about their experience
           </Text>
         </div>
+
+        {/* Statistics Cards */}
+        <Row gutter={16} style={{ marginBottom: 24 }}>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Total Feedbacks"
+                value={stats.totalFeedbacks}
+                prefix={<MessageOutlined />}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Avg. Satisfaction"
+                value={stats.averageSatisfaction}
+                prefix={<StarOutlined />}
+                suffix="/ 5"
+                valueStyle={{ color: getRatingColor(stats.averageSatisfaction) }}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Avg. Professional Impact"
+                value={stats.averageProfessionalImpact}
+                prefix={<StarOutlined />}
+                suffix="/ 5"
+                valueStyle={{ color: getRatingColor(stats.averageProfessionalImpact) }}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Recommendations"
+                value={stats.totalRecommendations}
+                prefix={<MessageOutlined />}
+                suffix="provided"
+              />
+            </Card>
+          </Col>
+        </Row>
 
         {/* Filters and Search */}
         <Card style={{ marginBottom: 24 }}>
           <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Text>Status:</Text>
+              <Text>Overall Satisfaction:</Text>
               <Select
-                value={filters.status}
-                onChange={(value) => handleFilterChange("status", value)}
-                style={{ width: 120 }}
-              >
-                <Option value="all">All</Option>
-                <Option value="pending">Pending</Option>
-                <Option value="in_progress">In Progress</Option>
-                <Option value="resolved">Resolved</Option>
-                <Option value="closed">Closed</Option>
-              </Select>
-            </div>
-
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Text>Priority:</Text>
-              <Select
-                value={filters.priority}
-                onChange={(value) => handleFilterChange("priority", value)}
-                style={{ width: 120 }}
-              >
-                <Option value="all">All</Option>
-                <Option value="high">High</Option>
-                <Option value="medium">Medium</Option>
-                <Option value="low">Low</Option>
-              </Select>
-            </div>
-
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Text>Type:</Text>
-              <Select
-                value={filters.type}
-                onChange={(value) => handleFilterChange("type", value)}
+                value={filters.overallSatisfaction}
+                onChange={(value) => handleFilterChange("overallSatisfaction", value)}
                 style={{ width: 140 }}
               >
                 <Option value="all">All</Option>
-                <Option value="bug_report">Bug Report</Option>
-                <Option value="feature_request">Feature Request</Option>
-                <Option value="app_feedback">App Feedback</Option>
-                <Option value="complaint">Complaint</Option>
+                <Option value="5">5 Stars</Option>
+                <Option value="4">4+ Stars</Option>
+                <Option value="3">3+ Stars</Option>
+                <Option value="2">2+ Stars</Option>
+                <Option value="1">1+ Stars</Option>
+              </Select>
+            </div>
+
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <Text>Professional Impact:</Text>
+              <Select
+                value={filters.professionalImpact}
+                onChange={(value) => handleFilterChange("professionalImpact", value)}
+                style={{ width: 140 }}
+              >
+                <Option value="all">All</Option>
+                <Option value="5">5 Stars</Option>
+                <Option value="4">4+ Stars</Option>
+                <Option value="3">3+ Stars</Option>
+                <Option value="2">2+ Stars</Option>
+                <Option value="1">1+ Stars</Option>
               </Select>
             </div>
 
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: "auto" }}>
               <Input
-                placeholder="Search feedbacks..."
+                placeholder="Search by doctor name, recommendations, or bug reports..."
                 value={searchText}
                 onChange={handleSearchChange}
-                style={{ width: 250 }}
+                style={{ width: 300 }}
                 prefix={<SearchOutlined />}
                 onPressEnter={handleSearch}
               />
@@ -466,14 +429,17 @@ const DoctorFeedbacks = () => {
             columns={columns}
             dataSource={filteredFeedbacks}
             loading={loading}
-            rowKey="id"
+            rowKey="_id"
             pagination={{
-              pageSize: 10,
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
               showSizeChanger: true,
               showQuickJumper: true,
               showTotal: (total, range) =>
                 `${range[0]}-${range[1]} of ${total} feedbacks`,
             }}
+            onChange={handleTableChange}
           />
         </Card>
 
@@ -483,81 +449,108 @@ const DoctorFeedbacks = () => {
           visible={isModalVisible}
           onCancel={() => setIsModalVisible(false)}
           footer={null}
-          width={800}
+          width={900}
         >
           {selectedFeedback && (
             <div>
               <div style={{ marginBottom: 24 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-                  <div>
-                    <Title level={4}>{selectedFeedback.subject}</Title>
-                    <div style={{ display: "flex", gap: 16, marginBottom: 8 }}>
-                      <Tag color={getTypeColor(selectedFeedback.type)}>
-                        {getTypeLabel(selectedFeedback.type)}
-                      </Tag>
-                      <Tag color={getStatusColor(selectedFeedback.status)}>
-                        {selectedFeedback.status.replace("_", " ").toUpperCase()}
-                      </Tag>
-                      <Tag color={getPriorityColor(selectedFeedback.priority)}>
-                        {selectedFeedback.priority.toUpperCase()}
-                      </Tag>
-                    </div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div>ID: {selectedFeedback.id}</div>
-                    <div style={{ color: "#666" }}>
-                      {new Date(selectedFeedback.date).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-
+                {/* Doctor Information */}
                 <Card title="Doctor Information" size="small" style={{ marginBottom: 16 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                    <ProfileAvatar
+                      name={selectedFeedback.doctorInfo?.name || "Unknown"}
+                      imageUrl={selectedFeedback.doctorInfo?.profileImage}
+                      size="large"
+                    />
+                    <div>
+                      <Title level={4} style={{ margin: 0 }}>{selectedFeedback.doctorInfo?.name || "Unknown"}</Title>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+                        <PhoneOutlined />
+                        <Text>{selectedFeedback.doctorInfo?.contactNumber || "N/A"}</Text>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+                        <CalendarOutlined />
+                        <Text type="secondary">
+                          {new Date(selectedFeedback.createdAt).toLocaleString()}
+                        </Text>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Ratings */}
+                <Card title="Ratings" size="small" style={{ marginBottom: 16 }}>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ marginBottom: 8 }}>
+                          <Text strong>Overall Satisfaction</Text>
+                        </div>
+                        <Rate disabled defaultValue={selectedFeedback.overall_satisfaction || 0} />
+                        <div style={{ marginTop: 4 }}>
+                          <Text type="secondary">{getRatingText(selectedFeedback.overall_satisfaction || 0)}</Text>
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={12}>
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ marginBottom: 8 }}>
+                          <Text strong>Professional Impact</Text>
+                        </div>
+                        <Rate disabled defaultValue={selectedFeedback.professional_impact || 0} />
+                        <div style={{ marginTop: 4 }}>
+                          <Text type="secondary">{getImpactText(selectedFeedback.professional_impact || 0)}</Text>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                </Card>
+
+                {/* Most Used Features */}
+                <Card title="Most Used Features" size="small" style={{ marginBottom: 16 }}>
+                  {selectedFeedback.most_used_features && selectedFeedback.most_used_features.length > 0 ? (
+                    <div>
+                      {selectedFeedback.most_used_features.map((feature, index) => (
+                        <Tag key={index} color="blue" style={{ marginBottom: 4 }}>
+                          {feature}
+                        </Tag>
+                      ))}
+                    </div>
+                  ) : (
+                    <Text type="secondary" italic>No features listed</Text>
+                  )}
+                </Card>
+
+                {/* Recommendations */}
+                <Card title="Recommendations" size="small" style={{ marginBottom: 16 }}>
+                  {selectedFeedback.recommendations ? (
+                    <Text>{selectedFeedback.recommendations}</Text>
+                  ) : (
+                    <Text type="secondary" italic>No recommendations provided</Text>
+                  )}
+                </Card>
+
+                {/* Bug Reports */}
+                <Card title="Bug Reports" size="small" style={{ marginBottom: 16 }}>
+                  {selectedFeedback.bug_reports ? (
+                    <Text>{selectedFeedback.bug_reports}</Text>
+                  ) : (
+                    <Text type="secondary" italic>No bug reports provided</Text>
+                  )}
+                </Card>
+
+                {/* Device Info */}
+                <Card title="Device Information" size="small">
                   <div style={{ display: "flex", gap: 16 }}>
                     <div>
-                      <Text strong>Name:</Text> {selectedFeedback.reportedBy.name}
+                      <Text strong>Platform:</Text> {selectedFeedback.device_info?.platform || "N/A"}
                     </div>
                     <div>
-                      <Text strong>Email:</Text> {selectedFeedback.reportedBy.email}
-                    </div>
-                    <div>
-                      <Text strong>Specialization:</Text> {selectedFeedback.reportedBy.specialization}
+                      <Text strong>App Version:</Text> {selectedFeedback.app_version || "N/A"}
                     </div>
                   </div>
                 </Card>
-
-                <Card title="Description" size="small" style={{ marginBottom: 16 }}>
-                  <Text>{selectedFeedback.description}</Text>
-                </Card>
-
-                {selectedFeedback.comments && selectedFeedback.comments.length > 0 && (
-                  <Card title="Comments" size="small">
-                    {selectedFeedback.comments.map(renderComment)}
-                  </Card>
-                )}
               </div>
-            </div>
-          )}
-        </Modal>
-
-        {/* Response Modal */}
-        <Modal
-          title="Send Response"
-          visible={isResponseModalVisible}
-          onCancel={() => setIsResponseModalVisible(false)}
-          onOk={handleSendResponse}
-          okText="Send Response"
-        >
-          {selectedFeedback && (
-            <div>
-              <div style={{ marginBottom: 16 }}>
-                <Text strong>Responding to:</Text> {selectedFeedback.subject}
-              </div>
-              <TextArea
-                rows={6}
-                placeholder="Enter your response..."
-                value={responseText}
-                onChange={(e) => setResponseText(e.target.value)}
-              />
             </div>
           )}
         </Modal>

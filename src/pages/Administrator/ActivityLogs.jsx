@@ -14,6 +14,7 @@ import {
   Col,
   Statistic,
   Alert,
+  Popover,
 } from "antd";
 import {
   ClockCircleOutlined,
@@ -27,6 +28,8 @@ import {
   CalendarOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import AdminLayout from "../../components/AdminLayout";
 import { apiService } from "../../services/api";
 
@@ -183,6 +186,143 @@ const customStyles = {
     borderRadius: "var(--radius)",
     marginBottom: "var(--spacing-6)",
   },
+  reactCalendar: {
+    width: "100%",
+    maxWidth: "400px",
+    background: "var(--background-primary)",
+    border: "1px solid var(--border-color)",
+    borderRadius: "var(--radius)",
+    fontFamily: "inherit",
+    fontSize: "14px",
+    lineHeight: "1.5",
+    color: "var(--text-primary)",
+    "& .react-calendar__navigation": {
+      background: "var(--background-secondary)",
+      borderBottom: "1px solid var(--border-color)",
+      padding: "8px",
+      "& button": {
+        background: "transparent",
+        border: "none",
+        color: "var(--text-primary)",
+        fontSize: "16px",
+        fontWeight: "600",
+        cursor: "pointer",
+        padding: "8px 12px",
+        borderRadius: "var(--radius)",
+        "&:hover": {
+          background: "var(--primary-color)",
+          color: "white",
+        },
+        "&:disabled": {
+          color: "var(--text-secondary)",
+          cursor: "not-allowed",
+        },
+      },
+    },
+    "& .react-calendar__month-view__weekdays": {
+      background: "var(--background-secondary)",
+      borderBottom: "1px solid var(--border-color)",
+      "& abbr": {
+        color: "var(--text-secondary)",
+        fontSize: "12px",
+        fontWeight: "600",
+        textDecoration: "none",
+        padding: "8px 4px",
+        display: "block",
+      },
+    },
+    "& .react-calendar__month-view__days": {
+      "& .react-calendar__tile": {
+        background: "transparent",
+        border: "none",
+        color: "var(--text-primary)",
+        fontSize: "14px",
+        padding: "12px 8px",
+        cursor: "pointer",
+        borderRadius: "4px",
+        transition: "all 0.2s ease",
+        "&:hover": {
+          background: "var(--primary-color)",
+          color: "white",
+        },
+        "&:disabled": {
+          color: "var(--text-secondary)",
+          cursor: "not-allowed",
+        },
+        "&--now": {
+          background: "var(--primary-color)",
+          color: "white",
+          fontWeight: "600",
+        },
+        "&--active": {
+          background: "var(--primary-color)",
+          color: "white",
+          fontWeight: "600",
+        },
+        "&--rangeStart": {
+          background: "var(--primary-color)",
+          color: "white",
+          fontWeight: "600",
+        },
+        "&--rangeEnd": {
+          background: "var(--primary-color)",
+          color: "white",
+          fontWeight: "600",
+        },
+        "&--rangeBothEnds": {
+          background: "var(--primary-color)",
+          color: "white",
+          fontWeight: "600",
+        },
+        "&--rangeMiddle": {
+          background: "rgba(var(--primary-rgb), 0.3)",
+          color: "var(--text-primary)",
+        },
+      },
+    },
+    "& .react-calendar__year-view__months": {
+      "& .react-calendar__tile": {
+        background: "transparent",
+        border: "none",
+        color: "var(--text-primary)",
+        fontSize: "14px",
+        padding: "16px 8px",
+        cursor: "pointer",
+        borderRadius: "4px",
+        transition: "all 0.2s ease",
+        "&:hover": {
+          background: "var(--primary-color)",
+          color: "white",
+        },
+        "&--active": {
+          background: "var(--primary-color)",
+          color: "white",
+          fontWeight: "600",
+        },
+      },
+    },
+    "& .react-calendar__decade-view__years": {
+      "& .react-calendar__tile": {
+        background: "transparent",
+        border: "none",
+        color: "var(--text-primary)",
+        fontSize: "14px",
+        padding: "16px 8px",
+        cursor: "pointer",
+        borderRadius: "4px",
+        transition: "all 0.2s ease",
+        "&:hover": {
+          background: "var(--primary-color)",
+          color: "white",
+        },
+        "&--active": {
+          background: "var(--primary-color)",
+          color: "white",
+          fontWeight: "600",
+        },
+      },
+    },
+  },
 };
 
 const ActivityLogs = () => {
@@ -190,7 +330,7 @@ const ActivityLogs = () => {
   const [logs, setLogs] = useState([]);
   const [stats, setStats] = useState(null);
   const [hourlyData, setHourlyData] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isStatsLoading, setIsStatsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -199,15 +339,134 @@ const ActivityLogs = () => {
   const [selectedLog, setSelectedLog] = useState(null);
   const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
   const [isDatesModalVisible, setIsDatesModalVisible] = useState(false);
+  const [isCalendarModalVisible, setIsCalendarModalVisible] = useState(false);
   const [error, setError] = useState(null);
 
-  // Filter states
+  // Custom styles for react-calendar
+  const calendarStyles = `
+    .react-calendar {
+      width: 100% !important;
+      max-width: 400px !important;
+      background: var(--background-primary) !important;
+      border: 1px solid var(--border-color) !important;
+      border-radius: var(--radius) !important;
+      font-family: inherit !important;
+      font-size: 14px !important;
+      line-height: 1.5 !important;
+      color: var(--text-primary) !important;
+    }
+    
+    .react-calendar__navigation {
+      background: var(--background-secondary) !important;
+      border-bottom: 1px solid var(--border-color) !important;
+      padding: 8px !important;
+    }
+    
+    .react-calendar__navigation button {
+      background: transparent !important;
+      border: none !important;
+      color: var(--text-primary) !important;
+      font-size: 16px !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      padding: 8px 12px !important;
+      border-radius: var(--radius) !important;
+    }
+    
+    .react-calendar__navigation button:hover {
+      background: var(--primary-color) !important;
+      color: white !important;
+    }
+    
+    .react-calendar__navigation button:disabled {
+      color: var(--text-secondary) !important;
+      cursor: not-allowed !important;
+    }
+    
+    .react-calendar__month-view__weekdays {
+      background: var(--background-secondary) !important;
+      border-bottom: 1px solid var(--border-color) !important;
+    }
+    
+    .react-calendar__month-view__weekdays abbr {
+      color: var(--text-secondary) !important;
+      font-size: 12px !important;
+      font-weight: 600 !important;
+      text-decoration: none !important;
+      padding: 8px 4px !important;
+      display: block !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile {
+      background: transparent !important;
+      border: none !important;
+      color: var(--text-primary) !important;
+      font-size: 14px !important;
+      padding: 12px 8px !important;
+      cursor: pointer !important;
+      border-radius: 4px !important;
+      transition: all 0.2s ease !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile:hover {
+      background: var(--primary-color) !important;
+      color: white !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile:disabled {
+      color: var(--text-secondary) !important;
+      cursor: not-allowed !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile--now {
+      background: var(--primary-color) !important;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile--active {
+      background: var(--primary-color) !important;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile--rangeStart {
+      background: var(--primary-color) !important;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile--rangeEnd {
+      background: var(--primary-color) !important;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile--rangeBothEnds {
+      background: var(--primary-color) !important;
+      color: white !important;
+      font-weight: 600 !important;
+    }
+    
+    .react-calendar__month-view__days .react-calendar__tile--rangeMiddle {
+      background: rgba(var(--primary-rgb), 0.3) !important;
+      color: var(--text-primary) !important;
+    }
+  `;
+
+  // Filter states for main table and statistics
   const [filters, setFilters] = useState({
     userId: "",
     userType: "",
     method: "",
     path: "",
     statusCode: "",
+    from: "",
+    to: "",
+  });
+
+  // Separate filter states for hourly requests chart
+  const [hourlyFilters, setHourlyFilters] = useState({
     from: "",
     to: "",
   });
@@ -229,31 +488,53 @@ const ActivityLogs = () => {
       if (response.data.success) {
         setLogs(response.data.data.logs);
         setTotalRecords(response.data.data.pagination.totalRecords);
-
-        // Set hourly data if available
-        if (response.data.data.totalRequestsPerHour) {
-          setHourlyData(response.data.data.totalRequestsPerHour);
-        }
       } else {
         setError("Failed to fetch activity logs");
       }
     } catch (error) {
       console.error("Error fetching activity logs:", error);
-      setError(error.response?.data?.message || "Failed to fetch activity logs");
+      setError(
+        error.response?.data?.message || "Failed to fetch activity logs"
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch statistics
+  // Fetch requests per hour data - now uses separate hourly filters
+  const fetchRequestsPerHour = async () => {
+    try {
+      const response = await apiService.AdministratorService.getRequestsPerHour(
+        {
+          from: hourlyFilters.from,
+          to: hourlyFilters.to,
+        }
+      );
+
+      console.log("Requests Per Hour", JSON.stringify(response.data, null, 2));
+
+      if (response.data.success) {
+        setHourlyData(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching requests per hour:", error);
+      // Don't set error for hourly data as it's not critical
+    }
+  };
+
+  // Fetch statistics - now uses main filters (excludes date range)
   const fetchStats = async () => {
     setIsStatsLoading(true);
 
     try {
-      const response = await apiService.AdministratorService.getActivityLogsStats({
-        from: filters.from,
-        to: filters.to,
-      });
+      const response =
+        await apiService.AdministratorService.getActivityLogsStats({
+          userId: filters.userId,
+          userType: filters.userType,
+          method: filters.method,
+          path: filters.path,
+          statusCode: filters.statusCode,
+        });
 
       if (response.data.success) {
         setStats(response.data.data);
@@ -268,11 +549,37 @@ const ActivityLogs = () => {
   // Load data on component mount and filter changes
   useEffect(() => {
     fetchActivityLogs();
-  }, [currentPage, pageSize, filters]);
+  }, [
+    currentPage,
+    pageSize,
+    filters.userId,
+    filters.userType,
+    filters.method,
+    filters.path,
+    filters.statusCode,
+    filters.from,
+    filters.to,
+  ]);
 
   useEffect(() => {
     fetchStats();
-  }, [filters.from, filters.to]);
+  }, [
+    filters.userId,
+    filters.userType,
+    filters.method,
+    filters.path,
+    filters.statusCode,
+  ]);
+
+  // Hourly data updates independently with its own filters
+  useEffect(() => {
+    fetchRequestsPerHour();
+  }, [hourlyFilters.from, hourlyFilters.to]);
+
+  // Load initial hourly data on component mount
+  useEffect(() => {
+    fetchRequestsPerHour();
+  }, []);
 
   // Set initial selected date when hourly data is loaded
   useEffect(() => {
@@ -292,21 +599,118 @@ const ActivityLogs = () => {
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    setCurrentPage(1);
+    setFilters((prev) => ({ ...prev, [key]: value }));
+    // Only reset current page for non-date filters
+    if (key !== "from" && key !== "to") {
+      setCurrentPage(1);
+    }
   };
 
   const handleDateRangeChange = (dates) => {
-    if (dates) {
-      setFilters(prev => ({
+    if (dates && dates.length === 2) {
+      const fromDate = dates[0] ? dates[0].toISOString() : "";
+      const toDate = dates[1] ? dates[1].toISOString() : "";
+      setFilters((prev) => ({
         ...prev,
-        from: dates[0]?.toISOString() || "",
-        to: dates[1]?.toISOString() || "",
+        from: fromDate,
+        to: toDate,
       }));
     } else {
-      setFilters(prev => ({ ...prev, from: "", to: "" }));
+      setFilters((prev) => ({ ...prev, from: "", to: "" }));
     }
-    setCurrentPage(1);
+    // Don't reset current page for date range changes
+  };
+
+  // Separate handler for hourly date range changes
+  const handleHourlyDateRangeChange = (dates) => {
+    if (dates && dates.length === 2) {
+      const fromDate = dates[0] ? dates[0].toISOString() : "";
+      const toDate = dates[1] ? dates[1].toISOString() : "";
+      setHourlyFilters((prev) => ({
+        ...prev,
+        from: fromDate,
+        to: toDate,
+      }));
+    } else {
+      setHourlyFilters((prev) => ({ ...prev, from: "", to: "" }));
+    }
+  };
+
+  // Get current date range display text for main filters
+  const getCurrentDateRangeText = () => {
+    if (!filters.from && !filters.to) {
+      return "All Time";
+    }
+
+    const fromDate = filters.from
+      ? moment(filters.from).format("DD MMM YYYY")
+      : "Start";
+    const toDate = filters.to
+      ? moment(filters.to).format("DD MMM YYYY")
+      : "End";
+
+    return `${fromDate} - ${toDate}`;
+  };
+
+  // Get current date range display text for hourly chart
+  const getCurrentHourlyDateRangeText = () => {
+    if (!hourlyFilters.from && !hourlyFilters.to) {
+      return "All Time";
+    }
+
+    const fromDate = hourlyFilters.from
+      ? moment(hourlyFilters.from).format("DD MMM YYYY")
+      : "Start";
+    const toDate = hourlyFilters.to
+      ? moment(hourlyFilters.to).format("DD MMM YYYY")
+      : "End";
+
+    return `${fromDate} - ${toDate}`;
+  };
+
+  // Helper function to check if a date range matches current hourly selection
+  const isHourlyDateRangeSelected = (startMoment, endMoment) => {
+    if (!hourlyFilters.from || !hourlyFilters.to) return false;
+
+    const currentStart = moment(hourlyFilters.from);
+    const currentEnd = moment(hourlyFilters.to);
+
+    return (
+      currentStart.isSame(startMoment, "day") &&
+      currentEnd.isSame(endMoment, "day")
+    );
+  };
+
+  // Helper function to check if a date range matches current main selection
+  const isDateRangeSelected = (startMoment, endMoment) => {
+    if (!filters.from || !filters.to) return false;
+
+    const currentStart = moment(filters.from);
+    const currentEnd = moment(filters.to);
+
+    return (
+      currentStart.isSame(startMoment, "day") &&
+      currentEnd.isSame(endMoment, "day")
+    );
+  };
+
+  // Helper function to get button style based on selection state
+  const getQuickButtonStyle = (isSelected) => {
+    if (isSelected) {
+      return {
+        backgroundColor: "var(--primary-color) !important",
+        borderColor: "var(--primary-color) !important",
+        color: "white !important",
+        fontWeight: "600",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+      };
+    }
+    return {
+      borderColor: "var(--border-color)",
+      color: "var(--text-primary)",
+      backgroundColor: "transparent",
+      fontWeight: "normal",
+    };
   };
 
   const handleClearFilters = () => {
@@ -322,9 +726,22 @@ const ActivityLogs = () => {
     setCurrentPage(1);
   };
 
+  const handleClearHourlyFilters = () => {
+    setHourlyFilters({
+      from: "",
+      to: "",
+    });
+  };
+
   const handleDateSelect = (dateString) => {
-    if (dateString && typeof dateString === 'string') {
-      setSelectedDate(dateString);
+    if (dateString && typeof dateString === "string") {
+      // Ensure the date is in the correct format
+      const formattedDate = moment(dateString).isValid()
+        ? dateString
+        : moment().format("YYYY-MM-DD");
+      setSelectedDate(formattedDate);
+    } else if (dateString === null || dateString === undefined) {
+      setSelectedDate(null);
     }
   };
 
@@ -343,40 +760,75 @@ const ActivityLogs = () => {
 
   const getMethodColor = (method) => {
     switch (method) {
-      case "GET": return "blue";
-      case "POST": return "green";
-      case "PUT": return "orange";
-      case "PATCH": return "purple";
-      case "DELETE": return "red";
-      default: return "default";
+      case "GET":
+        return "blue";
+      case "POST":
+        return "green";
+      case "PUT":
+        return "orange";
+      case "PATCH":
+        return "purple";
+      case "DELETE":
+        return "red";
+      default:
+        return "default";
     }
   };
 
   // Get available dates from hourly data
   const getAvailableDates = (data) => {
+    if (!data || !Array.isArray(data)) {
+      return [];
+    }
+
     const dates = new Set();
-    data.forEach(item => {
-      const dateStr = `${item._id.year}-${String(item._id.month).padStart(2, '0')}-${String(item._id.day).padStart(2, '0')}`;
-      dates.add(dateStr);
+    data.forEach((item) => {
+      if (item._id && item._id.year && item._id.month && item._id.day) {
+        const dateStr = `${item._id.year}-${String(item._id.month).padStart(
+          2,
+          "0"
+        )}-${String(item._id.day).padStart(2, "0")}`;
+        dates.add(dateStr);
+      }
     });
+
     return Array.from(dates).sort();
   };
 
   // Format hourly data for display (filtered by selected date)
   const formatHourlyData = (data) => {
+    if (!data || !Array.isArray(data) || !selectedDate) {
+      return [];
+    }
+
     const selectedDateObj = moment(selectedDate);
+    if (!selectedDateObj.isValid()) {
+      return [];
+    }
 
     return data
-      .filter(item => {
-        const itemDate = moment(`${item._id.year}-${String(item._id.month).padStart(2, '0')}-${String(item._id.day).padStart(2, '0')}`);
-        return itemDate.isSame(selectedDateObj, 'day');
+      .filter((item) => {
+        if (!item._id || !item._id.year || !item._id.month || !item._id.day) {
+          return false;
+        }
+        const itemDate = moment(
+          `${item._id.year}-${String(item._id.month).padStart(2, "0")}-${String(
+            item._id.day
+          ).padStart(2, "0")}`
+        );
+        return itemDate.isValid() && itemDate.isSame(selectedDateObj, "day");
       })
-      .map(item => ({
+      .map((item) => ({
         key: `${item._id.year}-${item._id.month}-${item._id.day}-${item._id.hour}`,
         date: `${item._id.day}/${item._id.month}/${item._id.year}`,
-        hour: `${item._id.hour}:00`,
-        requests: item.totalRequests,
-        timestamp: new Date(item._id.year, item._id.month - 1, item._id.day, item._id.hour),
+        hour: `${String(item._id.hour).padStart(2, "0")}:00`,
+        requests: item.totalRequests || 0,
+        timestamp: new Date(
+          item._id.year,
+          item._id.month - 1,
+          item._id.day,
+          item._id.hour || 0
+        ),
       }))
       .sort((a, b) => a.timestamp - b.timestamp);
   };
@@ -387,8 +839,8 @@ const ActivityLogs = () => {
       title: "S.No",
       key: "index",
       width: 70,
-      render: (_, __, index) => ((currentPage - 1) * pageSize) + index + 1,
-      align: 'center'
+      render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
+      align: "center",
     },
     {
       title: "User Type",
@@ -396,7 +848,15 @@ const ActivityLogs = () => {
       key: "userType",
       width: 100,
       render: (userType) => (
-        <Tag color={userType === "admin" ? "red" : userType === "doctor" ? "blue" : "green"}>
+        <Tag
+          color={
+            userType === "admin"
+              ? "red"
+              : userType === "doctor"
+              ? "blue"
+              : "green"
+          }
+        >
           {userType?.toUpperCase()}
         </Tag>
       ),
@@ -406,11 +866,7 @@ const ActivityLogs = () => {
       dataIndex: "method",
       key: "method",
       width: 80,
-      render: (method) => (
-        <Tag color={getMethodColor(method)}>
-          {method}
-        </Tag>
-      ),
+      render: (method) => <Tag color={getMethodColor(method)}>{method}</Tag>,
     },
     {
       title: "Path",
@@ -428,9 +884,7 @@ const ActivityLogs = () => {
       key: "statusCode",
       width: 80,
       render: (statusCode) => (
-        <Tag color={getStatusColor(statusCode)}>
-          {statusCode}
-        </Tag>
+        <Tag color={getStatusColor(statusCode)}>{statusCode}</Tag>
       ),
     },
     {
@@ -450,7 +904,7 @@ const ActivityLogs = () => {
       title: "Actions",
       key: "actions",
       width: 80,
-      align: 'center',
+      align: "center",
       render: (_, record) => (
         <Button
           icon={<EyeOutlined style={{ color: "var(--text-primary)" }} />}
@@ -468,22 +922,30 @@ const ActivityLogs = () => {
 
   return (
     <AdminLayout>
+      <style>{calendarStyles}</style>
       <div style={customStyles.pageContainer} className="premium-scrollbar">
         <div style={customStyles.header}>
           <div style={customStyles.headerContent}>
             <div style={customStyles.headerLeft}>
               <h1 style={customStyles.title}>
-                <ClockCircleOutlined style={{ fontSize: "24px", color: "var(--primary-color)" }} />
+                <ClockCircleOutlined
+                  style={{ fontSize: "24px", color: "var(--primary-color)" }}
+                />
                 Activity Logs
               </h1>
               <Text style={customStyles.subtitle}>
-                Monitor and track user activities, API requests, and system events across the platform
+                Monitor and track user activities, API requests, and system
+                events across the platform
               </Text>
             </div>
             <div style={customStyles.headerRight}>
               <Button
                 icon={<ReloadOutlined />}
-                onClick={fetchActivityLogs}
+                onClick={() => {
+                  fetchActivityLogs();
+                  fetchRequestsPerHour();
+                  fetchStats();
+                }}
                 loading={isLoading}
                 style={{
                   borderColor: "var(--border-color)",
@@ -551,181 +1013,165 @@ const ActivityLogs = () => {
           <Card
             style={{ ...customStyles.statsCard, marginBottom: "24px" }}
             title={
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
                 <BarChartOutlined style={{ color: "var(--primary-color)" }} />
-                <span>Requests Per Hour - {moment(selectedDate).format('DD/MM/YYYY')}</span>
+                <span>
+                  Requests Per Hour -{" "}
+                  {moment(selectedDate).format("DD/MM/YYYY")}
+                </span>
               </div>
             }
           >
             {/* Calendar and Chart Layout */}
             <Row gutter={[24, 16]}>
-              {/* Calendar Section */}
+              {/* Date Selection Section */}
               <Col xs={24} md={8}>
-                <div style={{
-                  padding: "16px",
-                  background: "var(--background-secondary)",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--border-color)",
-                  height: "fit-content"
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px" }}>
-                    <CalendarOutlined style={{ color: "var(--primary-color)" }} />
-                    <Text strong>Select Date</Text>
-                  </div>
-
-                  <Select
-                    value={selectedDate}
-                    onChange={handleDateSelect}
-                    style={{ width: "100%", marginBottom: "16px" }}
-                    size="middle"
-                    placeholder="Select a date"
-                    showSearch
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {getAvailableDates(hourlyData).map(date => (
-                      <Select.Option key={date} value={date}>
-                        {moment(date).format('DD/MM/YYYY')}
-                      </Select.Option>
-                    ))}
-                  </Select>
-
-                  <div style={{ marginTop: "16px" }}>
-                    <Text style={{ fontSize: "12px", color: "var(--text-secondary)", marginBottom: "8px", display: "block" }}>
-                      Available Dates ({getAvailableDates(hourlyData).length}):
+                <div
+                  style={{
+                    padding: "16px",
+                    background: "var(--background-secondary)",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--border-color)",
+                    height: "fit-content",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: "150px",
+                  }}
+                >
+                  <div style={{ textAlign: "center", marginBottom: "16px" }}>
+                    <CalendarOutlined
+                      style={{
+                        color: "var(--primary-color)",
+                        fontSize: "24px",
+                        marginBottom: "8px",
+                        display: "block",
+                      }}
+                    />
+                    <Text
+                      strong
+                      style={{ fontSize: "16px", color: "var(--text-primary)" }}
+                    >
+                      Date Range Selection
                     </Text>
-
-                    {/* Compact Date Range Display */}
-                    {(() => {
-                      const availableDates = getAvailableDates(hourlyData);
-                      if (availableDates.length <= 7) {
-                        // Show all dates if 7 or fewer
-                        return (
-                          <div style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: "4px",
-                            maxHeight: "80px",
-                            overflowY: "auto"
-                          }}>
-                            {availableDates.map(date => (
-                              <Tag
-                                key={date}
-                                color={date === selectedDate ? "var(--primary-color)" : "default"}
-                                style={{
-                                  cursor: "pointer",
-                                  fontSize: "11px",
-                                  padding: "2px 6px"
-                                }}
-                                onClick={() => handleDateSelect(date)}
-                              >
-                                {moment(date).format('DD/MM/YYYY')}
-                              </Tag>
-                            ))}
-                          </div>
-                        );
-                      } else {
-                        // Show date range and recent dates for many dates
-                        const sortedDates = availableDates.sort();
-                        const firstDate = sortedDates[0];
-                        const lastDate = sortedDates[sortedDates.length - 1];
-                        const recentDates = sortedDates.slice(-5); // Last 5 dates
-
-                        return (
-                          <div style={{ fontSize: "11px" }}>
-                            <div style={{
-                              marginBottom: "8px",
-                              padding: "6px",
-                              background: "var(--background-primary)",
-                              borderRadius: "4px",
-                              border: "1px solid var(--border-color)"
-                            }}>
-                              <Text style={{ color: "var(--text-secondary)" }}>
-                                Range: {moment(firstDate).format('DD/MM/YYYY')} - {moment(lastDate).format('DD/MM/YYYY')}
-                              </Text>
-                            </div>
-
-                            <div style={{ marginBottom: "8px" }}>
-                              <Text style={{ color: "var(--text-secondary)", fontSize: "10px" }}>
-                                Recent Dates:
-                              </Text>
-                            </div>
-
-                            <div style={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                              gap: "3px",
-                              maxHeight: "60px",
-                              overflowY: "auto"
-                            }}>
-                              {recentDates.map(date => (
-                                <Tag
-                                  key={date}
-                                  color={date === selectedDate ? "var(--primary-color)" : "default"}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "10px",
-                                    padding: "1px 4px"
-                                  }}
-                                  onClick={() => handleDateSelect(date)}
-                                >
-                                  {moment(date).format('DD/MM/YYYY')}
-                                </Tag>
-                              ))}
-                            </div>
-
-                            <div style={{
-                              marginTop: "8px",
-                              padding: "4px 8px",
-                              background: "var(--background-primary)",
-                              borderRadius: "4px",
-                              border: "1px solid var(--border-color)",
-                              textAlign: "center",
-                              cursor: "pointer"
-                            }}
-                              onClick={() => setIsDatesModalVisible(true)}
-                            >
-                              <Text style={{ color: "var(--primary-color)", fontSize: "10px" }}>
-                                View All {availableDates.length} Dates
-                              </Text>
-                            </div>
-                          </div>
-                        );
-                      }
-                    })()}
+                    <Text
+                      style={{
+                        fontSize: "14px",
+                        color: "var(--text-secondary)",
+                        marginTop: "4px",
+                        display: "block",
+                      }}
+                    >
+                      Current: {getCurrentHourlyDateRangeText()}
+                    </Text>
                   </div>
+
+                  <Button
+                    icon={<CalendarOutlined />}
+                    onClick={() => setIsCalendarModalVisible(true)}
+                    style={{
+                      borderColor: "var(--primary-color)",
+                      color: "var(--primary-color)",
+                      fontSize: "14px",
+                      height: "40px",
+                      padding: "0 24px",
+                    }}
+                    className="btn-premium"
+                    size="large"
+                  >
+                    Select Dates
+                  </Button>
                 </div>
               </Col>
 
               {/* Chart Section */}
               <Col xs={24} md={16}>
                 {/* Summary Statistics */}
-                <div style={{ marginBottom: "16px", padding: "16px", background: "var(--background-secondary)", borderRadius: "var(--radius)", border: "1px solid var(--border-color)" }}>
+                <div
+                  style={{
+                    marginBottom: "16px",
+                    padding: "16px",
+                    background: "var(--background-secondary)",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
                   <Row gutter={[16, 16]}>
                     <Col xs={24} sm={8}>
                       <div style={{ textAlign: "center" }}>
-                        <Text style={{ fontSize: "14px", color: "var(--text-secondary)" }}>Total Requests</Text>
-                        <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--primary-color)", marginTop: "4px" }}>
-                          {formatHourlyData(hourlyData).reduce((sum, item) => sum + item.requests, 0)}
+                        <Text
+                          style={{
+                            fontSize: "14px",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          Total Requests
+                        </Text>
+                        <div
+                          style={{
+                            fontSize: "24px",
+                            fontWeight: "700",
+                            color: "var(--primary-color)",
+                            marginTop: "4px",
+                          }}
+                        >
+                          {formatHourlyData(hourlyData).reduce(
+                            (sum, item) => sum + item.requests,
+                            0
+                          )}
                         </div>
                       </div>
                     </Col>
                     <Col xs={24} sm={8}>
                       <div style={{ textAlign: "center" }}>
-                        <Text style={{ fontSize: "14px", color: "var(--text-secondary)" }}>Average Per Hour</Text>
-                        <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--success-color)", marginTop: "4px" }}>
+                        <Text
+                          style={{
+                            fontSize: "14px",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          Average Per Hour
+                        </Text>
+                        <div
+                          style={{
+                            fontSize: "24px",
+                            fontWeight: "700",
+                            color: "var(--success-color)",
+                            marginTop: "4px",
+                          }}
+                        >
                           {formatHourlyData(hourlyData).length > 0
-                            ? Math.round(formatHourlyData(hourlyData).reduce((sum, item) => sum + item.requests, 0) / formatHourlyData(hourlyData).length)
-                            : 0
-                          }
+                            ? Math.round(
+                                formatHourlyData(hourlyData).reduce(
+                                  (sum, item) => sum + item.requests,
+                                  0
+                                ) / formatHourlyData(hourlyData).length
+                              )
+                            : 0}
                         </div>
                       </div>
                     </Col>
                     <Col xs={24} sm={8}>
                       <div style={{ textAlign: "center" }}>
-                        <Text style={{ fontSize: "14px", color: "var(--text-secondary)" }}>Peak Hour</Text>
-                        <div style={{ fontSize: "24px", fontWeight: "700", color: "var(--warning-color)", marginTop: "4px" }}>
+                        <Text
+                          style={{
+                            fontSize: "14px",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
+                          Peak Hour
+                        </Text>
+                        <div
+                          style={{
+                            fontSize: "24px",
+                            fontWeight: "700",
+                            color: "var(--warning-color)",
+                            marginTop: "4px",
+                          }}
+                        >
                           {(() => {
                             const filteredData = formatHourlyData(hourlyData);
                             if (filteredData.length === 0) return "No data";
@@ -742,23 +1188,32 @@ const ActivityLogs = () => {
 
                 {/* Compact Chart Visualization */}
                 {formatHourlyData(hourlyData).length > 0 ? (
-                  <div style={{
-                    height: "300px",
-                    overflowX: "auto",
-                    overflowY: "hidden",
-                    padding: "16px 0"
-                  }}>
-                    <div style={{
-                      display: "flex",
-                      alignItems: "flex-end",
-                      gap: "2px",
-                      height: "250px",
-                      minWidth: "max-content",
-                      padding: "0 16px"
-                    }}>
+                  <div
+                    style={{
+                      height: "300px",
+                      overflowX: "auto",
+                      overflowY: "hidden",
+                      padding: "16px 0",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-end",
+                        gap: "2px",
+                        height: "250px",
+                        minWidth: "max-content",
+                        padding: "0 16px",
+                      }}
+                    >
                       {formatHourlyData(hourlyData).map((item) => {
-                        const maxRequests = Math.max(...formatHourlyData(hourlyData).map(d => d.requests));
-                        const height = maxRequests > 0 ? (item.requests / maxRequests) * 200 : 0;
+                        const maxRequests = Math.max(
+                          ...formatHourlyData(hourlyData).map((d) => d.requests)
+                        );
+                        const height =
+                          maxRequests > 0
+                            ? (item.requests / maxRequests) * 200
+                            : 0;
                         const isPeak = item.requests === maxRequests;
 
                         return (
@@ -769,7 +1224,7 @@ const ActivityLogs = () => {
                               flexDirection: "column",
                               alignItems: "center",
                               minWidth: "40px",
-                              position: "relative"
+                              position: "relative",
                             }}
                           >
                             {/* Bar */}
@@ -777,44 +1232,50 @@ const ActivityLogs = () => {
                               style={{
                                 width: "30px",
                                 height: `${height}px`,
-                                backgroundColor: isPeak ? "var(--warning-color)" : "var(--primary-color)",
+                                backgroundColor: isPeak
+                                  ? "var(--warning-color)"
+                                  : "var(--primary-color)",
                                 borderRadius: "4px 4px 0 0",
                                 transition: "all 0.3s ease",
                                 cursor: "pointer",
-                                position: "relative"
+                                position: "relative",
                               }}
                               title={`${item.date} ${item.hour}: ${item.requests} requests`}
                             />
 
                             {/* Hour Label */}
-                            <div style={{
-                              marginTop: "8px",
-                              fontSize: "10px",
-                              color: "var(--text-secondary)",
-                              whiteSpace: "nowrap",
-                              position: "absolute",
-                              bottom: "-20px",
-                              left: "50%",
-                              transform: "translateX(-50%) rotate(-45deg)"
-                            }}>
+                            <div
+                              style={{
+                                marginTop: "8px",
+                                fontSize: "10px",
+                                color: "var(--text-secondary)",
+                                whiteSpace: "nowrap",
+                                position: "absolute",
+                                bottom: "-20px",
+                                left: "50%",
+                                transform: "translateX(-50%) rotate(-45deg)",
+                              }}
+                            >
                               {item.hour}
                             </div>
 
                             {/* Request Count */}
-                            <div style={{
-                              position: "absolute",
-                              top: `${Math.max(height - 20, 0)}px`,
-                              left: "50%",
-                              transform: "translateX(-50%)",
-                              fontSize: "10px",
-                              color: "var(--text-primary)",
-                              fontWeight: "600",
-                              backgroundColor: "var(--background-primary)",
-                              padding: "2px 4px",
-                              borderRadius: "2px",
-                              border: "1px solid var(--border-color)",
-                              opacity: height > 30 ? 1 : 0
-                            }}>
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: `${Math.max(height - 20, 0)}px`,
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                fontSize: "10px",
+                                color: "var(--text-primary)",
+                                fontWeight: "600",
+                                backgroundColor: "var(--background-primary)",
+                                padding: "2px 4px",
+                                borderRadius: "2px",
+                                border: "1px solid var(--border-color)",
+                                opacity: height > 30 ? 1 : 0,
+                              }}
+                            >
                               {item.requests}
                             </div>
                           </div>
@@ -823,17 +1284,25 @@ const ActivityLogs = () => {
                     </div>
                   </div>
                 ) : (
-                  <div style={{
-                    height: "300px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: "var(--background-secondary)",
-                    borderRadius: "var(--radius)",
-                    border: "1px solid var(--border-color)"
-                  }}>
-                    <Text style={{ color: "var(--text-secondary)", fontSize: "16px" }}>
-                      No data available for {moment(selectedDate).format('DD/MM/YYYY')}
+                  <div
+                    style={{
+                      height: "300px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "var(--background-secondary)",
+                      borderRadius: "var(--radius)",
+                      border: "1px solid var(--border-color)",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "var(--text-secondary)",
+                        fontSize: "16px",
+                      }}
+                    >
+                      No data available for{" "}
+                      {moment(selectedDate).format("DD/MM/YYYY")}
                     </Text>
                   </div>
                 )}
@@ -847,20 +1316,26 @@ const ActivityLogs = () => {
           <Card
             style={{ ...customStyles.statsCard, marginBottom: "24px" }}
             title={
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
                 <BarChartOutlined style={{ color: "var(--primary-color)" }} />
                 <span>Requests Per Hour</span>
               </div>
             }
           >
-            <div style={{
-              padding: "40px",
-              textAlign: "center",
-              background: "var(--background-secondary)",
-              borderRadius: "var(--radius)",
-              border: "1px solid var(--border-color)"
-            }}>
-              <Text style={{ color: "var(--text-secondary)", fontSize: "16px" }}>
+            <div
+              style={{
+                padding: "40px",
+                textAlign: "center",
+                background: "var(--background-secondary)",
+                borderRadius: "var(--radius)",
+                border: "1px solid var(--border-color)",
+              }}
+            >
+              <Text
+                style={{ color: "var(--text-secondary)", fontSize: "16px" }}
+              >
                 Please select a date to view hourly request data
               </Text>
             </div>
@@ -869,14 +1344,14 @@ const ActivityLogs = () => {
 
         {/* Filters */}
         <Card style={customStyles.filtersCard}>
-          <div style={{ display: "flex", gap: "16px", alignItems: "center", flexWrap: "wrap" }}>
-            {/* <Input
-              placeholder="User ID"
-              value={filters.userId}
-              onChange={(e) => handleFilterChange("userId", e.target.value)}
-              style={{ width: "150px" }}
-              size="middle"
-            /> */}
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
             <Select
               placeholder="User Type"
               value={filters.userType}
@@ -919,11 +1394,7 @@ const ActivityLogs = () => {
               style={{ width: "100px" }}
               size="middle"
             />
-            <RangePicker
-              onChange={handleDateRangeChange}
-              size="middle"
-              placeholder={["From Date", "To Date"]}
-            />
+
             <Button
               icon={<FilterOutlined />}
               onClick={handleClearFilters}
@@ -979,7 +1450,13 @@ const ActivityLogs = () => {
         <Modal
           title={
             <div style={{ padding: "4px 0" }}>
-              <div style={{ fontSize: "18px", fontWeight: "600", marginBottom: "4px" }}>
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  marginBottom: "4px",
+                }}
+              >
                 Activity Details
               </div>
               <Text type="secondary" style={{ fontSize: "14px" }}>
@@ -1000,7 +1477,7 @@ const ActivityLogs = () => {
               className="btn-premium"
             >
               Close
-            </Button>
+            </Button>,
           ]}
           styles={customStyles.modal}
           width={900}
@@ -1011,18 +1488,35 @@ const ActivityLogs = () => {
             <div>
               {/* Basic Information */}
               <div style={customStyles.formSection}>
-                <Text strong style={{ display: "block", marginBottom: "16px", fontSize: "var(--font-size-lg)" }}>
+                <Text
+                  strong
+                  style={{
+                    display: "block",
+                    marginBottom: "16px",
+                    fontSize: "var(--font-size-lg)",
+                  }}
+                >
                   Request Information
                 </Text>
                 <div style={customStyles.infoGrid}>
                   <div style={customStyles.infoItem}>
                     <div style={customStyles.infoLabel}>User ID</div>
-                    <div style={customStyles.infoValue}>{selectedLog.userId}</div>
+                    <div style={customStyles.infoValue}>
+                      {selectedLog.userId}
+                    </div>
                   </div>
                   <div style={customStyles.infoItem}>
                     <div style={customStyles.infoLabel}>User Type</div>
                     <div style={customStyles.infoValue}>
-                      <Tag color={selectedLog.userType === "admin" ? "red" : selectedLog.userType === "doctor" ? "blue" : "green"}>
+                      <Tag
+                        color={
+                          selectedLog.userType === "admin"
+                            ? "red"
+                            : selectedLog.userType === "doctor"
+                            ? "blue"
+                            : "green"
+                        }
+                      >
                         {selectedLog.userType?.toUpperCase()}
                       </Tag>
                     </div>
@@ -1045,12 +1539,16 @@ const ActivityLogs = () => {
                   </div>
                   <div style={customStyles.infoItem}>
                     <div style={customStyles.infoLabel}>Response Time</div>
-                    <div style={customStyles.infoValue}>{selectedLog.responseTime}ms</div>
+                    <div style={customStyles.infoValue}>
+                      {selectedLog.responseTime}ms
+                    </div>
                   </div>
                   <div style={customStyles.infoItem}>
                     <div style={customStyles.infoLabel}>Timestamp</div>
                     <div style={customStyles.infoValue}>
-                      {moment(selectedLog.timestamp).format("DD MMM YYYY [at] HH:mm:ss")}
+                      {moment(selectedLog.timestamp).format(
+                        "DD MMM YYYY [at] HH:mm:ss"
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1058,14 +1556,28 @@ const ActivityLogs = () => {
 
               {/* Request Details */}
               <div style={customStyles.formSection}>
-                <Text strong style={{ display: "block", marginBottom: "16px", fontSize: "var(--font-size-lg)" }}>
+                <Text
+                  strong
+                  style={{
+                    display: "block",
+                    marginBottom: "16px",
+                    fontSize: "var(--font-size-lg)",
+                  }}
+                >
                   Request Details
                 </Text>
                 <div style={customStyles.infoGrid}>
                   <div style={customStyles.infoItem}>
                     <div style={customStyles.infoLabel}>Path</div>
-                    <div style={{ ...customStyles.infoValue, wordBreak: "break-all" }}>
-                      <Text style={{ color: "var(--primary-color)" }}>{selectedLog.path}</Text>
+                    <div
+                      style={{
+                        ...customStyles.infoValue,
+                        wordBreak: "break-all",
+                      }}
+                    >
+                      <Text style={{ color: "var(--primary-color)" }}>
+                        {selectedLog.path}
+                      </Text>
                     </div>
                   </div>
                   <div style={customStyles.infoItem}>
@@ -1078,22 +1590,33 @@ const ActivityLogs = () => {
               {/* Request Body */}
               {selectedLog.body && (
                 <div style={customStyles.formSection}>
-                  <Text strong style={{ display: "block", marginBottom: "16px", fontSize: "var(--font-size-lg)" }}>
+                  <Text
+                    strong
+                    style={{
+                      display: "block",
+                      marginBottom: "16px",
+                      fontSize: "var(--font-size-lg)",
+                    }}
+                  >
                     Request Body
                   </Text>
-                  <div style={{
-                    background: "var(--background-secondary)",
-                    padding: "16px",
-                    borderRadius: "var(--radius)",
-                    border: "1px solid var(--border-color)",
-                  }}>
-                    <pre style={{
-                      margin: 0,
-                      color: "var(--text-primary)",
-                      fontSize: "12px",
-                      whiteSpace: "pre-wrap",
-                      wordBreak: "break-all",
-                    }}>
+                  <div
+                    style={{
+                      background: "var(--background-secondary)",
+                      padding: "16px",
+                      borderRadius: "var(--radius)",
+                      border: "1px solid var(--border-color)",
+                    }}
+                  >
+                    <pre
+                      style={{
+                        margin: 0,
+                        color: "var(--text-primary)",
+                        fontSize: "12px",
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-all",
+                      }}
+                    >
                       {JSON.stringify(selectedLog.body, null, 2)}
                     </pre>
                   </div>
@@ -1102,16 +1625,31 @@ const ActivityLogs = () => {
 
               {/* User Agent */}
               <div style={customStyles.formSection}>
-                <Text strong style={{ display: "block", marginBottom: "16px", fontSize: "var(--font-size-lg)" }}>
+                <Text
+                  strong
+                  style={{
+                    display: "block",
+                    marginBottom: "16px",
+                    fontSize: "var(--font-size-lg)",
+                  }}
+                >
                   User Agent
                 </Text>
-                <div style={{
-                  background: "var(--background-secondary)",
-                  padding: "16px",
-                  borderRadius: "var(--radius)",
-                  border: "1px solid var(--border-color)",
-                }}>
-                  <Text style={{ color: "var(--text-primary)", fontSize: "12px", wordBreak: "break-all" }}>
+                <div
+                  style={{
+                    background: "var(--background-secondary)",
+                    padding: "16px",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--border-color)",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "var(--text-primary)",
+                      fontSize: "12px",
+                      wordBreak: "break-all",
+                    }}
+                  >
                     {selectedLog.userAgent}
                   </Text>
                 </div>
@@ -1124,7 +1662,13 @@ const ActivityLogs = () => {
         <Modal
           title={
             <div style={{ padding: "4px 0" }}>
-              <div style={{ fontSize: "18px", fontWeight: "600", marginBottom: "4px" }}>
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  marginBottom: "4px",
+                }}
+              >
                 All Available Dates
               </div>
               <Text type="secondary" style={{ fontSize: "14px" }}>
@@ -1145,43 +1689,360 @@ const ActivityLogs = () => {
               className="btn-premium"
             >
               Close
-            </Button>
+            </Button>,
           ]}
           styles={customStyles.modal}
           width={600}
           maskClosable={false}
           destroyOnClose
         >
-          <div style={{
-            maxHeight: "400px",
-            overflowY: "auto",
-            padding: "16px 0"
-          }}>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
-              gap: "8px"
-            }}>
-              {getAvailableDates(hourlyData).map(date => (
+          <div
+            style={{
+              maxHeight: "400px",
+              overflowY: "auto",
+              padding: "16px 0",
+            }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
+                gap: "8px",
+              }}
+            >
+              {getAvailableDates(hourlyData).map((date) => (
                 <Tag
                   key={date}
-                  color={date === selectedDate ? "var(--primary-color)" : "default"}
+                  color={
+                    date === selectedDate ? "var(--primary-color)" : "default"
+                  }
                   style={{
                     cursor: "pointer",
                     fontSize: "12px",
                     padding: "8px 12px",
                     textAlign: "center",
-                    margin: 0
+                    margin: 0,
                   }}
                   onClick={() => {
                     handleDateSelect(date);
                     setIsDatesModalVisible(false);
                   }}
                 >
-                  {moment(date).format('DD/MM/YYYY')}
+                  {moment(date).format("DD/MM/YYYY")}
                 </Tag>
               ))}
             </div>
+          </div>
+        </Modal>
+
+        {/* Calendar Modal */}
+        <Modal
+          title={
+            <div style={{ padding: "4px 0" }}>
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  marginBottom: "4px",
+                }}
+              >
+                Select Date Range
+              </div>
+              <Text type="secondary" style={{ fontSize: "14px" }}>
+                Choose your start and end dates using the calendar
+              </Text>
+            </div>
+          }
+          open={isCalendarModalVisible}
+          onCancel={() => setIsCalendarModalVisible(false)}
+          footer={[
+            <Button
+              key="cancel"
+              onClick={() => setIsCalendarModalVisible(false)}
+              style={{
+                borderColor: "var(--border-color)",
+                color: "var(--text-primary)",
+              }}
+              className="btn-premium"
+            >
+              Cancel
+            </Button>,
+            <Button
+              key="apply"
+              type="primary"
+              onClick={() => {
+                setIsCalendarModalVisible(false);
+              }}
+              style={{
+                backgroundColor: "var(--primary-color)",
+                color: "white",
+                borderColor: "var(--primary-color)",
+              }}
+              className="btn-premium"
+            >
+              Apply
+            </Button>,
+          ]}
+          styles={customStyles.modal}
+          width={900}
+          maskClosable={false}
+          destroyOnClose
+        >
+          <div style={{ padding: "24px 0" }}>
+            <Row gutter={[32, 24]}>
+              {/* React Calendar */}
+              <Col xs={24} md={16}>
+                <div style={{ textAlign: "center", marginBottom: "16px" }}>
+                  <Text
+                    strong
+                    style={{ fontSize: "18px", color: "var(--text-primary)" }}
+                  >
+                    Select Date Range
+                  </Text>
+                </div>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <Calendar
+                    onChange={(value) => {
+                      if (Array.isArray(value) && value.length === 2) {
+                        const [startDate, endDate] = value;
+                        setHourlyFilters((prev) => ({
+                          ...prev,
+                          from: startDate ? startDate.toISOString() : "",
+                          to: endDate ? endDate.toISOString() : "",
+                        }));
+                      }
+                    }}
+                    value={[
+                      hourlyFilters.from ? new Date(hourlyFilters.from) : null,
+                      hourlyFilters.to ? new Date(hourlyFilters.to) : null,
+                    ]}
+                    selectRange={true}
+                    allowPartialRange={false}
+                    maxDate={new Date()}
+                    minDate={new Date(2020, 0, 1)}
+                    showDoubleView={false}
+                    showFixedNumberOfWeeks={true}
+                    showNeighboringMonth={true}
+                    showNavigation={true}
+                    showWeekNumbers={false}
+                    tileClassName={({ date, view }) => {
+                      if (view === "month") {
+                        const today = new Date();
+                        const isToday =
+                          date.toDateString() === today.toDateString();
+                        if (isToday) {
+                          return "react-calendar__tile--now";
+                        }
+                      }
+                      return null;
+                    }}
+                    style={customStyles.reactCalendar}
+                  />
+                </div>
+              </Col>
+
+              {/* Quick Selection Panel */}
+              <Col xs={24} md={8}>
+                <div
+                  style={{
+                    padding: "16px",
+                    background: "var(--background-secondary)",
+                    borderRadius: "var(--radius)",
+                    border: "1px solid var(--border-color)",
+                    height: "fit-content",
+                  }}
+                >
+                  <Text
+                    strong
+                    style={{
+                      display: "block",
+                      marginBottom: "16px",
+                      fontSize: "16px",
+                      color: "var(--text-primary)",
+                    }}
+                  >
+                    Quick Selection
+                  </Text>
+                  <Space direction="vertical" style={{ width: "100%" }}>
+                    <Button
+                      block
+                      size="middle"
+                      onClick={() => {
+                        const today = moment().startOf("day");
+                        const endOfDay = moment().endOf("day");
+                        setHourlyFilters((prev) => ({
+                          ...prev,
+                          from: today.toISOString(),
+                          to: endOfDay.toISOString(),
+                        }));
+                      }}
+                      style={getQuickButtonStyle(
+                        isHourlyDateRangeSelected(
+                          moment().startOf("day"),
+                          moment().endOf("day")
+                        )
+                      )}
+                      className="btn-premium"
+                    >
+                      Today
+                    </Button>
+                    <Button
+                      block
+                      size="middle"
+                      onClick={() => {
+                        const yesterday = moment()
+                          .subtract(1, "day")
+                          .startOf("day");
+                        const endOfYesterday = moment()
+                          .subtract(1, "day")
+                          .endOf("day");
+                        setHourlyFilters((prev) => ({
+                          ...prev,
+                          from: yesterday.toISOString(),
+                          to: endOfYesterday.toISOString(),
+                        }));
+                      }}
+                      style={getQuickButtonStyle(
+                        isHourlyDateRangeSelected(
+                          moment().subtract(1, "day").startOf("day"),
+                          moment().subtract(1, "day").endOf("day")
+                        )
+                      )}
+                      className="btn-premium"
+                    >
+                      Yesterday
+                    </Button>
+                    <Button
+                      block
+                      size="middle"
+                      onClick={() => {
+                        const last7Days = moment()
+                          .subtract(6, "day")
+                          .startOf("day");
+                        const today = moment().endOf("day");
+                        setHourlyFilters((prev) => ({
+                          ...prev,
+                          from: last7Days.toISOString(),
+                          to: today.toISOString(),
+                        }));
+                      }}
+                      style={getQuickButtonStyle(
+                        isHourlyDateRangeSelected(
+                          moment().subtract(6, "day").startOf("day"),
+                          moment().endOf("day")
+                        )
+                      )}
+                      className="btn-premium"
+                    >
+                      Last 7 Days
+                    </Button>
+                    <Button
+                      block
+                      size="middle"
+                      onClick={() => {
+                        const last30Days = moment()
+                          .subtract(29, "day")
+                          .startOf("day");
+                        const today = moment().endOf("day");
+                        setHourlyFilters((prev) => ({
+                          ...prev,
+                          from: last30Days.toISOString(),
+                          to: today.toISOString(),
+                        }));
+                      }}
+                      style={getQuickButtonStyle(
+                        isHourlyDateRangeSelected(
+                          moment().subtract(29, "day").startOf("day"),
+                          moment().endOf("day")
+                        )
+                      )}
+                      className="btn-premium"
+                    >
+                      Last 30 Days
+                    </Button>
+                    <Button
+                      block
+                      size="middle"
+                      onClick={() => {
+                        const thisMonth = moment().startOf("month");
+                        const endOfMonth = moment().endOf("month");
+                        setHourlyFilters((prev) => ({
+                          ...prev,
+                          from: thisMonth.toISOString(),
+                          to: endOfMonth.toISOString(),
+                        }));
+                      }}
+                      style={getQuickButtonStyle(
+                        isHourlyDateRangeSelected(
+                          moment().startOf("month"),
+                          moment().endOf("month")
+                        )
+                      )}
+                      className="btn-premium"
+                    >
+                      This Month
+                    </Button>
+                    <Button
+                      block
+                      size="middle"
+                      onClick={() => {
+                        const lastMonth = moment()
+                          .subtract(1, "month")
+                          .startOf("month");
+                        const endOfLastMonth = moment()
+                          .subtract(1, "month")
+                          .endOf("month");
+                        setHourlyFilters((prev) => ({
+                          ...prev,
+                          from: lastMonth.toISOString(),
+                          to: endOfLastMonth.toISOString(),
+                        }));
+                      }}
+                      style={getQuickButtonStyle(
+                        isHourlyDateRangeSelected(
+                          moment().subtract(1, "month").startOf("month"),
+                          moment().subtract(1, "month").endOf("month")
+                        )
+                      )}
+                      className="btn-premium"
+                    >
+                      Last Month
+                    </Button>
+                  </Space>
+
+                  {/* Current Selection Display */}
+                  <div
+                    style={{
+                      marginTop: "24px",
+                      padding: "16px",
+                      background: "var(--background-primary)",
+                      borderRadius: "var(--radius)",
+                      border: "1px solid var(--border-color)",
+                    }}
+                  >
+                    <Text
+                      strong
+                      style={{
+                        display: "block",
+                        marginBottom: "8px",
+                        fontSize: "14px",
+                        color: "var(--text-primary)",
+                      }}
+                    >
+                      Current Selection:
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: "14px",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
+                      {getCurrentHourlyDateRangeText()}
+                    </Text>
+                  </div>
+                </div>
+              </Col>
+            </Row>
           </div>
         </Modal>
       </div>

@@ -1426,3 +1426,12 @@
     font-size: 10px;
   }
 }
+
+/* Highlight row for current admin in administrators table */
+.highlightRow {
+  background: var(--primary-color-light) !important;
+}
+
+.highlightRow:hover td {
+  background: color-mix(in srgb, var(--primary-color-light) 80%, white) !important;
+}

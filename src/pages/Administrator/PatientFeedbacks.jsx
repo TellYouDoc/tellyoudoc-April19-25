@@ -16,6 +16,11 @@ import {
   Card,
   Divider,
   Radio,
+  Rate,
+  Avatar,
+  Row,
+  Col,
+  Statistic,
 } from "antd";
 import {
   CheckCircleOutlined,
@@ -27,8 +32,13 @@ import {
   FilterOutlined,
   MailOutlined,
   UserOutlined,
+  StarOutlined,
+  PhoneOutlined,
+  CalendarOutlined,
 } from "@ant-design/icons";
 import AdminLayout from "../../components/AdminLayout";
+import ProfileAvatar from "../../components/ProfileAvatar";
+import { apiService } from "../../services/api";
 import "../../styles/Administrator/Reports.css";
 
 const { Option } = Select;
@@ -36,135 +46,70 @@ const { TextArea } = Input;
 const { Title, Text } = Typography;
 const { TabPane } = Tabs;
 
-// Mock data for patient feedbacks
-const mockPatientFeedbacks = [
-  {
-    id: "PFB-1001",
-    type: "app_feedback",
-    subject: "Excellent experience with the appointment booking",
-    description: "The new appointment booking system is very user-friendly. I was able to book my consultation in just a few clicks.",
-    reportedBy: {
-      id: "PAT-1001",
-      name: "John Smith",
-      email: "john.smith@example.com",
-      role: "patient",
-      age: 35,
-    },
-    date: "2025-05-10T14:25:00",
-    status: "resolved",
-    priority: "low",
-    assignedTo: "ADM-101",
-    comments: [
-      {
-        id: "CMT-1001",
-        content: "Thank you for your positive feedback! We're glad the new system is working well for you.",
-        author: "Admin",
-        date: "2025-05-11T10:30:00",
-      },
-    ],
-  },
-  {
-    id: "PFB-1002",
-    type: "bug_report",
-    subject: "Unable to upload medical documents",
-    description: "When I try to upload my medical reports, the system shows an error and the upload fails. This is preventing me from sharing important information with my doctor.",
-    reportedBy: {
-      id: "PAT-1002",
-      name: "Sarah Johnson",
-      email: "sarah.j@example.com",
-      role: "patient",
-      age: 28,
-    },
-    date: "2025-05-12T09:15:00",
-    status: "in_progress",
-    priority: "high",
-    assignedTo: "ADM-102",
-    comments: [
-      {
-        id: "CMT-1002",
-        content: "We are investigating this issue. Our technical team is working on fixing the file upload functionality.",
-        author: "Admin",
-        date: "2025-05-12T11:30:00",
-      },
-    ],
-  },
-  {
-    id: "PFB-1003",
-    type: "complaint",
-    subject: "Doctor was late for virtual appointment",
-    description: "My appointment was scheduled for 3 PM but the doctor joined at 3:20 PM without any prior notice. This caused me to miss other important commitments.",
-    reportedBy: {
-      id: "PAT-1003",
-      name: "Mike Brown",
-      email: "mike.brown@example.com",
-      role: "patient",
-      age: 42,
-    },
-    date: "2025-05-09T16:45:00",
-    status: "pending",
-    priority: "medium",
-    assignedTo: null,
-    comments: [],
-  },
-  {
-    id: "PFB-1004",
-    type: "feature_request",
-    subject: "Request for medication reminder feature",
-    description: "It would be very helpful to have a medication reminder feature that sends notifications when it's time to take prescribed medications.",
-    reportedBy: {
-      id: "PAT-1004",
-      name: "Emily Davis",
-      email: "emily.davis@example.com",
-      role: "patient",
-      age: 31,
-    },
-    date: "2025-05-08T13:20:00",
-    status: "resolved",
-    priority: "medium",
-    assignedTo: "ADM-101",
-    comments: [
-      {
-        id: "CMT-1003",
-        content: "Thank you for the suggestion! We have added this feature to our development roadmap and will implement it in the next update.",
-        author: "Admin",
-        date: "2025-05-09T09:15:00",
-      },
-    ],
-  },
-];
-
 const PatientFeedbacks = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isResponseModalVisible, setIsResponseModalVisible] = useState(false);
-  const [responseText, setResponseText] = useState("");
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const [filters, setFilters] = useState({
-    status: "all",
-    priority: "all",
-    type: "all",
+    overallExperience: "all",
+    appUsability: "all",
+    appointmentBooking: "all",
   });
   const [searchText, setSearchText] = useState("");
+  const [stats, setStats] = useState({
+    totalFeedbacks: 0,
+    averageOverallExperience: 0,
+    averageAppUsability: 0,
+    averageAppointmentBooking: 0,
+  });
 
   useEffect(() => {
     fetchFeedbacks();
-  }, []);
+  }, [pagination.current, pagination.pageSize]);
 
   const fetchFeedbacks = async () => {
     setLoading(true);
     try {
-      // In a real app, this would be an API call
-      // const response = await apiService.get('/admin/patient-feedbacks');
-      // setFeedbacks(response.data);
-      
-      // For now, using mock data
-      setTimeout(() => {
-        setFeedbacks(mockPatientFeedbacks);
-        setLoading(false);
-      }, 1000);
-    } catch {
+      const response = await apiService.AdministratorService.getPatientFeedbacks({
+        page: pagination.current,
+        limit: pagination.pageSize,
+        search: searchText || undefined,
+        overallExperience: filters.overallExperience !== "all" ? filters.overallExperience : undefined,
+        appUsability: filters.appUsability !== "all" ? filters.appUsability : undefined,
+        appointmentBooking: filters.appointmentBooking !== "all" ? filters.appointmentBooking : undefined,
+      });
+
+      const { feedback, pagination: apiPagination } = response.data;
+      setFeedbacks(feedback);
+      setPagination(prev => ({
+        ...prev,
+        total: apiPagination.totalRecords,
+        current: apiPagination.currentPage,
+      }));
+
+      // Calculate stats
+      if (feedback.length > 0) {
+        const totalOverall = feedback.reduce((sum, item) => sum + item.overallExperience, 0);
+        const totalUsability = feedback.reduce((sum, item) => sum + item.appUsability, 0);
+        const totalBooking = feedback.reduce((sum, item) => sum + item.appointmentBooking, 0);
+
+        setStats({
+          totalFeedbacks: apiPagination.totalRecords,
+          averageOverallExperience: (totalOverall / feedback.length).toFixed(1),
+          averageAppUsability: (totalUsability / feedback.length).toFixed(1),
+          averageAppointmentBooking: (totalBooking / feedback.length).toFixed(1),
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching feedbacks:', error);
       message.error("Failed to fetch patient feedbacks");
+    } finally {
       setLoading(false);
     }
   };
@@ -174,6 +119,7 @@ const PatientFeedbacks = () => {
       ...filters,
       [filterType]: value,
     });
+    setPagination(prev => ({ ...prev, current: 1 }));
   };
 
   const handleSearchChange = (e) => {
@@ -181,8 +127,16 @@ const PatientFeedbacks = () => {
   };
 
   const handleSearch = () => {
-    // Implement search functionality
-    console.log("Searching for:", searchText);
+    setPagination(prev => ({ ...prev, current: 1 }));
+    fetchFeedbacks();
+  };
+
+  const handleTableChange = (paginationInfo) => {
+    setPagination(prev => ({
+      ...prev,
+      current: paginationInfo.current,
+      pageSize: paginationInfo.pageSize,
+    }));
   };
 
   const handleViewDetails = (record) => {
@@ -190,199 +144,130 @@ const PatientFeedbacks = () => {
     setIsModalVisible(true);
   };
 
-  const handleAction = (record) => {
-    setSelectedFeedback(record);
-    setIsResponseModalVisible(true);
+  const getRatingColor = (rating) => {
+    if (rating >= 4) return "green";
+    if (rating >= 3) return "orange";
+    return "red";
   };
 
-  const handleSendResponse = async () => {
-    if (!responseText.trim()) {
-      message.warning("Please enter a response");
-      return;
-    }
-
-    try {
-      // In a real app, this would be an API call
-      // await apiService.post(`/admin/patient-feedbacks/${selectedFeedback.id}/respond`, {
-      //   response: responseText
-      // });
-      
-      message.success("Response sent successfully");
-      setResponseText("");
-      setIsResponseModalVisible(false);
-      fetchFeedbacks(); // Refresh the list
-    } catch {
-      message.error("Failed to send response");
-    }
+  const getRatingText = (rating) => {
+    if (rating >= 4) return "Excellent";
+    if (rating >= 3) return "Good";
+    if (rating >= 2) return "Fair";
+    return "Poor";
   };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "pending":
-        return "orange";
-      case "in_progress":
-        return "blue";
-      case "resolved":
-        return "green";
-      case "closed":
-        return "red";
-      default:
-        return "default";
-    }
-  };
-
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "high":
-        return "red";
-      case "medium":
-        return "orange";
-      case "low":
-        return "green";
-      default:
-        return "default";
-    }
-  };
-
-  const getTypeColor = (type) => {
-    switch (type) {
-      case "bug_report":
-        return "red";
-      case "feature_request":
-        return "blue";
-      case "app_feedback":
-        return "green";
-      case "complaint":
-        return "orange";
-      default:
-        return "default";
-    }
-  };
-
-  const getTypeLabel = (type) => {
-    switch (type) {
-      case "bug_report":
-        return "Bug Report";
-      case "feature_request":
-        return "Feature Request";
-      case "app_feedback":
-        return "App Feedback";
-      case "complaint":
-        return "Complaint";
-      default:
-        return type;
-    }
-  };
-
-  const renderComment = (comment) => (
-    <div key={comment.id} style={{ marginBottom: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-        <Text strong>{comment.author}</Text>
-        <Text type="secondary">{new Date(comment.date).toLocaleString()}</Text>
-      </div>
-      <div style={{ 
-        background: "#f5f5f5", 
-        padding: 12, 
-        borderRadius: 6,
-        borderLeft: "3px solid #1890ff"
-      }}>
-        {comment.content}
-      </div>
-    </div>
-  );
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      width: 120,
-    },
-    {
       title: "Patient",
-      dataIndex: "reportedBy",
+      dataIndex: "patientInfo",
       key: "patient",
-      render: (reportedBy) => (
-        <div>
-          <div style={{ fontWeight: 500 }}>{reportedBy.name}</div>
-          <div style={{ fontSize: 12, color: "#666" }}>Age: {reportedBy.age}</div>
+      width: 310,
+      render: (patientInfo) => (
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <ProfileAvatar
+            name={patientInfo.name}
+            imageUrl={patientInfo.profileImage}
+            size="medium"
+          />
+          <div>
+            <div style={{ fontWeight: 500, fontSize: 14 }}>{patientInfo.name}</div>
+            <div style={{ fontSize: 12, color: "#666", display: "flex", alignItems: "center", gap: 4 }}>
+              <PhoneOutlined />
+              {patientInfo.contactNumber}
+            </div>
+          </div>
         </div>
       ),
     },
     {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      render: (type) => (
-        <Tag color={getTypeColor(type)}>{getTypeLabel(type)}</Tag>
+      title: "Overall Experience",
+      dataIndex: "overallExperience",
+      key: "overallExperience",
+      width: 150,
+      render: (rating) => (
+        <div>
+          <Rate disabled defaultValue={rating} style={{ fontSize: 12 }} />
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+            {getRatingText(rating)}
+          </div>
+        </div>
       ),
     },
     {
-      title: "Subject",
-      dataIndex: "subject",
-      key: "subject",
+      title: "App Usability",
+      dataIndex: "appUsability",
+      key: "appUsability",
+      width: 120,
+      render: (rating) => (
+        <div>
+          <Rate disabled defaultValue={rating} style={{ fontSize: 12 }} />
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+            {getRatingText(rating)}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Booking",
+      dataIndex: "appointmentBooking",
+      key: "appointmentBooking",
+      width: 160,
+      render: (rating) => (
+        <div>
+          <Rate disabled defaultValue={rating} style={{ fontSize: 12 }} />
+          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+            {getRatingText(rating)}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Comments",
+      dataIndex: "additionalComments",
+      key: "comments",
       ellipsis: true,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => (
-        <Tag color={getStatusColor(status)}>
-          {status.replace("_", " ").toUpperCase()}
-        </Tag>
-      ),
-    },
-    {
-      title: "Priority",
-      dataIndex: "priority",
-      key: "priority",
-      render: (priority) => (
-        <Tag color={getPriorityColor(priority)}>
-          {priority.toUpperCase()}
-        </Tag>
+      render: (comments) => (
+        <div style={{ maxWidth: 180 }}>
+          {comments ? (
+            <Text ellipsis={{ tooltip: comments }}>
+              {comments}
+            </Text>
+          ) : (
+            <Text type="secondary" italic>No comments</Text>
+          )}
+        </div>
       ),
     },
     {
       title: "Date",
-      dataIndex: "date",
+      dataIndex: "createdAt",
       key: "date",
-      render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: "Actions",
-      key: "actions",
-      render: (_, record) => (
-        <Space>
-          <Tooltip title="View Details">
-            <Button
-              type="text"
-              icon={<EyeOutlined />}
-              onClick={() => handleViewDetails(record)}
-            />
-          </Tooltip>
-          <Tooltip title="Respond">
-            <Button
-              type="text"
-              icon={<MessageOutlined />}
-              onClick={() => handleAction(record)}
-            />
-          </Tooltip>
-        </Space>
+      width: 120,
+      render: (date) => (
+        <div style={{ fontSize: 12 }}>
+          <div>{new Date(date).toLocaleDateString()}</div>
+          <div style={{ color: "#666" }}>
+            {new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        </div>
       ),
     },
+    // {
+    //   title: "Actions",
+    //   key: "actions",
+    //   width: 80,
+    //   render: (_, record) => (
+    //     <Tooltip title="View Details">
+    //       <Button
+    //         type="text"
+    //         icon={<EyeOutlined />}
+    //         onClick={() => handleViewDetails(record)}
+    //       />
+    //     </Tooltip>
+    //   ),
+    // },
   ];
-
-  const filteredFeedbacks = feedbacks.filter((feedback) => {
-    const matchesStatus = filters.status === "all" || feedback.status === filters.status;
-    const matchesPriority = filters.priority === "all" || feedback.priority === filters.priority;
-    const matchesType = filters.type === "all" || feedback.type === filters.type;
-    const matchesSearch = searchText === "" || 
-      feedback.subject.toLowerCase().includes(searchText.toLowerCase()) ||
-      feedback.reportedBy.name.toLowerCase().includes(searchText.toLowerCase());
-
-    return matchesStatus && matchesPriority && matchesType && matchesSearch;
-  });
 
   return (
     <AdminLayout>
@@ -393,60 +278,110 @@ const PatientFeedbacks = () => {
             Patient Feedbacks
           </Title>
           <Text type="secondary">
-            Manage and respond to feedback from patients using the platform
+            View and analyze feedback from patients about their experience
           </Text>
         </div>
+
+        {/* Statistics Cards */}
+        <Row gutter={16} style={{ marginBottom: 24 }}>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Total Feedbacks"
+                value={stats.totalFeedbacks}
+                prefix={<MessageOutlined />}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Avg. Overall Experience"
+                value={stats.averageOverallExperience}
+                prefix={<StarOutlined />}
+                suffix="/ 5"
+                valueStyle={{ color: getRatingColor(stats.averageOverallExperience) }}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Avg. App Usability"
+                value={stats.averageAppUsability}
+                prefix={<StarOutlined />}
+                suffix="/ 5"
+                valueStyle={{ color: getRatingColor(stats.averageAppUsability) }}
+              />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card>
+              <Statistic
+                title="Avg. Appointment Booking"
+                value={stats.averageAppointmentBooking}
+                prefix={<StarOutlined />}
+                suffix="/ 5"
+                valueStyle={{ color: getRatingColor(stats.averageAppointmentBooking) }}
+              />
+            </Card>
+          </Col>
+        </Row>
 
         {/* Filters and Search */}
         <Card style={{ marginBottom: 24 }}>
           <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Text>Status:</Text>
+              <Text>Overall Experience:</Text>
               <Select
-                value={filters.status}
-                onChange={(value) => handleFilterChange("status", value)}
+                value={filters.overallExperience}
+                onChange={(value) => handleFilterChange("overallExperience", value)}
                 style={{ width: 120 }}
               >
                 <Option value="all">All</Option>
-                <Option value="pending">Pending</Option>
-                <Option value="in_progress">In Progress</Option>
-                <Option value="resolved">Resolved</Option>
-                <Option value="closed">Closed</Option>
+                <Option value="5">5 Stars</Option>
+                <Option value="4">4+ Stars</Option>
+                <Option value="3">3+ Stars</Option>
+                <Option value="2">2+ Stars</Option>
+                <Option value="1">1+ Stars</Option>
               </Select>
             </div>
 
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Text>Priority:</Text>
+              <Text>App Usability:</Text>
               <Select
-                value={filters.priority}
-                onChange={(value) => handleFilterChange("priority", value)}
+                value={filters.appUsability}
+                onChange={(value) => handleFilterChange("appUsability", value)}
                 style={{ width: 120 }}
               >
                 <Option value="all">All</Option>
-                <Option value="high">High</Option>
-                <Option value="medium">Medium</Option>
-                <Option value="low">Low</Option>
+                <Option value="5">5 Stars</Option>
+                <Option value="4">4+ Stars</Option>
+                <Option value="3">3+ Stars</Option>
+                <Option value="2">2+ Stars</Option>
+                <Option value="1">1+ Stars</Option>
               </Select>
             </div>
 
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Text>Type:</Text>
+              <Text>Appointment Booking:</Text>
               <Select
-                value={filters.type}
-                onChange={(value) => handleFilterChange("type", value)}
+                value={filters.appointmentBooking}
+                onChange={(value) => handleFilterChange("appointmentBooking", value)}
                 style={{ width: 140 }}
               >
                 <Option value="all">All</Option>
-                <Option value="bug_report">Bug Report</Option>
-                <Option value="feature_request">Feature Request</Option>
-                <Option value="app_feedback">App Feedback</Option>
-                <Option value="complaint">Complaint</Option>
+                <Option value="5">5 Stars</Option>
+                <Option value="4">4+ Stars</Option>
+                <Option value="3">3+ Stars</Option>
+                <Option value="2">2+ Stars</Option>
+                <Option value="1">1+ Stars</Option>
               </Select>
             </div>
 
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: "auto" }}>
               <Input
-                placeholder="Search feedbacks..."
+                placeholder="Search by patient name..."
                 value={searchText}
                 onChange={handleSearchChange}
                 style={{ width: 250 }}
@@ -464,16 +399,19 @@ const PatientFeedbacks = () => {
         <Card>
           <Table
             columns={columns}
-            dataSource={filteredFeedbacks}
+            dataSource={feedbacks}
             loading={loading}
-            rowKey="id"
+            rowKey="_id"
             pagination={{
-              pageSize: 10,
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
               showSizeChanger: true,
               showQuickJumper: true,
               showTotal: (total, range) =>
                 `${range[0]}-${range[1]} of ${total} feedbacks`,
             }}
+            onChange={handleTableChange}
           />
         </Card>
 
@@ -488,76 +426,78 @@ const PatientFeedbacks = () => {
           {selectedFeedback && (
             <div>
               <div style={{ marginBottom: 24 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-                  <div>
-                    <Title level={4}>{selectedFeedback.subject}</Title>
-                    <div style={{ display: "flex", gap: 16, marginBottom: 8 }}>
-                      <Tag color={getTypeColor(selectedFeedback.type)}>
-                        {getTypeLabel(selectedFeedback.type)}
-                      </Tag>
-                      <Tag color={getStatusColor(selectedFeedback.status)}>
-                        {selectedFeedback.status.replace("_", " ").toUpperCase()}
-                      </Tag>
-                      <Tag color={getPriorityColor(selectedFeedback.priority)}>
-                        {selectedFeedback.priority.toUpperCase()}
-                      </Tag>
-                    </div>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div>ID: {selectedFeedback.id}</div>
-                    <div style={{ color: "#666" }}>
-                      {new Date(selectedFeedback.date).toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-
+                {/* Patient Information */}
                 <Card title="Patient Information" size="small" style={{ marginBottom: 16 }}>
-                  <div style={{ display: "flex", gap: 16 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                    <ProfileAvatar
+                      name={selectedFeedback.patientInfo.name}
+                      imageUrl={selectedFeedback.patientInfo.profileImage}
+                      size="large"
+                    />
                     <div>
-                      <Text strong>Name:</Text> {selectedFeedback.reportedBy.name}
-                    </div>
-                    <div>
-                      <Text strong>Email:</Text> {selectedFeedback.reportedBy.email}
-                    </div>
-                    <div>
-                      <Text strong>Age:</Text> {selectedFeedback.reportedBy.age}
+                      <Title level={4} style={{ margin: 0 }}>{selectedFeedback.patientInfo.name}</Title>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+                        <PhoneOutlined />
+                        <Text>{selectedFeedback.patientInfo.contactNumber}</Text>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+                        <CalendarOutlined />
+                        <Text type="secondary">
+                          {new Date(selectedFeedback.createdAt).toLocaleString()}
+                        </Text>
+                      </div>
                     </div>
                   </div>
                 </Card>
 
-                <Card title="Description" size="small" style={{ marginBottom: 16 }}>
-                  <Text>{selectedFeedback.description}</Text>
+                {/* Ratings */}
+                <Card title="Ratings" size="small" style={{ marginBottom: 16 }}>
+                  <Row gutter={16}>
+                    <Col span={8}>
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ marginBottom: 8 }}>
+                          <Text strong>Overall Experience</Text>
+                        </div>
+                        <Rate disabled defaultValue={selectedFeedback.overallExperience} />
+                        <div style={{ marginTop: 4 }}>
+                          <Text type="secondary">{getRatingText(selectedFeedback.overallExperience)}</Text>
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={8}>
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ marginBottom: 8 }}>
+                          <Text strong>App Usability</Text>
+                        </div>
+                        <Rate disabled defaultValue={selectedFeedback.appUsability} />
+                        <div style={{ marginTop: 4 }}>
+                          <Text type="secondary">{getRatingText(selectedFeedback.appUsability)}</Text>
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={8}>
+                      <div style={{ textAlign: "center" }}>
+                        <div style={{ marginBottom: 8 }}>
+                          <Text strong>Appointment Booking</Text>
+                        </div>
+                        <Rate disabled defaultValue={selectedFeedback.appointmentBooking} />
+                        <div style={{ marginTop: 4 }}>
+                          <Text type="secondary">{getRatingText(selectedFeedback.appointmentBooking)}</Text>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
                 </Card>
 
-                {selectedFeedback.comments && selectedFeedback.comments.length > 0 && (
-                  <Card title="Comments" size="small">
-                    {selectedFeedback.comments.map(renderComment)}
-                  </Card>
-                )}
+                {/* Comments */}
+                <Card title="Additional Comments" size="small">
+                  {selectedFeedback.additionalComments ? (
+                    <Text>{selectedFeedback.additionalComments}</Text>
+                  ) : (
+                    <Text type="secondary" italic>No additional comments provided</Text>
+                  )}
+                </Card>
               </div>
-            </div>
-          )}
-        </Modal>
-
-        {/* Response Modal */}
-        <Modal
-          title="Send Response"
-          visible={isResponseModalVisible}
-          onCancel={() => setIsResponseModalVisible(false)}
-          onOk={handleSendResponse}
-          okText="Send Response"
-        >
-          {selectedFeedback && (
-            <div>
-              <div style={{ marginBottom: 16 }}>
-                <Text strong>Responding to:</Text> {selectedFeedback.subject}
-              </div>
-              <TextArea
-                rows={6}
-                placeholder="Enter your response..."
-                value={responseText}
-                onChange={(e) => setResponseText(e.target.value)}
-              />
             </div>
           )}
         </Modal>

@@ -2,9 +2,9 @@ import axios from "axios";
 
 // Environment configuration
 // const DEV_URL = "https://staging.api.tellyoudoc.com/api/v1"; //   Using relative URL for dev to work with the proxy
-const DEV_URL = "http://172.16.14.108:3000/api/v1"; // Use relative URL to work with Vite proxy
+const DEV_URL = "http://172.16.14.99:3000/api/v1"; // Use relative URL to work with Vite proxy
 // const PROD_URL = "https://staging.api.tellyoudoc.com/api/v1";
-const PROD_URL = "http://172.16.14.108:3000/api/v1";
+const PROD_URL = "http://172.16.14.99:3000/api/v1";
 
 // Determine if we're in development mode based on the environment
 const isDevelopment = import.meta.env.MODE === "development";
@@ -87,12 +87,10 @@ api.interceptors.response.use(
         const { AccessToken, newRefreshToken } = response.data;
 
         // Store the new tokens in cookies
-        document.cookie = `AccessToken=${AccessToken}; path=/; max-age=${
-          60 * 60 * 24 * 30
-        }; samesite=strict`;
-        document.cookie = `RefreshToken=${newRefreshToken}; path=/; max-age=${
-          60 * 60 * 24 * 30
-        }; samesite=strict`;
+        document.cookie = `AccessToken=${AccessToken}; path=/; max-age=${60 * 60 * 24 * 30
+          }; samesite=strict`;
+        document.cookie = `RefreshToken=${newRefreshToken}; path=/; max-age=${60 * 60 * 24 * 30
+          }; samesite=strict`;
 
         // Retry the original request
         return api(originalRequest);
@@ -354,6 +352,10 @@ const AdministratorService = {
       params: statuses || {},
     }),
 
+  // Get Appointment Statistics
+  getAppointmentStatistics: () =>
+    api.get("/admin/appointments/statistics"),
+
   // Specialization Management
   // Get all specializations
   getAllSpecializations: (page, limit) => {
@@ -408,8 +410,35 @@ const AdministratorService = {
     api.get("/admin/activity/activity-logs", { params }),
   getActivityLogsStats: (params = {}) =>
     api.get("/admin/activity/activity-logs/stats", { params }),
+  getRequestsPerHour: (params = {}) =>
+    api.get("/admin/activity/activity-logs/requests-per-hour", { params }),
   getUserActivityLogs: (userId, params = {}) =>
     api.get(`/admin/activity/activity-logs/user/${userId}`, { params }),
+
+  // Administrator Logs
+  getAdministratorLogs: (adminId) =>
+    api.get(`/admin/activity/activity-logs/user/${adminId}`),
+  // Doctor Logs
+  getDoctorLogs: (doctorId) =>
+    api.get(`/admin/activity/activity-logs/user/${doctorId}`),
+  // Patient Logs
+  getPatientLogs: (patientId) =>
+    api.get(`/admin/activity/activity-logs/user/${patientId}`),
+  getAdminDoctorFeedbacks: (page = 1, limit = 10) =>
+    api.get(`/admin/feedback/doctor`, { params: { page, limit } }),
+
+  // Patient Feedback Management
+  getPatientFeedbacks: (params = {}) =>
+    api.get("/admin/feedback/patient", { params }),
+};
+
+const healthService = {
+  getServerHealth: () => {
+    // Get the current base URL and remove /api/v1 if it exists at the end
+    const currentBaseURL = api.defaults.baseURL;
+    const cleanBaseURL = currentBaseURL.replace(/\/api\/v1\/?$/, '');
+    return axios.get(`${cleanBaseURL}/health`);
+  },
 };
 
 // Create the API service object
@@ -421,6 +450,7 @@ const apiService = {
   patientDoctorService,
   appointmentService,
   AdministratorService,
+  healthService,
 };
 
 // Export both as named export and default

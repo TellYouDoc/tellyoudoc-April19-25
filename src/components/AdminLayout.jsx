@@ -18,7 +18,10 @@ import {
   FaHistory,
   FaUserCheck,
   FaMobile,
-  FaTerminal, // Add this import
+  FaTerminal,
+  FaDatabase,
+  FaServer,
+  FaChartLine,
 } from "react-icons/fa";
 import tellyouDocLogo from "../assets/tellyoudoc.png";
 import { apiService } from "../services/api.jsx";
@@ -157,6 +160,24 @@ const menuConfig = [
         path: "/admin/activity-logs",
         icon: FaHistory,
         text: "Activity Logs"
+      },
+      {
+        path: "http://13.203.147.24:8001/",
+        icon: FaDatabase,
+        text: "Redis Cache Dashboard",
+        external: true
+      },
+      {
+        path: "http://13.203.147.24:3001",
+        icon: FaServer,
+        text: "Queue Dashboard",
+        external: true
+      },
+      {
+        path: "http://13.203.147.24:3002",
+        icon: FaChartLine,
+        text: "Grafana Dashboard",
+        external: true
       }
     ]
   },
@@ -322,6 +343,7 @@ const AdminLayout = ({ children }) => {
         type: "Appointments & Reports",
         items: [
           { title: "Appointments", path: "/admin/appointments" },
+          { title: "Analytics", path: "/admin/appointment-analytics" },
           { title: "Reports", path: "/admin/reports" },
         ],
       },
@@ -405,7 +427,7 @@ const AdminLayout = ({ children }) => {
       appointmentManagement: appointmentManagementPaths.includes(path),
       kycManagement: kycManagementPaths.includes(path),
       appManagement: appManagementPaths.includes(path),
-      systemManagement: path === "/admin/websocket" || path === "/admin/activity-logs", // Auto-expand System Management when WebSocket or Activity Logs page is active
+      systemManagement: path === "/admin/websocket" || path === "/admin/activity-logs" || path === "/admin/redis-cache" || path === "/admin/queue-dashboard" || path === "/admin/grafana-dashboard", // Auto-expand System Management when any system management page is active
     });
   }, [location.pathname]);
 
@@ -876,12 +898,21 @@ const AdminLayout = ({ children }) => {
                           key={subItem.path}
                           className={location.pathname === subItem.path ? "active" : ""}
                         >
-                          <Link to={subItem.path}>
-                            <span className="admin-menu-icon">
-                              <subItem.icon />
-                            </span>
-                            <span className="admin-menu-text">{subItem.text}</span>
-                          </Link>
+                          {subItem.external ? (
+                            <a href={subItem.path} target="_blank" rel="noopener noreferrer">
+                              <span className="admin-menu-icon">
+                                <subItem.icon />
+                              </span>
+                              <span className="admin-menu-text">{subItem.text}</span>
+                            </a>
+                          ) : (
+                            <Link to={subItem.path}>
+                              <span className="admin-menu-icon">
+                                <subItem.icon />
+                              </span>
+                              <span className="admin-menu-text">{subItem.text}</span>
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>

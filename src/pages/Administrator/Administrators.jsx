@@ -17,6 +17,7 @@ import {
   Radio,
   Empty,
 } from "antd";
+import moment from "moment";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -31,6 +32,9 @@ import {
   ToolOutlined,
   BarChartOutlined,
   SearchOutlined,
+  HistoryOutlined,
+  EyeOutlined,
+  ArrowLeftOutlined,
 } from "@ant-design/icons";
 import AdminLayout from "../../components/AdminLayout";
 
@@ -110,7 +114,7 @@ const customStyles = {
     padding: "var(--spacing-4)",
     overflowX: "auto", // Add horizontal scrolling for small screens
     width: "100%", // Ensure table container takes full width
-    "& .highlight-row": {
+    "& .highlightRow": {
       background: "var(--primary-color-light) !important",
       "&:hover td": {
         background:
@@ -212,7 +216,7 @@ const customStyles = {
   },
   searchBar: {
     width: "300px",
-    ".ant-input-affix-wrapper": {
+    ".antInputAffixWrapper": {
       background: "var(--background-secondary)",
       border: "1px solid var(--border-color)",
       borderRadius: "var(--radius)",
@@ -220,7 +224,7 @@ const customStyles = {
         borderColor: "var(--primary-color)",
       },
     },
-    ".ant-input": {
+    ".antInput": {
       background: "transparent",
     },
   },
@@ -265,6 +269,12 @@ function Administrators() {
 
   const [totalAdministrators, setTotalAdministrators] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [activeTab, setActiveTab] = useState("administrators");
+  const [logs, setLogs] = useState([]);
+  const [selectedAdminForLogs, setSelectedAdminForLogs] = useState(null);
+  const [logDetailsModalVisible, setLogDetailsModalVisible] = useState(false);
+  const [selectedLogRecord, setSelectedLogRecord] = useState(null);
 
   // Define available permissions and their descriptions centrally
   const permissionConfig = {
@@ -327,6 +337,96 @@ function Administrators() {
 
   // Get all available permission keys as an array
   const allPermissionKeys = Object.keys(permissionConfig);
+
+  // Logs table columns configuration
+  const logsColumns = [
+    {
+      title: "Method",
+      dataIndex: "method",
+      key: "method",
+      width: 80,
+      render: (method) => (
+        <Tag color={getMethodColor(method)}>
+          {method}
+        </Tag>
+      ),
+    },
+    {
+      title: "Path",
+      dataIndex: "path",
+      key: "path",
+      render: (path) => (
+        <Text style={{ color: "var(--text-primary)", fontSize: "12px" }}>
+          {path}
+        </Text>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "statusCode",
+      key: "statusCode",
+      width: 80,
+      render: (statusCode) => (
+        <Tag color={getStatusColor(statusCode)}>
+          {statusCode}
+        </Tag>
+      ),
+    },
+    {
+      title: "Response Time",
+      dataIndex: "responseTime",
+      key: "responseTime",
+      width: 120,
+      render: (responseTime) => `${responseTime}ms`,
+    },
+    {
+      title: "IP Address",
+      dataIndex: "ip",
+      key: "ip",
+      width: 120,
+      render: (ip) => (
+        <Text style={{ fontSize: "12px" }}>
+          {ip}
+        </Text>
+      ),
+    },
+    {
+      title: "Time",
+      key: "time",
+      width: 150,
+      render: (_, record) => (
+        <Space direction="vertical" size={0}>
+          <Text style={{ fontSize: "12px" }}>
+            {moment(record.timestamp).format("DD MMM HH:mm")}
+          </Text>
+        </Space>
+      ),
+      sorter: (a, b) => moment(a.timestamp).unix() - moment(b.timestamp).unix(),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      width: 80,
+      align: 'center',
+      render: (_, record) => (
+        <Button
+          icon={<EyeOutlined style={{ color: "var(--text-primary)" }} />}
+          onClick={() => {
+            console.log("View button clicked for record:", record);
+            handleViewLogDetails(record);
+          }}
+          style={{
+            borderColor: "var(--border-color)",
+            background: "transparent",
+            cursor: "pointer",
+          }}
+          className="btn-premium btn-sm"
+          title="View details"
+          type="default"
+        />
+      ),
+    },
+  ];
 
   // Table columns configuration
   const columns = [
@@ -494,6 +594,15 @@ function Administrators() {
                 Delete
               </Button>
             </Popconfirm>
+            <Button
+              type="default"
+              icon={<HistoryOutlined />}
+              onClick={() => handleLogs(record)}
+              style={customStyles.actionButton}
+              className="btn-premium btn-sm btn-outline"
+            >
+              Logs
+            </Button>
           </Space>
         );
       },
@@ -508,6 +617,8 @@ function Administrators() {
       setIsLoading(true);
       const response =
         await apiService.AdministratorService.getAllAdministrators(page, limit);
+
+      // console.log("response", JSON.stringify(response.data, null, 2));
 
       if (response && response.status === 200) {
         setAdministrators(response.data.data);
@@ -753,6 +864,23 @@ function Administrators() {
     setIsPermissionsModalVisible(true);
   };
 
+  const handleLogs = async (admin) => {
+    try {
+      const response = await apiService.AdministratorService.getAdministratorLogs(admin._id);
+
+      console.log("response", JSON.stringify(response.data, null, 2));
+
+      if (response && response.status === 200) {
+        setLogs(response.data.data.logs || []);
+        setSelectedAdminForLogs(admin);
+        setActiveTab("logs");
+      }
+    } catch (error) {
+      console.error("Error fetching logs:", error);
+      message.error("Failed to fetch logs: " + (error.message || "Unknown error"));
+    }
+  };
+
   const handlePermissionsUpdate = async (values) => {
     try {
       // If the admin is a Super Admin, don't allow permission changes
@@ -924,19 +1052,6 @@ function Administrators() {
       );
     }
 
-    // // Date search
-    // if (date) {
-    //   const searchDate = date.startOf("day");
-    //   const nextDate = date.clone().endOf("day");
-
-    //   filtered = filtered.filter((admin) => {
-    //     const adminDate = new Date(admin.addedOn);
-    //     return (
-    //       adminDate >= searchDate.toDate() && adminDate <= nextDate.toDate()
-    //     );
-    //   });
-    // }
-
     setFilteredAdministrators(filtered);
   };
 
@@ -950,608 +1065,647 @@ function Administrators() {
     setEditFormRole(e.target.value);
   };
 
+  // Helper functions for logs table
+  const getStatusColor = (statusCode) => {
+    if (statusCode >= 200 && statusCode < 300) return "success";
+    if (statusCode >= 400 && statusCode < 500) return "warning";
+    if (statusCode >= 500) return "error";
+    return "default";
+  };
+
+  const getMethodColor = (method) => {
+    switch (method) {
+      case "GET": return "blue";
+      case "POST": return "green";
+      case "PUT": return "orange";
+      case "DELETE": return "red";
+      case "PATCH": return "purple";
+      default: return "default";
+    }
+  };
+
+  const handleViewLogDetails = (record) => {
+    try {
+      console.log("View log details clicked for record:", record);
+
+      if (!record) {
+        console.error("No record provided to handleViewLogDetails");
+        message.error("No log data available");
+        return;
+      }
+
+      setSelectedLogRecord(record);
+      setLogDetailsModalVisible(true);
+    } catch (error) {
+      console.error("Error in handleViewLogDetails:", error);
+      message.error("Failed to display log details: " + (error.message || "Unknown error"));
+    }
+  };
+
   return (
     <AdminLayout>
-      <div style={customStyles.pageContainer} className="premium-scrollbar">
-        <div style={customStyles.header}>
-          <div style={customStyles.headerLeft}>
-            <h1 style={customStyles.title}>Administrators</h1>
-            <Text type="secondary">
-              Manage administrator accounts and their permissions
-            </Text>
-          </div>
-          <div style={customStyles.headerRight}>
-            <div style={customStyles.searchSection}>
-              <Input
-                placeholder="Search by username, email or role"
-                prefix={
-                  <SearchOutlined style={{ color: "var(--text-secondary)" }} />
-                }
-                onChange={(e) => handleSearch(e.target.value)}
-                value={searchText}
-                style={customStyles.searchBar}
-                className="form-control-premium"
-              />
 
-              {/* Date Filter */}
-              {/* <DatePicker
-                onChange={handleDateChange}
-                style={customStyles.datePicker}
-                placeholder="Filter by date"
-                format="DD/MM/YYYY"
-                allowClear={true}
-              /> */}
-            </div>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => setIsCreateModalVisible(true)}
-              style={customStyles.createButton}
-              className="btn-premium"
-            >
-              Create Administrator
-            </Button>
-          </div>
-        </div>
-
-        {/* Style the table */}
-        <div
-          style={customStyles.table}
-          className="premium-card premium-table-responsive"
-        >
-          <Table
-            columns={columns}
-            dataSource={filteredAdministrators}
-            rowKey="_id"
-            pagination={{
-              pageSize: 10,
-              current: currentPage,
-              onChange: (page) => setCurrentPage(page),
-              total: totalAdministrators,
-              showSizeChanger: false,
-              showTotal: (total) => `Total ${total} administrators`,
-            }}
-            rowClassName={(record) =>
-              currentAdmin && record._id === currentAdmin.id
-                ? "highlight-row"
-                : ""
-            }
-            scroll={{ x: "max-content" }}
-            size="middle"
-          />
-        </div>
-
-        {/* Create Modal */}
-        <Modal
-          title={
-            <div>
-              <div style={{ marginBottom: "8px" }}>Create Administrator</div>
-              <Text
-                type="secondary"
-                style={{ fontSize: "var(--font-size-sm)" }}
-              >
-                Add a new administrator with specific permissions
+      {/* Administrator List Section */}
+      {activeTab === "administrators" && (
+        // Administrator List Section
+        < div style={customStyles.pageContainer} className="premium-scrollbar">
+          <div style={customStyles.header}>
+            <div style={customStyles.headerLeft}>
+              <h1 style={customStyles.title}>Administrators</h1>
+              <Text type="secondary">
+                Manage administrator accounts and their permissions
               </Text>
             </div>
-          }
-          open={isCreateModalVisible}
-          onCancel={() => {
-            setIsCreateModalVisible(false);
-            form.resetFields();
-            setUsernameSuggestions([]);
-            setCurrentUsername("");
-          }}
-          footer={null}
-          styles={customStyles.modal}
-          width={600}
-          centered
-        >
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleCreate}
-            requiredMark="optional"
-          >
-            <div style={customStyles.formSection}>
-              <Text strong style={{ display: "block", marginBottom: "16px" }}>
-                Administrator Information
-              </Text>
-              <Form.Item
-                name="email"
-                label="Email Address"
-                rules={[
-                  { required: true, message: "Please input the email!" },
-                  { type: "email", message: "Please enter a valid email!" },
-                ]}
-                tooltip="This email will be used for login and notifications"
-              >
+            <div style={customStyles.headerRight}>
+              <div style={customStyles.searchSection}>
                 <Input
-                  prefix={<MailOutlined className="site-form-item-icon" />}
-                  placeholder="Enter email address"
-                  className="form-control-premium"
-                  onChange={handleEmailChange}
-                />
-              </Form.Item>
-              <Form.Item
-                name="username"
-                label="Username"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select or enter a username!",
-                  },
-                ]}
-                tooltip="Select from suggestions or enter a custom username"
-              >
-                <AutoComplete
-                  options={usernameSuggestions}
-                  value={currentUsername}
-                  onChange={(value) => setCurrentUsername(value)}
-                  style={{ width: "100%" }}
-                >
-                  <Input
-                    prefix={<UserOutlined className="site-form-item-icon" />}
-                    placeholder="Select or enter username"
-                    className="form-control-premium"
-                  />
-                </AutoComplete>
-              </Form.Item>
-              <Form.Item
-                name="password"
-                label="Password"
-                rules={[
-                  { required: true, message: "Please input the password!" },
-                  {
-                    min: 8,
-                    message: "Password must be at least 8 characters!",
-                  },
-                ]}
-                tooltip="Password must be at least 8 characters long"
-              >
-                <Input.Password
-                  prefix={<LockOutlined className="site-form-item-icon" />}
-                  placeholder="Enter password"
+                  placeholder="Search by username, email or role"
+                  prefix={
+                    <SearchOutlined style={{ color: "var(--text-secondary)" }} />
+                  }
+                  onChange={(e) => handleSearch(e.target.value)}
+                  value={searchText}
+                  style={customStyles.searchBar}
                   className="form-control-premium"
                 />
-              </Form.Item>
-              <Form.Item
-                name="role"
-                label="Role"
-                rules={[{ required: true, message: "Please select a role!" }]}
-                tooltip="Super Admin has all permissions by default"
-                initialValue="Admin"
-              >
-                <div>
-                  <Radio.Group
-                    style={{ marginBottom: "8px" }}
-                    onChange={handleRoleChange}
-                    value={createFormRole}
-                  >
-                    <Radio value="Admin">Admin</Radio>
-                    <Radio value="Super Admin">Super Admin</Radio>
-                  </Radio.Group>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "var(--text-secondary)",
-                      marginTop: "8px",
-                      background: "var(--background-secondary)",
-                      padding: "8px 12px",
-                      borderRadius: "var(--radius)",
-                      border: "1px solid var(--border-color)",
-                    }}
-                  >
-                    <div style={{ marginBottom: "4px" }}>
-                      <strong>Super Admin:</strong> Has full access to all
-                      system features automatically
-                    </div>
-                    <div>
-                      <strong>Admin:</strong> Has limited access defined by
-                      assigned permissions
-                    </div>
-                  </div>
-                </div>
-              </Form.Item>
 
-              {/* Permissions section - only shown for Admin role */}
-              {createFormRole === "Admin" && (
-                <div style={{ ...customStyles.formSection, marginTop: "20px" }}>
-                  <Text
-                    strong
-                    style={{ display: "block", marginBottom: "16px" }}
-                  >
-                    Permissions
-                  </Text>
-                  <div style={customStyles.formDescription}>
-                    Set the specific permissions for this administrator
-                  </div>
-
-                  {/* Dynamically generate permission items based on permissionConfig */}
-                  {allPermissionKeys.map((permKey) => (
-                    <div key={permKey} style={customStyles.permissionItem}>
-                      <div>
-                        <div style={customStyles.permissionTitle}>
-                          {permissionConfig[permKey].icon}{" "}
-                          {permissionConfig[permKey].label}
-                        </div>
-                        <div style={customStyles.permissionDescription}>
-                          {permissionConfig[permKey].description}
-                        </div>
-                      </div>
-                      <Form.Item
-                        name={permKey}
-                        valuePropName="checked"
-                        initialValue={false}
-                      >
-                        <Switch style={customStyles.switchStyle} />
-                      </Form.Item>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <Form.Item className="flex justify-end">
-              <Space>
-                <Button
-                  onClick={() => {
-                    setIsCreateModalVisible(false);
-                    form.resetFields();
-                    setUsernameSuggestions([]);
-                    setCurrentUsername("");
-                  }}
-                  disabled={isLoading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="btn-premium"
-                  loading={isLoading}
-                >
-                  Create Administrator
-                </Button>
-              </Space>
-            </Form.Item>
-          </Form>
-        </Modal>
-
-        {/* Edit Modal */}
-        <Modal
-          title={
-            <div>
-              <div style={{ marginBottom: "8px" }}>Edit Administrator</div>
-              <Text
-                type="secondary"
-                style={{ fontSize: "var(--font-size-sm)" }}
-              >
-                Modify administrator information
-              </Text>
-            </div>
-          }
-          open={isEditModalVisible}
-          onCancel={() => {
-            setIsEditModalVisible(false);
-            form.resetFields();
-            setUsernameSuggestions([]);
-            setCurrentUsername("");
-          }}
-          footer={null}
-          styles={customStyles.modal}
-          width={600}
-          centered
-        >
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleUpdate}
-            requiredMark="optional"
-          >
-            <div style={customStyles.formSection}>
-              <Text strong style={{ display: "block", marginBottom: "16px" }}>
-                Administrator Information
-              </Text>
-              <Form.Item
-                name="email"
-                label="Email Address"
-                rules={[
-                  { required: true, message: "Please input the email!" },
-                  { type: "email", message: "Please enter a valid email!" },
-                ]}
-                tooltip="This email will be used for login and notifications"
-              >
-                <Input
-                  prefix={<MailOutlined className="site-form-item-icon" />}
-                  placeholder="Enter email address"
-                  className="form-control-premium"
-                  onChange={handleEmailChange}
-                />
-              </Form.Item>
-              <Form.Item
-                name="username"
-                label="Username"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please select or enter a username!",
-                  },
-                ]}
-              >
-                <AutoComplete
-                  options={usernameSuggestions}
-                  style={{ width: "100%" }}
-                >
-                  <Input
-                    prefix={<UserOutlined className="site-form-item-icon" />}
-                    placeholder="Select or enter username"
-                    className="form-control-premium"
-                  />
-                </AutoComplete>
-              </Form.Item>
-              <Form.Item
-                name="role"
-                label="Role"
-                rules={[{ required: true, message: "Please select a role!" }]}
-                tooltip="Super Admin has all permissions by default"
-              >
-                <div>
-                  <Radio.Group
-                    style={{ marginBottom: "8px" }}
-                    onChange={handleEditRoleChange}
-                    value={editFormRole}
-                  >
-                    <Radio value="Admin">Admin</Radio>
-                    <Radio value="Super Admin">Super Admin</Radio>
-                  </Radio.Group>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "var(--text-secondary)",
-                      marginTop: "8px",
-                      background: "var(--background-secondary)",
-                      padding: "8px 12px",
-                      borderRadius: "var(--radius)",
-                      border: "1px solid var(--border-color)",
-                    }}
-                  >
-                    <div style={{ marginBottom: "4px" }}>
-                      <strong>Note:</strong> Changing roles will update
-                      permissions automatically.
-                    </div>
-                    <div style={{ marginBottom: "4px" }}>
-                      <strong>Super Admin:</strong> Will gain all permissions
-                    </div>
-                    <div>
-                      <strong>Admin:</strong> Will need permissions assigned
-                      manually
-                    </div>
-                  </div>
-                </div>
-              </Form.Item>
-
-              {/* Permissions section - only shown for Admin role */}
-              {editFormRole === "Admin" && (
-                <div style={{ ...customStyles.formSection, marginTop: "20px" }}>
-                  <Text
-                    strong
-                    style={{ display: "block", marginBottom: "16px" }}
-                  >
-                    Permissions
-                  </Text>
-                  <div style={customStyles.formDescription}>
-                    Set the specific permissions for this administrator
-                  </div>
-
-                  {/* Dynamically generate permission items based on permissionConfig */}
-                  {allPermissionKeys.map((permKey) => (
-                    <div key={permKey} style={customStyles.permissionItem}>
-                      <div>
-                        <div style={customStyles.permissionTitle}>
-                          {permissionConfig[permKey].icon}{" "}
-                          {permissionConfig[permKey].label}
-                        </div>
-                        <div style={customStyles.permissionDescription}>
-                          {permissionConfig[permKey].description}
-                        </div>
-                      </div>
-                      <Form.Item
-                        name={`permissions_${permKey}`}
-                        valuePropName="checked"
-                        initialValue={false}
-                      >
-                        <Switch style={customStyles.switchStyle} />
-                      </Form.Item>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div
-              style={{
-                borderTop: "1px solid var(--border-color)",
-                paddingTop: "20px",
-                marginBottom: "20px",
-              }}
-            >
-              <Text strong style={{ display: "block", marginBottom: "16px" }}>
-                Password Management
-              </Text>
+                {/* Date Filter */}
+                {/* <DatePicker
+              onChange={handleDateChange}
+              style={customStyles.datePicker}
+              placeholder="Filter by date"
+              format="DD/MM/YYYY"
+              allowClear={true}
+            /> */}
+              </div>
               <Button
-                icon={<LockOutlined />}
-                onClick={() => {
-                  message.success(
-                    "Password reset link sent to administrator's email"
-                  );
-                }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "0 15px",
-                }}
-                className="btn-premium btn-outline"
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setIsCreateModalVisible(true)}
+                style={customStyles.createButton}
+                className="btn-premium"
               >
-                Send Password Reset Link
+                Create Administrator
               </Button>
             </div>
+          </div>
 
-            <Form.Item className="flex justify-end">
-              <Space>
-                <Button
-                  onClick={() => {
-                    setIsEditModalVisible(false);
-                    form.resetFields();
-                    setUsernameSuggestions([]);
-                    setCurrentUsername("");
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="btn-premium"
-                >
-                  Update Administrator
-                </Button>
-              </Space>
-            </Form.Item>
-          </Form>
-        </Modal>
+          {/* Style the table */}
+          <div
+            style={customStyles.table}
+            className="premium-card premium-table-responsive"
+          >
+            <Table
+              columns={columns}
+              dataSource={filteredAdministrators}
+              rowKey="_id"
+              pagination={{
+                pageSize: 10,
+                current: currentPage,
+                onChange: (page) => setCurrentPage(page),
+                total: totalAdministrators,
+                showSizeChanger: false,
+                showTotal: (total) => `Total ${total} administrators`,
+              }}
+              rowClassName={(record) =>
+                currentAdmin && record._id === currentAdmin.id
+                  ? "highlightRow"
+                  : ""
+              }
+              scroll={{ x: "max-content" }}
+              size="middle"
+            />
+          </div>
 
-        {/* View Details Modal */}
-        <Modal
-          title={
-            <div>
-              <div style={{ marginBottom: "8px" }}>Administrator Details</div>
-              <Text
-                type="secondary"
-                style={{ fontSize: "var(--font-size-sm)" }}
-              >
-                Complete information about this administrator
-              </Text>
-            </div>
-          }
-          open={isViewDetailsModalVisible}
-          onCancel={() => setIsViewDetailsModalVisible(false)}
-          footer={[
-            <Button
-              key="close"
-              onClick={() => setIsViewDetailsModalVisible(false)}
+          {/* Create Modal */}
+          <Modal
+            title={
+              <div>
+                <div style={{ marginBottom: "8px" }}>Create Administrator</div>
+                <Text
+                  type="secondary"
+                  style={{ fontSize: "var(--font-size-sm)" }}
+                >
+                  Add a new administrator with specific permissions
+                </Text>
+              </div>
+            }
+            open={isCreateModalVisible}
+            onCancel={() => {
+              setIsCreateModalVisible(false);
+              form.resetFields();
+              setUsernameSuggestions([]);
+              setCurrentUsername("");
+            }}
+            footer={null}
+            styles={customStyles.modal}
+            width={600}
+            centered
+          >
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleCreate}
+              requiredMark="optional"
             >
-              Close
-            </Button>,
-          ]}
-          styles={customStyles.modal}
-          width={500}
-          centered
-        >
-          {selectedAdmin && (
-            <div style={{ padding: "16px 0" }}>
-              <div style={{ marginBottom: "24px" }}>
-                <div
+              <div style={customStyles.formSection}>
+                <Text strong style={{ display: "block", marginBottom: "16px" }}>
+                  Administrator Information
+                </Text>
+                <Form.Item
+                  name="email"
+                  label="Email Address"
+                  rules={[
+                    { required: true, message: "Please input the email!" },
+                    { type: "email", message: "Please enter a valid email!" },
+                  ]}
+                  tooltip="This email will be used for login and notifications"
+                >
+                  <Input
+                    prefix={<MailOutlined className="site-form-item-icon" />}
+                    placeholder="Enter email address"
+                    className="form-control-premium"
+                    onChange={handleEmailChange}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="username"
+                  label="Username"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select or enter a username!",
+                    },
+                  ]}
+                  tooltip="Select from suggestions or enter a custom username"
+                >
+                  <AutoComplete
+                    options={usernameSuggestions}
+                    value={currentUsername}
+                    onChange={(value) => setCurrentUsername(value)}
+                    style={{ width: "100%" }}
+                  >
+                    <Input
+                      prefix={<UserOutlined className="site-form-item-icon" />}
+                      placeholder="Select or enter username"
+                      className="form-control-premium"
+                    />
+                  </AutoComplete>
+                </Form.Item>
+                <Form.Item
+                  name="password"
+                  label="Password"
+                  rules={[
+                    { required: true, message: "Please input the password!" },
+                    {
+                      min: 8,
+                      message: "Password must be at least 8 characters!",
+                    },
+                  ]}
+                  tooltip="Password must be at least 8 characters long"
+                >
+                  <Input.Password
+                    prefix={<LockOutlined className="site-form-item-icon" />}
+                    placeholder="Enter password"
+                    className="form-control-premium"
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="role"
+                  label="Role"
+                  rules={[{ required: true, message: "Please select a role!" }]}
+                  tooltip="Super Admin has all permissions by default"
+                  initialValue="Admin"
+                >
+                  <div>
+                    <Radio.Group
+                      style={{ marginBottom: "8px" }}
+                      onChange={handleRoleChange}
+                      value={createFormRole}
+                    >
+                      <Radio value="Admin">Admin</Radio>
+                      <Radio value="Super Admin">Super Admin</Radio>
+                    </Radio.Group>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        color: "var(--text-secondary)",
+                        marginTop: "8px",
+                        background: "var(--background-secondary)",
+                        padding: "8px 12px",
+                        borderRadius: "var(--radius)",
+                        border: "1px solid var(--border-color)",
+                      }}
+                    >
+                      <div style={{ marginBottom: "4px" }}>
+                        <strong>Super Admin:</strong> Has full access to all
+                        system features automatically
+                      </div>
+                      <div>
+                        <strong>Admin:</strong> Has limited access defined by
+                        assigned permissions
+                      </div>
+                    </div>
+                  </div>
+                </Form.Item>
+
+                {/* Permissions section - only shown for Admin role */}
+                {createFormRole === "Admin" && (
+                  <div style={{ ...customStyles.formSection, marginTop: "20px" }}>
+                    <Text
+                      strong
+                      style={{ display: "block", marginBottom: "16px" }}
+                    >
+                      Permissions
+                    </Text>
+                    <div style={customStyles.formDescription}>
+                      Set the specific permissions for this administrator
+                    </div>
+
+                    {/* Dynamically generate permission items based on permissionConfig */}
+                    {allPermissionKeys.map((permKey) => (
+                      <div key={permKey} style={customStyles.permissionItem}>
+                        <div>
+                          <div style={customStyles.permissionTitle}>
+                            {permissionConfig[permKey].icon}{" "}
+                            {permissionConfig[permKey].label}
+                          </div>
+                          <div style={customStyles.permissionDescription}>
+                            {permissionConfig[permKey].description}
+                          </div>
+                        </div>
+                        <Form.Item
+                          name={permKey}
+                          valuePropName="checked"
+                          initialValue={false}
+                        >
+                          <Switch style={customStyles.switchStyle} />
+                        </Form.Item>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <Form.Item className="flex justify-end">
+                <Space>
+                  <Button
+                    onClick={() => {
+                      setIsCreateModalVisible(false);
+                      form.resetFields();
+                      setUsernameSuggestions([]);
+                      setCurrentUsername("");
+                    }}
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="btn-premium"
+                    loading={isLoading}
+                  >
+                    Create Administrator
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </Modal>
+
+          {/* Edit Modal */}
+          <Modal
+            title={
+              <div>
+                <div style={{ marginBottom: "8px" }}>Edit Administrator</div>
+                <Text
+                  type="secondary"
+                  style={{ fontSize: "var(--font-size-sm)" }}
+                >
+                  Modify administrator information
+                </Text>
+              </div>
+            }
+            open={isEditModalVisible}
+            onCancel={() => {
+              setIsEditModalVisible(false);
+              form.resetFields();
+              setUsernameSuggestions([]);
+              setCurrentUsername("");
+            }}
+            footer={null}
+            styles={customStyles.modal}
+            width={600}
+            centered
+          >
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleUpdate}
+              requiredMark="optional"
+            >
+              <div style={customStyles.formSection}>
+                <Text strong style={{ display: "block", marginBottom: "16px" }}>
+                  Administrator Information
+                </Text>
+                <Form.Item
+                  name="email"
+                  label="Email Address"
+                  rules={[
+                    { required: true, message: "Please input the email!" },
+                    { type: "email", message: "Please enter a valid email!" },
+                  ]}
+                  tooltip="This email will be used for login and notifications"
+                >
+                  <Input
+                    prefix={<MailOutlined className="site-form-item-icon" />}
+                    placeholder="Enter email address"
+                    className="form-control-premium"
+                    onChange={handleEmailChange}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="username"
+                  label="Username"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select or enter a username!",
+                    },
+                  ]}
+                >
+                  <AutoComplete
+                    options={usernameSuggestions}
+                    style={{ width: "100%" }}
+                  >
+                    <Input
+                      prefix={<UserOutlined className="site-form-item-icon" />}
+                      placeholder="Select or enter username"
+                      className="form-control-premium"
+                    />
+                  </AutoComplete>
+                </Form.Item>
+                <Form.Item
+                  name="role"
+                  label="Role"
+                  rules={[{ required: true, message: "Please select a role!" }]}
+                  tooltip="Super Admin has all permissions by default"
+                >
+                  <div>
+                    <Radio.Group
+                      style={{ marginBottom: "8px" }}
+                      onChange={handleEditRoleChange}
+                      value={editFormRole}
+                    >
+                      <Radio value="Admin">Admin</Radio>
+                      <Radio value="Super Admin">Super Admin</Radio>
+                    </Radio.Group>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        color: "var(--text-secondary)",
+                        marginTop: "8px",
+                        background: "var(--background-secondary)",
+                        padding: "8px 12px",
+                        borderRadius: "var(--radius)",
+                        border: "1px solid var(--border-color)",
+                      }}
+                    >
+                      <div style={{ marginBottom: "4px" }}>
+                        <strong>Note:</strong> Changing roles will update
+                        permissions automatically.
+                      </div>
+                      <div style={{ marginBottom: "4px" }}>
+                        <strong>Super Admin:</strong> Will gain all permissions
+                      </div>
+                      <div>
+                        <strong>Admin:</strong> Will need permissions assigned
+                        manually
+                      </div>
+                    </div>
+                  </div>
+                </Form.Item>
+
+                {/* Permissions section - only shown for Admin role */}
+                {editFormRole === "Admin" && (
+                  <div style={{ ...customStyles.formSection, marginTop: "20px" }}>
+                    <Text
+                      strong
+                      style={{ display: "block", marginBottom: "16px" }}
+                    >
+                      Permissions
+                    </Text>
+                    <div style={customStyles.formDescription}>
+                      Set the specific permissions for this administrator
+                    </div>
+
+                    {/* Dynamically generate permission items based on permissionConfig */}
+                    {allPermissionKeys.map((permKey) => (
+                      <div key={permKey} style={customStyles.permissionItem}>
+                        <div>
+                          <div style={customStyles.permissionTitle}>
+                            {permissionConfig[permKey].icon}{" "}
+                            {permissionConfig[permKey].label}
+                          </div>
+                          <div style={customStyles.permissionDescription}>
+                            {permissionConfig[permKey].description}
+                          </div>
+                        </div>
+                        <Form.Item
+                          name={`permissions_${permKey}`}
+                          valuePropName="checked"
+                          initialValue={false}
+                        >
+                          <Switch style={customStyles.switchStyle} />
+                        </Form.Item>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div
+                style={{
+                  borderTop: "1px solid var(--border-color)",
+                  paddingTop: "20px",
+                  marginBottom: "20px",
+                }}
+              >
+                <Text strong style={{ display: "block", marginBottom: "16px" }}>
+                  Password Management
+                </Text>
+                <Button
+                  icon={<LockOutlined />}
+                  onClick={() => {
+                    message.success(
+                      "Password reset link sent to administrator's email"
+                    );
+                  }}
                   style={{
-                    position: "relative",
                     display: "flex",
                     alignItems: "center",
-                    gap: "12px",
-                    marginBottom: "16px",
-                    padding: "16px",
-                    background: "var(--background-secondary)",
-                    borderRadius: "var(--radius)",
-                    border: "1px solid var(--border-color)",
+                    gap: "8px",
+                    padding: "0 15px",
                   }}
+                  className="btn-premium btn-outline"
                 >
-                  <UserOutlined
-                    style={{ color: "var(--primary-color)", fontSize: "20px" }}
-                  />
-                  <div style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontWeight: "600",
-                          color: "var(--text-primary)",
-                          fontSize: "16px",
-                        }}
-                      >
-                        {selectedAdmin.username}
-                      </div>
-                      {currentAdmin &&
-                        selectedAdmin._id === currentAdmin.id && (
-                          <Tag
-                            style={{
-                              background: "var(--primary-color-light)",
-                              borderColor: "var(--primary-color)",
-                              color: "var(--primary-color)",
-                              borderRadius: "var(--radius)",
-                              padding: "0 8px",
-                              fontSize: "12px",
-                            }}
-                          >
-                            You
-                          </Tag>
-                        )}
-                    </div>
-                    <div
-                      style={{
-                        color: "var(--text-secondary)",
-                        fontSize: "14px",
-                      }}
-                    >
-                      {selectedAdmin.email}
-                    </div>
-                  </div>
-                  <Tag
-                    style={{
-                      position: "absolute",
-                      top: "12px",
-                      right: "12px",
-                      background:
-                        selectedAdmin.role === "superadmin"
-                          ? "var(--primary-color)"
-                          : "var(--text-primary)",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "var(--radius)",
-                      padding: "4px 12px",
-                      fontSize: "12px",
-                      fontWeight: "500",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    }}
-                  >
-                    {selectedAdmin.role === "superadmin"
-                      ? "Super Admin"
-                      : "Admin"}
-                  </Tag>
-                </div>
+                  Send Password Reset Link
+                </Button>
               </div>
 
-              <div style={{ display: "grid", gap: "16px" }}>
-                <div style={customStyles.permissionItem}>
-                  <div>
-                    <div style={customStyles.permissionTitle}>
-                      <SettingOutlined /> Permissions
+              <Form.Item className="flex justify-end">
+                <Space>
+                  <Button
+                    onClick={() => {
+                      setIsEditModalVisible(false);
+                      form.resetFields();
+                      setUsernameSuggestions([]);
+                      setCurrentUsername("");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="btn-premium"
+                  >
+                    Update Administrator
+                  </Button>
+                </Space>
+              </Form.Item>
+            </Form>
+          </Modal>
+
+          {/* View Details Modal */}
+          <Modal
+            title={
+              <div>
+                <div style={{ marginBottom: "8px" }}>Administrator Details</div>
+                <Text
+                  type="secondary"
+                  style={{ fontSize: "var(--font-size-sm)" }}
+                >
+                  Complete information about this administrator
+                </Text>
+              </div>
+            }
+            open={isViewDetailsModalVisible}
+            onCancel={() => setIsViewDetailsModalVisible(false)}
+            footer={[
+              <Button
+                key="close"
+                onClick={() => setIsViewDetailsModalVisible(false)}
+              >
+                Close
+              </Button>,
+            ]}
+            styles={customStyles.modal}
+            width={500}
+            centered
+          >
+            {selectedAdmin && (
+              <div style={{ padding: "16px 0" }}>
+                <div style={{ marginBottom: "24px" }}>
+                  <div
+                    style={{
+                      position: "relative",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      marginBottom: "16px",
+                      padding: "16px",
+                      background: "var(--background-secondary)",
+                      borderRadius: "var(--radius)",
+                      border: "1px solid var(--border-color)",
+                    }}
+                  >
+                    <UserOutlined
+                      style={{ color: "var(--primary-color)", fontSize: "20px" }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontWeight: "600",
+                            color: "var(--text-primary)",
+                            fontSize: "16px",
+                          }}
+                        >
+                          {selectedAdmin.username}
+                        </div>
+                        {currentAdmin &&
+                          selectedAdmin._id === currentAdmin.id && (
+                            <Tag
+                              style={{
+                                background: "var(--primary-color-light)",
+                                borderColor: "var(--primary-color)",
+                                color: "var(--primary-color)",
+                                borderRadius: "var(--radius)",
+                                padding: "0 8px",
+                                fontSize: "12px",
+                              }}
+                            >
+                              You
+                            </Tag>
+                          )}
+                      </div>
+                      <div
+                        style={{
+                          color: "var(--text-secondary)",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {selectedAdmin.email}
+                      </div>
                     </div>
-                    <div style={customStyles.permissionDescription}>
+                    <Tag
+                      style={{
+                        position: "absolute",
+                        top: "12px",
+                        right: "12px",
+                        background:
+                          selectedAdmin.role === "superadmin"
+                            ? "var(--primary-color)"
+                            : "var(--text-primary)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "var(--radius)",
+                        padding: "4px 12px",
+                        fontSize: "12px",
+                        fontWeight: "500",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                      }}
+                    >
                       {selectedAdmin.role === "superadmin"
-                        ? "All Permissions (Super Admin)"
-                        : `${
-                            selectedAdmin.permissions?.length || 0
-                          } active permissions`}
-                    </div>
+                        ? "Super Admin"
+                        : "Admin"}
+                    </Tag>
                   </div>
                 </div>
 
-                {selectedAdmin.role !== "superadmin" &&
-                  selectedAdmin.permissions &&
-                  selectedAdmin.permissions.length > 0 && (
+                <div style={{ display: "grid", gap: "16px" }}>
+                  <div style={customStyles.permissionItem}>
+                    <div>
+                      <div style={customStyles.permissionTitle}>
+                        <SettingOutlined /> Permissions
+                      </div>
+                      <div style={customStyles.permissionDescription}>
+                        {selectedAdmin.role === "superadmin"
+                          ? "All Permissions (Super Admin)"
+                          : `${selectedAdmin.permissions?.length || 0
+                          } active permissions`}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Show individual permissions for all admins */}
+                  {selectedAdmin.permissions && selectedAdmin.permissions.length > 0 && (
                     <div
                       style={{
                         background: "var(--background-secondary)",
@@ -1567,7 +1721,9 @@ function Administrators() {
                           color: "var(--text-primary)",
                         }}
                       >
-                        Active Permissions:
+                        {selectedAdmin.role === "superadmin"
+                          ? "All Permissions:"
+                          : "Active Permissions:"}
                       </div>
                       <div
                         style={{
@@ -1595,269 +1751,1261 @@ function Administrators() {
                     </div>
                   )}
 
-                <div style={customStyles.permissionItem}>
-                  <div>
-                    <div style={customStyles.permissionTitle}>
-                      <FileTextOutlined /> Added On
-                    </div>
-                  </div>
-                  <span style={{ color: "var(--text-primary)" }}>
-                    {formatDate(selectedAdmin.createdAt)}
-                  </span>
-                </div>
-
-                <div style={customStyles.permissionItem}>
-                  <div>
-                    <div style={customStyles.permissionTitle}>
-                      <BarChartOutlined /> Last Login
-                    </div>
-                  </div>
-                  <span style={{ color: "var(--text-primary)" }}>
-                    {formatDate(selectedAdmin.lastLogin)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-        </Modal>
-
-        {/* Permissions Modal */}
-        <Modal
-          title={
-            <div>
-              <div style={{ marginBottom: "8px" }}>Change Permissions</div>
-              <Text
-                type="secondary"
-                style={{ fontSize: "var(--font-size-sm)" }}
-              >
-                Manage administrator access and capabilities
-              </Text>
-            </div>
-          }
-          open={isPermissionsModalVisible}
-          onCancel={() => {
-            setIsPermissionsModalVisible(false);
-            permissionsForm.resetFields();
-          }}
-          footer={null}
-          styles={customStyles.modal}
-          width={600}
-          centered
-        >
-          {selectedAdmin && selectedAdmin.role === "Super Admin" ? (
-            <div>
-              <div
-                style={{
-                  background: "var(--background-secondary)",
-                  padding: "20px",
-                  borderRadius: "var(--radius)",
-                  marginBottom: "20px",
-                  textAlign: "center",
-                }}
-              >
-                <InfoCircleOutlined
-                  style={{
-                    fontSize: "24px",
-                    color: "var(--primary-color)",
-                    marginBottom: "12px",
-                  }}
-                />
-                <Text strong style={{ display: "block", fontSize: "16px" }}>
-                  Super Admin Role
-                </Text>
-                <Text style={{ marginTop: "8px" }}>
-                  Super Administrators automatically have all permissions
-                  granted. These permissions cannot be modified individually.
-                </Text>
-              </div>
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Button
-                  onClick={() => setIsPermissionsModalVisible(false)}
-                  type="primary"
-                  className="btn-premium"
-                >
-                  Close
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <Form
-              form={permissionsForm}
-              layout="vertical"
-              onFinish={handlePermissionsUpdate}
-            >
-              <div style={customStyles.formSection}>
-                <Text strong style={{ display: "block", marginBottom: "16px" }}>
-                  Access Control
-                </Text>
-                <div style={customStyles.formDescription}>
-                  Toggle permissions to control what this administrator can
-                  access and modify in the system.
-                </div>
-
-                {/* Dynamically generate permission items based on permissionConfig */}
-                {allPermissionKeys.map((permKey) => (
-                  <div key={permKey} style={customStyles.permissionItem}>
+                  <div style={customStyles.permissionItem}>
                     <div>
                       <div style={customStyles.permissionTitle}>
-                        {permissionConfig[permKey].icon}{" "}
-                        {permissionConfig[permKey].label}
-                      </div>
-                      <div style={customStyles.permissionDescription}>
-                        {permissionConfig[permKey].description}
+                        <FileTextOutlined /> Added On
                       </div>
                     </div>
-                    <Form.Item name={permKey} valuePropName="checked" noStyle>
-                      <Switch style={customStyles.switchStyle} />
-                    </Form.Item>
+                    <span style={{ color: "var(--text-primary)" }}>
+                      {formatDate(selectedAdmin.createdAt)}
+                    </span>
                   </div>
-                ))}
-              </div>
 
-              <Form.Item className="flex justify-end">
-                <Space>
-                  <Button
-                    onClick={() => {
-                      setIsPermissionsModalVisible(false);
-                      permissionsForm.resetFields();
+                  <div style={customStyles.permissionItem}>
+                    <div>
+                      <div style={customStyles.permissionTitle}>
+                        <BarChartOutlined /> Last Login
+                      </div>
+                    </div>
+                    <span style={{ color: "var(--text-primary)" }}>
+                      {formatDate(selectedAdmin.lastLogin)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </Modal>
+
+          {/* Permissions Modal */}
+          <Modal
+            title={
+              <div>
+                <div style={{ marginBottom: "8px" }}>Change Permissions</div>
+                <Text
+                  type="secondary"
+                  style={{ fontSize: "var(--font-size-sm)" }}
+                >
+                  Manage administrator access and capabilities
+                </Text>
+              </div>
+            }
+            open={isPermissionsModalVisible}
+            onCancel={() => {
+              setIsPermissionsModalVisible(false);
+              permissionsForm.resetFields();
+            }}
+            footer={null}
+            styles={customStyles.modal}
+            width={600}
+            centered
+          >
+            {selectedAdmin && selectedAdmin.role === "Super Admin" ? (
+              <div>
+                <div
+                  style={{
+                    background: "var(--background-secondary)",
+                    padding: "20px",
+                    borderRadius: "var(--radius)",
+                    marginBottom: "20px",
+                    textAlign: "center",
+                  }}
+                >
+                  <InfoCircleOutlined
+                    style={{
+                      fontSize: "24px",
+                      color: "var(--primary-color)",
+                      marginBottom: "12px",
                     }}
-                  >
-                    Cancel
-                  </Button>
+                  />
+                  <Text strong style={{ display: "block", fontSize: "16px" }}>
+                    Super Admin Role
+                  </Text>
+                  <Text style={{ marginTop: "8px" }}>
+                    Super Administrators automatically have all permissions
+                    granted. These permissions cannot be modified individually.
+                  </Text>
+                </div>
+                <div style={{ display: "flex", justifyContent: "center" }}>
                   <Button
+                    onClick={() => setIsPermissionsModalVisible(false)}
                     type="primary"
-                    htmlType="submit"
                     className="btn-premium"
                   >
-                    Update Permissions
+                    Close
                   </Button>
-                </Space>
-              </Form.Item>
-            </Form>
-          )}
-        </Modal>
-
-        {/* Debug Modal to display localStorage contents */}
-        <Modal
-          title={
-            <div>
-              <div style={{ marginBottom: "8px" }}>
-                Debug - localStorage Contents
+                </div>
               </div>
-              <Text
-                type="secondary"
-                style={{ fontSize: "var(--font-size-sm)" }}
-              >
-                Displaying all keys and values stored in localStorage
-              </Text>
-            </div>
-          }
-          open={isDebugModalVisible}
-          onCancel={() => setIsDebugModalVisible(false)}
-          footer={[
-            <Button key="close" onClick={() => setIsDebugModalVisible(false)}>
-              Close
-            </Button>,
-            <Button
-              key="copy"
-              type="primary"
-              className="btn-premium"
-              onClick={() => {
-                const text = localStorageItems
-                  .map((item) => `${item.key}: ${item.value}`)
-                  .join("\n");
-                navigator.clipboard.writeText(text);
-                message.success("localStorage data copied to clipboard");
-              }}
-            >
-              Copy to Clipboard
-            </Button>,
-          ]}
-          styles={customStyles.modal}
-          width={800}
-          centered
-        >
-          <div
-            style={{ maxHeight: "400px", overflow: "auto" }}
-            className="premium-scrollbar"
-          >
-            {localStorageItems.length > 0 ? (
-              <Table
-                dataSource={localStorageItems}
-                columns={[
-                  {
-                    title: "Key",
-                    dataIndex: "key",
-                    key: "key",
-                    render: (text) => <strong>{text}</strong>,
-                  },
-                  {
-                    title: "Value",
-                    dataIndex: "value",
-                    key: "value",
-                    render: (text) => {
-                      // Try to parse JSON if it looks like JSON
-                      try {
-                        if (
-                          text &&
-                          (text.startsWith("{") || text.startsWith("["))
-                        ) {
-                          const parsed = JSON.parse(text);
-                          return (
-                            <pre
-                              style={{ maxHeight: "100px", overflow: "auto" }}
-                            >
-                              {JSON.stringify(parsed, null, 2)}
-                            </pre>
-                          );
-                        }
-                      } catch (e) {}
-                      return text;
-                    },
-                  },
-                  {
-                    title: "Actions",
-                    key: "actions",
-                    render: (_, record) => (
-                      <Space>
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            navigator.clipboard.writeText(record.value);
-                            message.success(
-                              `Copied value for key: ${record.key}`
-                            );
-                          }}
-                        >
-                          Copy Value
-                        </Button>
-                        <Popconfirm
-                          title="Are you sure you want to delete this item?"
-                          onConfirm={() => {
-                            localStorage.removeItem(record.key);
-                            message.success(`Removed item: ${record.key}`);
-                          }}
-                          okText="Yes"
-                          cancelText="No"
-                        >
-                          <Button size="small" danger>
-                            Delete
-                          </Button>
-                        </Popconfirm>
-                      </Space>
-                    ),
-                  },
-                ]}
-                pagination={false}
-                rowKey="key"
-              />
             ) : (
-              <Empty description="No items found in localStorage" />
+              <Form
+                form={permissionsForm}
+                layout="vertical"
+                onFinish={handlePermissionsUpdate}
+              >
+                <div style={customStyles.formSection}>
+                  <Text strong style={{ display: "block", marginBottom: "16px" }}>
+                    Access Control
+                  </Text>
+                  <div style={customStyles.formDescription}>
+                    Toggle permissions to control what this administrator can
+                    access and modify in the system.
+                  </div>
+
+                  {/* Dynamically generate permission items based on permissionConfig */}
+                  {allPermissionKeys.map((permKey) => (
+                    <div key={permKey} style={customStyles.permissionItem}>
+                      <div>
+                        <div style={customStyles.permissionTitle}>
+                          {permissionConfig[permKey].icon}{" "}
+                          {permissionConfig[permKey].label}
+                        </div>
+                        <div style={customStyles.permissionDescription}>
+                          {permissionConfig[permKey].description}
+                        </div>
+                      </div>
+                      <Form.Item name={permKey} valuePropName="checked" noStyle>
+                        <Switch style={customStyles.switchStyle} />
+                      </Form.Item>
+                    </div>
+                  ))}
+                </div>
+
+                <Form.Item className="flex justify-end">
+                  <Space>
+                    <Button
+                      onClick={() => {
+                        setIsPermissionsModalVisible(false);
+                        permissionsForm.resetFields();
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="btn-premium"
+                    >
+                      Update Permissions
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Form>
             )}
-          </div>
-        </Modal>
-      </div>
-    </AdminLayout>
+          </Modal>
+
+          {/* Debug Modal to display localStorage contents */}
+          <Modal
+            title={
+              <div>
+                <div style={{ marginBottom: "8px" }}>
+                  Debug - localStorage Contents
+                </div>
+                <Text
+                  type="secondary"
+                  style={{ fontSize: "var(--font-size-sm)" }}
+                >
+                  Displaying all keys and values stored in localStorage
+                </Text>
+              </div>
+            }
+            open={isDebugModalVisible}
+            onCancel={() => setIsDebugModalVisible(false)}
+            footer={[
+              <Button key="close" onClick={() => setIsDebugModalVisible(false)}>
+                Close
+              </Button>,
+              <Button
+                key="copy"
+                type="primary"
+                className="btn-premium"
+                onClick={() => {
+                  const text = localStorageItems
+                    .map((item) => `${item.key}: ${item.value}`)
+                    .join("\n");
+                  navigator.clipboard.writeText(text);
+                  message.success("localStorage data copied to clipboard");
+                }}
+              >
+                Copy to Clipboard
+              </Button>,
+            ]}
+            styles={customStyles.modal}
+            width={800}
+            centered
+          >
+            <div
+              style={{ maxHeight: "400px", overflow: "auto" }}
+              className="premium-scrollbar"
+            >
+              {localStorageItems.length > 0 ? (
+                <Table
+                  dataSource={localStorageItems}
+                  columns={[
+                    {
+                      title: "Key",
+                      dataIndex: "key",
+                      key: "key",
+                      render: (text) => <strong>{text}</strong>,
+                    },
+                    {
+                      title: "Value",
+                      dataIndex: "value",
+                      key: "value",
+                      render: (text) => {
+                        // Try to parse JSON if it looks like JSON
+                        try {
+                          if (
+                            text &&
+                            (text.startsWith("{") || text.startsWith("["))
+                          ) {
+                            const parsed = JSON.parse(text);
+                            return (
+                              <pre
+                                style={{ maxHeight: "100px", overflow: "auto" }}
+                              >
+                                {JSON.stringify(parsed, null, 2)}
+                              </pre>
+                            );
+                          }
+                        } catch (e) { }
+                        return text;
+                      },
+                    },
+                    {
+                      title: "Actions",
+                      key: "actions",
+                      render: (_, record) => (
+                        <Space>
+                          <Button
+                            size="small"
+                            onClick={() => {
+                              navigator.clipboard.writeText(record.value);
+                              message.success(
+                                `Copied value for key: ${record.key}`
+                              );
+                            }}
+                          >
+                            Copy Value
+                          </Button>
+                          <Popconfirm
+                            title="Are you sure you want to delete this item?"
+                            onConfirm={() => {
+                              localStorage.removeItem(record.key);
+                              message.success(`Removed item: ${record.key}`);
+                            }}
+                            okText="Yes"
+                            cancelText="No"
+                          >
+                            <Button size="small" danger>
+                              Delete
+                            </Button>
+                          </Popconfirm>
+                        </Space>
+                      ),
+                    },
+                  ]}
+                  pagination={false}
+                  rowKey="key"
+                />
+              ) : (
+                <Empty description="No items found in localStorage" />
+              )}
+            </div>
+          </Modal>
+        </div>
+      )
+      }
+      {
+        activeTab === "logs" && (
+          // Logs Section
+          <div style={customStyles.pageContainer} className="premium-scrollbar">
+            <div style={customStyles.header}>
+              <div style={customStyles.headerLeft}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+                  <Button
+                    icon={<ArrowLeftOutlined />}
+                    onClick={() => setActiveTab("administrators")}
+                    style={{
+                      borderColor: "var(--border-color)",
+                      color: "var(--text-primary)",
+                    }}
+                    className="btn-premium"
+                  >
+                    Back to Administrators
+                  </Button>
+                </div>
+                <h1 style={customStyles.title}>
+                  <HistoryOutlined style={{ fontSize: "24px", color: "var(--primary-color)", marginRight: "12px" }} />
+                  Activity Logs
+                </h1>
+                <Text type="secondary">
+                  {selectedAdminForLogs ? `Activity logs for ${selectedAdminForLogs.username || selectedAdminForLogs.email}` : "View administrator activity logs"}
+                </Text>
+              </div>
+              <div style={customStyles.headerRight}>
+                <div style={customStyles.searchSection}>
+                  <Text type="secondary" style={{ marginRight: "12px" }}>
+                    Total Logs: {logs.length}
+                  </Text>
+                </div>
+              </div>
+            </div>
+
+            {/* Logs Table */}
+            <div
+              style={customStyles.table}
+              className="premium-card premium-table-responsive"
+            >
+              {console.log("Rendering logs table with data:", logs)}
+              <Table
+                columns={logsColumns}
+                dataSource={logs}
+                rowKey="_id"
+                pagination={{
+                  pageSize: 20,
+                  showSizeChanger: true,
+                  showQuickJumper: true,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${total} logs`,
+                }}
+                scroll={{ x: "max-content" }}
+                size="middle"
+                locale={{
+                  emptyText: (
+                    <Empty
+                      description="No logs found"
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    />
+                  ),
+                }}
+              />
+            </div>
+
+            {/* Log Details Modal */}
+            <Modal
+              title="Log Details"
+              open={logDetailsModalVisible}
+              onCancel={() => {
+                setLogDetailsModalVisible(false);
+                setSelectedLogRecord(null);
+              }}
+              footer={[
+                <Button key="close" onClick={() => {
+                  setLogDetailsModalVisible(false);
+                  setSelectedLogRecord(null);
+                }}>
+                  Close
+                </Button>
+              ]}
+              width={800}
+              centered
+            >
+              {selectedLogRecord && (
+                <div>
+                  <div style={{ marginBottom: "16px" }}>
+                    <strong>Request Information:</strong>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "16px" }}>
+                    <div><strong>Method:</strong> <Tag color={getMethodColor(selectedLogRecord.method)}>{selectedLogRecord.method}</Tag></div>
+                    <div><strong>Status:</strong> <Tag color={getStatusColor(selectedLogRecord.statusCode)}>{selectedLogRecord.statusCode}</Tag></div>
+                    <div><strong>Response Time:</strong> {selectedLogRecord.responseTime}ms</div>
+                    <div><strong>IP Address:</strong> {selectedLogRecord.ip}</div>
+                    {selectedLogRecord.userId && <div><strong>User ID:</strong> {selectedLogRecord.userId}</div>}
+                    {selectedLogRecord.userType && <div><strong>User Type:</strong> <Tag color={selectedLogRecord.userType === "admin" ? "red" : selectedLogRecord.userType === "doctor" ? "blue" : "green"}>{selectedLogRecord.userType?.toUpperCase()}</Tag></div>}
+                  </div>
+                  <div style={{ marginBottom: "8px" }}>
+                    <strong>Path:</strong>
+                  </div>
+                  <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px", marginBottom: "16px", fontFamily: "monospace" }}>
+                    {selectedLogRecord.path}
+                  </div>
+                  {selectedLogRecord.userAgent && (
+                    <>
+                      <div style={{ marginBottom: "8px" }}>
+                        <strong>User Agent:</strong>
+                      </div>
+                      <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px", marginBottom: "16px", fontSize: "12px" }}>
+                        {selectedLogRecord.userAgent}
+                      </div>
+                    </>
+                  )}
+                  <div style={{ marginBottom: "8px" }}>
+                    <strong>Timestamp:</strong>
+                  </div>
+                  <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px" }}>
+                    {moment(selectedLogRecord.timestamp).format("DD/MM/YYYY HH:mm:ss")}
+                  </div>
+                  {selectedLogRecord.requestBody && (
+                    <>
+                      <div style={{ marginBottom: "8px" }}>
+                        <strong>Request Body:</strong>
+                      </div>
+                      <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px", marginBottom: "16px", fontSize: "12px", fontFamily: "monospace" }}>
+                        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                          {JSON.stringify(selectedLogRecord.requestBody, null, 2)}
+                        </pre>
+                      </div>
+                    </>
+                  )}
+                  {selectedLogRecord.responseBody && (
+                    <>
+                      <div style={{ marginBottom: "8px" }}>
+                        <strong>Response Body:</strong>
+                      </div>
+                      <div style={{ background: "#f5f5f5", padding: "8px", borderRadius: "4px", fontSize: "12px", fontFamily: "monospace" }}>
+                        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+                          {JSON.stringify(selectedLogRecord.responseBody, null, 2)}
+                        </pre>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </Modal>
+
+            {/* Create Modal */}
+            <Modal
+              title={
+                <div>
+                  <div style={{ marginBottom: "8px" }}>Create Administrator</div>
+                  <Text
+                    type="secondary"
+                    style={{ fontSize: "var(--font-size-sm)" }}
+                  >
+                    Add a new administrator with specific permissions
+                  </Text>
+                </div>
+              }
+              open={isCreateModalVisible}
+              onCancel={() => {
+                setIsCreateModalVisible(false);
+                form.resetFields();
+                setUsernameSuggestions([]);
+                setCurrentUsername("");
+              }}
+              footer={null}
+              styles={customStyles.modal}
+              width={600}
+              centered
+            >
+              <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleCreate}
+                requiredMark="optional"
+              >
+                <div style={customStyles.formSection}>
+                  <Text strong style={{ display: "block", marginBottom: "16px" }}>
+                    Administrator Information
+                  </Text>
+                  <Form.Item
+                    name="email"
+                    label="Email Address"
+                    rules={[
+                      { required: true, message: "Please input the email!" },
+                      { type: "email", message: "Please enter a valid email!" },
+                    ]}
+                    tooltip="This email will be used for login and notifications"
+                  >
+                    <Input
+                      prefix={<MailOutlined className="site-form-item-icon" />}
+                      placeholder="Enter email address"
+                      className="form-control-premium"
+                      onChange={handleEmailChange}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="username"
+                    label="Username"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select or enter a username!",
+                      },
+                    ]}
+                    tooltip="Select from suggestions or enter a custom username"
+                  >
+                    <AutoComplete
+                      options={usernameSuggestions}
+                      value={currentUsername}
+                      onChange={(value) => setCurrentUsername(value)}
+                      style={{ width: "100%" }}
+                    >
+                      <Input
+                        prefix={<UserOutlined className="site-form-item-icon" />}
+                        placeholder="Select or enter username"
+                        className="form-control-premium"
+                      />
+                    </AutoComplete>
+                  </Form.Item>
+                  <Form.Item
+                    name="password"
+                    label="Password"
+                    rules={[
+                      { required: true, message: "Please input the password!" },
+                      {
+                        min: 8,
+                        message: "Password must be at least 8 characters!",
+                      },
+                    ]}
+                    tooltip="Password must be at least 8 characters long"
+                  >
+                    <Input.Password
+                      prefix={<LockOutlined className="site-form-item-icon" />}
+                      placeholder="Enter password"
+                      className="form-control-premium"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="role"
+                    label="Role"
+                    rules={[{ required: true, message: "Please select a role!" }]}
+                    tooltip="Super Admin has all permissions by default"
+                    initialValue="Admin"
+                  >
+                    <div>
+                      <Radio.Group
+                        style={{ marginBottom: "8px" }}
+                        onChange={handleRoleChange}
+                        value={createFormRole}
+                      >
+                        <Radio value="Admin">Admin</Radio>
+                        <Radio value="Super Admin">Super Admin</Radio>
+                      </Radio.Group>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          color: "var(--text-secondary)",
+                          marginTop: "8px",
+                          background: "var(--background-secondary)",
+                          padding: "8px 12px",
+                          borderRadius: "var(--radius)",
+                          border: "1px solid var(--border-color)",
+                        }}
+                      >
+                        <div style={{ marginBottom: "4px" }}>
+                          <strong>Super Admin:</strong> Has full access to all
+                          system features automatically
+                        </div>
+                        <div>
+                          <strong>Admin:</strong> Has limited access defined by
+                          assigned permissions
+                        </div>
+                      </div>
+                    </div>
+                  </Form.Item>
+
+                  {/* Permissions section - only shown for Admin role */}
+                  {createFormRole === "Admin" && (
+                    <div style={{ ...customStyles.formSection, marginTop: "20px" }}>
+                      <Text
+                        strong
+                        style={{ display: "block", marginBottom: "16px" }}
+                      >
+                        Permissions
+                      </Text>
+                      <div style={customStyles.formDescription}>
+                        Set the specific permissions for this administrator
+                      </div>
+
+                      {/* Dynamically generate permission items based on permissionConfig */}
+                      {allPermissionKeys.map((permKey) => (
+                        <div key={permKey} style={customStyles.permissionItem}>
+                          <div>
+                            <div style={customStyles.permissionTitle}>
+                              {permissionConfig[permKey].icon}{" "}
+                              {permissionConfig[permKey].label}
+                            </div>
+                            <div style={customStyles.permissionDescription}>
+                              {permissionConfig[permKey].description}
+                            </div>
+                          </div>
+                          <Form.Item
+                            name={permKey}
+                            valuePropName="checked"
+                            initialValue={false}
+                          >
+                            <Switch style={customStyles.switchStyle} />
+                          </Form.Item>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <Form.Item className="flex justify-end">
+                  <Space>
+                    <Button
+                      onClick={() => {
+                        setIsCreateModalVisible(false);
+                        form.resetFields();
+                        setUsernameSuggestions([]);
+                        setCurrentUsername("");
+                      }}
+                      disabled={isLoading}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="btn-premium"
+                      loading={isLoading}
+                    >
+                      Create Administrator
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Form>
+            </Modal>
+
+            {/* Edit Modal */}
+            <Modal
+              title={
+                <div>
+                  <div style={{ marginBottom: "8px" }}>Edit Administrator</div>
+                  <Text
+                    type="secondary"
+                    style={{ fontSize: "var(--font-size-sm)" }}
+                  >
+                    Modify administrator information
+                  </Text>
+                </div>
+              }
+              open={isEditModalVisible}
+              onCancel={() => {
+                setIsEditModalVisible(false);
+                form.resetFields();
+                setUsernameSuggestions([]);
+                setCurrentUsername("");
+              }}
+              footer={null}
+              styles={customStyles.modal}
+              width={600}
+              centered
+            >
+              <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleUpdate}
+                requiredMark="optional"
+              >
+                <div style={customStyles.formSection}>
+                  <Text strong style={{ display: "block", marginBottom: "16px" }}>
+                    Administrator Information
+                  </Text>
+                  <Form.Item
+                    name="email"
+                    label="Email Address"
+                    rules={[
+                      { required: true, message: "Please input the email!" },
+                      { type: "email", message: "Please enter a valid email!" },
+                    ]}
+                    tooltip="This email will be used for login and notifications"
+                  >
+                    <Input
+                      prefix={<MailOutlined className="site-form-item-icon" />}
+                      placeholder="Enter email address"
+                      className="form-control-premium"
+                      onChange={handleEmailChange}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="username"
+                    label="Username"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select or enter a username!",
+                      },
+                    ]}
+                  >
+                    <AutoComplete
+                      options={usernameSuggestions}
+                      style={{ width: "100%" }}
+                    >
+                      <Input
+                        prefix={<UserOutlined className="site-form-item-icon" />}
+                        placeholder="Select or enter username"
+                        className="form-control-premium"
+                      />
+                    </AutoComplete>
+                  </Form.Item>
+                  <Form.Item
+                    name="role"
+                    label="Role"
+                    rules={[{ required: true, message: "Please select a role!" }]}
+                    tooltip="Super Admin has all permissions by default"
+                  >
+                    <div>
+                      <Radio.Group
+                        style={{ marginBottom: "8px" }}
+                        onChange={handleEditRoleChange}
+                        value={editFormRole}
+                      >
+                        <Radio value="Admin">Admin</Radio>
+                        <Radio value="Super Admin">Super Admin</Radio>
+                      </Radio.Group>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          color: "var(--text-secondary)",
+                          marginTop: "8px",
+                          background: "var(--background-secondary)",
+                          padding: "8px 12px",
+                          borderRadius: "var(--radius)",
+                          border: "1px solid var(--border-color)",
+                        }}
+                      >
+                        <div style={{ marginBottom: "4px" }}>
+                          <strong>Note:</strong> Changing roles will update
+                          permissions automatically.
+                        </div>
+                        <div style={{ marginBottom: "4px" }}>
+                          <strong>Super Admin:</strong> Will gain all permissions
+                        </div>
+                        <div>
+                          <strong>Admin:</strong> Will need permissions assigned
+                          manually
+                        </div>
+                      </div>
+                    </div>
+                  </Form.Item>
+
+                  {/* Permissions section - only shown for Admin role */}
+                  {editFormRole === "Admin" && (
+                    <div style={{ ...customStyles.formSection, marginTop: "20px" }}>
+                      <Text
+                        strong
+                        style={{ display: "block", marginBottom: "16px" }}
+                      >
+                        Permissions
+                      </Text>
+                      <div style={customStyles.formDescription}>
+                        Set the specific permissions for this administrator
+                      </div>
+
+                      {/* Dynamically generate permission items based on permissionConfig */}
+                      {allPermissionKeys.map((permKey) => (
+                        <div key={permKey} style={customStyles.permissionItem}>
+                          <div>
+                            <div style={customStyles.permissionTitle}>
+                              {permissionConfig[permKey].icon}{" "}
+                              {permissionConfig[permKey].label}
+                            </div>
+                            <div style={customStyles.permissionDescription}>
+                              {permissionConfig[permKey].description}
+                            </div>
+                          </div>
+                          <Form.Item
+                            name={`permissions_${permKey}`}
+                            valuePropName="checked"
+                            initialValue={false}
+                          >
+                            <Switch style={customStyles.switchStyle} />
+                          </Form.Item>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div
+                  style={{
+                    borderTop: "1px solid var(--border-color)",
+                    paddingTop: "20px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  <Text strong style={{ display: "block", marginBottom: "16px" }}>
+                    Password Management
+                  </Text>
+                  <Button
+                    icon={<LockOutlined />}
+                    onClick={() => {
+                      message.success(
+                        "Password reset link sent to administrator's email"
+                      );
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "0 15px",
+                    }}
+                    className="btn-premium btn-outline"
+                  >
+                    Send Password Reset Link
+                  </Button>
+                </div>
+
+                <Form.Item className="flex justify-end">
+                  <Space>
+                    <Button
+                      onClick={() => {
+                        setIsEditModalVisible(false);
+                        form.resetFields();
+                        setUsernameSuggestions([]);
+                        setCurrentUsername("");
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="btn-premium"
+                    >
+                      Update Administrator
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </Form>
+            </Modal>
+
+            {/* View Details Modal */}
+            <Modal
+              title={
+                <div>
+                  <div style={{ marginBottom: "8px" }}>Administrator Details</div>
+                  <Text
+                    type="secondary"
+                    style={{ fontSize: "var(--font-size-sm)" }}
+                  >
+                    Complete information about this administrator
+                  </Text>
+                </div>
+              }
+              open={isViewDetailsModalVisible}
+              onCancel={() => setIsViewDetailsModalVisible(false)}
+              footer={[
+                <Button
+                  key="close"
+                  onClick={() => setIsViewDetailsModalVisible(false)}
+                >
+                  Close
+                </Button>,
+              ]}
+              styles={customStyles.modal}
+              width={500}
+              centered
+            >
+              {selectedAdmin && (
+                <div style={{ padding: "16px 0" }}>
+                  <div style={{ marginBottom: "24px" }}>
+                    <div
+                      style={{
+                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        marginBottom: "16px",
+                        padding: "16px",
+                        background: "var(--background-secondary)",
+                        borderRadius: "var(--radius)",
+                        border: "1px solid var(--border-color)",
+                      }}
+                    >
+                      <UserOutlined
+                        style={{ color: "var(--primary-color)", fontSize: "20px" }}
+                      />
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                            marginBottom: "4px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontWeight: "600",
+                              color: "var(--text-primary)",
+                              fontSize: "16px",
+                            }}
+                          >
+                            {selectedAdmin.username}
+                          </div>
+                          {currentAdmin &&
+                            selectedAdmin._id === currentAdmin.id && (
+                              <Tag
+                                style={{
+                                  background: "var(--primary-color-light)",
+                                  borderColor: "var(--primary-color)",
+                                  color: "var(--primary-color)",
+                                  borderRadius: "var(--radius)",
+                                  padding: "0 8px",
+                                  fontSize: "12px",
+                                }}
+                              >
+                                You
+                              </Tag>
+                            )}
+                        </div>
+                        <div
+                          style={{
+                            color: "var(--text-secondary)",
+                            fontSize: "14px",
+                          }}
+                        >
+                          {selectedAdmin.email}
+                        </div>
+                      </div>
+                      <Tag
+                        style={{
+                          position: "absolute",
+                          top: "12px",
+                          right: "12px",
+                          background:
+                            selectedAdmin.role === "superadmin"
+                              ? "var(--primary-color)"
+                              : "var(--text-primary)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "var(--radius)",
+                          padding: "4px 12px",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        {selectedAdmin.role === "superadmin"
+                          ? "Super Admin"
+                          : "Admin"}
+                      </Tag>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gap: "16px" }}>
+                    <div style={customStyles.permissionItem}>
+                      <div>
+                        <div style={customStyles.permissionTitle}>
+                          <SettingOutlined /> Permissions
+                        </div>
+                        <div style={customStyles.permissionDescription}>
+                          {selectedAdmin.role === "superadmin"
+                            ? "All Permissions (Super Admin)"
+                            : `${selectedAdmin.permissions?.length || 0
+                            } active permissions`}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Show individual permissions for all admins */}
+                    {selectedAdmin.permissions && selectedAdmin.permissions.length > 0 && (
+                      <div
+                        style={{
+                          background: "var(--background-secondary)",
+                          padding: "16px",
+                          borderRadius: "var(--radius)",
+                          border: "1px solid var(--border-color)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontWeight: "500",
+                            marginBottom: "12px",
+                            color: "var(--text-primary)",
+                          }}
+                        >
+                          {selectedAdmin.role === "superadmin"
+                            ? "All Permissions:"
+                            : "Active Permissions:"}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "8px",
+                          }}
+                        >
+                          {selectedAdmin.permissions.map((perm) => (
+                            <Tag
+                              key={perm}
+                              style={{
+                                background: "var(--primary-color-light)",
+                                borderColor: "var(--primary-color)",
+                                color: "var(--primary-color)",
+                                borderRadius: "var(--radius)",
+                                padding: "4px 8px",
+                                fontSize: "12px",
+                              }}
+                            >
+                              {permissionConfig[perm]?.label || perm}
+                            </Tag>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div style={customStyles.permissionItem}>
+                      <div>
+                        <div style={customStyles.permissionTitle}>
+                          <FileTextOutlined /> Added On
+                        </div>
+                      </div>
+                      <span style={{ color: "var(--text-primary)" }}>
+                        {formatDate(selectedAdmin.createdAt)}
+                      </span>
+                    </div>
+
+                    <div style={customStyles.permissionItem}>
+                      <div>
+                        <div style={customStyles.permissionTitle}>
+                          <BarChartOutlined /> Last Login
+                        </div>
+                      </div>
+                      <span style={{ color: "var(--text-primary)" }}>
+                        {formatDate(selectedAdmin.lastLogin)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </Modal>
+
+            {/* Permissions Modal */}
+            <Modal
+              title={
+                <div>
+                  <div style={{ marginBottom: "8px" }}>Change Permissions</div>
+                  <Text
+                    type="secondary"
+                    style={{ fontSize: "var(--font-size-sm)" }}
+                  >
+                    Manage administrator access and capabilities
+                  </Text>
+                </div>
+              }
+              open={isPermissionsModalVisible}
+              onCancel={() => {
+                setIsPermissionsModalVisible(false);
+                permissionsForm.resetFields();
+              }}
+              footer={null}
+              styles={customStyles.modal}
+              width={600}
+              centered
+            >
+              {selectedAdmin && selectedAdmin.role === "Super Admin" ? (
+                <div>
+                  <div
+                    style={{
+                      background: "var(--background-secondary)",
+                      padding: "20px",
+                      borderRadius: "var(--radius)",
+                      marginBottom: "20px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <InfoCircleOutlined
+                      style={{
+                        fontSize: "24px",
+                        color: "var(--primary-color)",
+                        marginBottom: "12px",
+                      }}
+                    />
+                    <Text strong style={{ display: "block", fontSize: "16px" }}>
+                      Super Admin Role
+                    </Text>
+                    <Text style={{ marginTop: "8px" }}>
+                      Super Administrators automatically have all permissions
+                      granted. These permissions cannot be modified individually.
+                    </Text>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Button
+                      onClick={() => setIsPermissionsModalVisible(false)}
+                      type="primary"
+                      className="btn-premium"
+                    >
+                      Close
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Form
+                  form={permissionsForm}
+                  layout="vertical"
+                  onFinish={handlePermissionsUpdate}
+                >
+                  <div style={customStyles.formSection}>
+                    <Text strong style={{ display: "block", marginBottom: "16px" }}>
+                      Access Control
+                    </Text>
+                    <div style={customStyles.formDescription}>
+                      Toggle permissions to control what this administrator can
+                      access and modify in the system.
+                    </div>
+
+                    {/* Dynamically generate permission items based on permissionConfig */}
+                    {allPermissionKeys.map((permKey) => (
+                      <div key={permKey} style={customStyles.permissionItem}>
+                        <div>
+                          <div style={customStyles.permissionTitle}>
+                            {permissionConfig[permKey].icon}{" "}
+                            {permissionConfig[permKey].label}
+                          </div>
+                          <div style={customStyles.permissionDescription}>
+                            {permissionConfig[permKey].description}
+                          </div>
+                        </div>
+                        <Form.Item name={permKey} valuePropName="checked" noStyle>
+                          <Switch style={customStyles.switchStyle} />
+                        </Form.Item>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Form.Item className="flex justify-end">
+                    <Space>
+                      <Button
+                        onClick={() => {
+                          setIsPermissionsModalVisible(false);
+                          permissionsForm.resetFields();
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="btn-premium"
+                      >
+                        Update Permissions
+                      </Button>
+                    </Space>
+                  </Form.Item>
+                </Form>
+              )}
+            </Modal>
+
+            {/* Debug Modal to display localStorage contents */}
+            <Modal
+              title={
+                <div>
+                  <div style={{ marginBottom: "8px" }}>
+                    Debug - localStorage Contents
+                  </div>
+                  <Text
+                    type="secondary"
+                    style={{ fontSize: "var(--font-size-sm)" }}
+                  >
+                    Displaying all keys and values stored in localStorage
+                  </Text>
+                </div>
+              }
+              open={isDebugModalVisible}
+              onCancel={() => setIsDebugModalVisible(false)}
+              footer={[
+                <Button key="close" onClick={() => setIsDebugModalVisible(false)}>
+                  Close
+                </Button>,
+                <Button
+                  key="copy"
+                  type="primary"
+                  className="btn-premium"
+                  onClick={() => {
+                    const text = localStorageItems
+                      .map((item) => `${item.key}: ${item.value}`)
+                      .join("\n");
+                    navigator.clipboard.writeText(text);
+                    message.success("localStorage data copied to clipboard");
+                  }}
+                >
+                  Copy to Clipboard
+                </Button>,
+              ]}
+              styles={customStyles.modal}
+              width={800}
+              centered
+            >
+              <div
+                style={{ maxHeight: "400px", overflow: "auto" }}
+                className="premium-scrollbar"
+              >
+                {localStorageItems.length > 0 ? (
+                  <Table
+                    dataSource={localStorageItems}
+                    columns={[
+                      {
+                        title: "Key",
+                        dataIndex: "key",
+                        key: "key",
+                        render: (text) => <strong>{text}</strong>,
+                      },
+                      {
+                        title: "Value",
+                        dataIndex: "value",
+                        key: "value",
+                        render: (text) => {
+                          // Try to parse JSON if it looks like JSON
+                          try {
+                            if (
+                              text &&
+                              (text.startsWith("{") || text.startsWith("["))
+                            ) {
+                              const parsed = JSON.parse(text);
+                              return (
+                                <pre
+                                  style={{ maxHeight: "100px", overflow: "auto" }}
+                                >
+                                  {JSON.stringify(parsed, null, 2)}
+                                </pre>
+                              );
+                            }
+                          } catch (e) { }
+                          return text;
+                        },
+                      },
+                      {
+                        title: "Actions",
+                        key: "actions",
+                        render: (_, record) => (
+                          <Space>
+                            <Button
+                              size="small"
+                              onClick={() => {
+                                navigator.clipboard.writeText(record.value);
+                                message.success(
+                                  `Copied value for key: ${record.key}`
+                                );
+                              }}
+                            >
+                              Copy Value
+                            </Button>
+                            <Popconfirm
+                              title="Are you sure you want to delete this item?"
+                              onConfirm={() => {
+                                localStorage.removeItem(record.key);
+                                message.success(`Removed item: ${record.key}`);
+                              }}
+                              okText="Yes"
+                              cancelText="No"
+                            >
+                              <Button size="small" danger>
+                                Delete
+                              </Button>
+                            </Popconfirm>
+                          </Space>
+                        ),
+                      },
+                    ]}
+                    pagination={false}
+                    rowKey="key"
+                  />
+                ) : (
+                  <Empty description="No items found in localStorage" />
+                )}
+              </div>
+            </Modal>
+          </div >
+        )
+      }
+
+
+
+
+    </AdminLayout >
   );
 }
 
