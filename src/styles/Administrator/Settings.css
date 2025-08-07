@@ -18,7 +18,6 @@
 .ant-card {
   border-radius: var(--radius);
   border: 1px solid rgba(0, 0, 0, 0.09);
-  /* margin-bottom: var(--spacing-6); */
 }
 
 .ant-card-head {
@@ -130,35 +129,4 @@
   letter-spacing: 4px;
   font-size: 18px;
   text-align: center;
-}
-
-/* Notifications List Styles */
-.ant-list-item {
-  padding: 16px !important;
-  transition: background-color 0.3s ease;
-  border-radius: var(--radius);
-}
-
-.ant-list-item:hover {
-  background-color: var(--background-secondary);
-}
-
-.ant-list-item-meta-title {
-  margin-bottom: 4px !important;
-  color: var(--text-primary) !important;
-}
-
-.ant-list-item-meta-description {
-  color: var(--text-secondary) !important;
-}
-
-/* Add margin between notification cards */
-.ant-card + .ant-card {
-  margin-top: var(--spacing-6);
-}
-
-/* Badge styling */
-.ant-badge-count {
-  background: var(--primary-color) !important;
-  box-shadow: none !important;
 }

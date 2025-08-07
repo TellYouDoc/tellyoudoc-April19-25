@@ -47,26 +47,41 @@ function AdminDashboard() {
 
   // Fetch server health data
   useEffect(() => {
+    let isMounted = true;
+
     const fetchServerHealth = async () => {
+      if (!isMounted) return;
+
       try {
         setHealthLoading(true);
         setHealthError(null);
         const response = await apiService.healthService.getServerHealth();
-        setServerHealth(response.data);
+        if (isMounted) {
+          setServerHealth(response.data);
+        }
       } catch (error) {
         console.error("Error fetching server health:", error);
-        setHealthError("Failed to fetch server health data");
+        if (isMounted) {
+          setHealthError("Failed to fetch server health data");
+        }
       } finally {
-        setHealthLoading(false);
+        if (isMounted) {
+          setHealthLoading(false);
+        }
       }
     };
 
-    fetchServerHealth();
-    
+    // Initial fetch with a small delay to prevent double calls
+    const initialFetch = setTimeout(fetchServerHealth, 100);
+
     // Refresh health data every 30 seconds
     const healthInterval = setInterval(fetchServerHealth, 30000);
-    
-    return () => clearInterval(healthInterval);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(initialFetch);
+      clearInterval(healthInterval);
+    };
   }, []);
 
   // Format date and time for display
@@ -88,7 +103,7 @@ function AdminDashboard() {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    
+
     if (days > 0) {
       return `${days}d ${hours}h ${minutes}m`;
     } else if (hours > 0) {
@@ -371,58 +386,58 @@ function AdminDashboard() {
               {/* Feature Flags */}
               {serverHealth.featureFlags && (
                 <div className="feature-flags-section">
-                <h4>Feature Flags</h4>
-                <div className="feature-flags-summary">
-                  <div className="flag-stat">
-                    <span className="stat-number">{serverHealth.featureFlags.enabledCount || 0}</span>
-                    <span className="stat-label">Enabled</span>
-                  </div>
-                  <div className="flag-stat">
-                    <span className="stat-number">{serverHealth.featureFlags.disabledCount || 0}</span>
-                    <span className="stat-label">Disabled</span>
-                  </div>
-                  <div className="flag-stat">
-                    <span className="stat-number">{serverHealth.featureFlags.total || 0}</span>
-                    <span className="stat-label">Total</span>
-                  </div>
-                </div>
-                <div className="feature-flags-list">
-                  <div className="enabled-flags">
-                    <h5>Enabled Features</h5>
-                    <div className="flags-grid">
-                      {serverHealth.featureFlags.enabled?.length > 0 ? (
-                        serverHealth.featureFlags.enabled.map((flag, index) => (
-                          <div key={index} className="flag-item enabled">
-                            <FaCheckCircle />
-                            <span>{flag}</span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="empty-state">
-                          <p>No enabled features</p>
-                        </div>
-                      )}
+                  <h4>Feature Flags</h4>
+                  <div className="feature-flags-summary">
+                    <div className="flag-stat">
+                      <span className="stat-number">{serverHealth.featureFlags.enabledCount || 0}</span>
+                      <span className="stat-label">Enabled</span>
+                    </div>
+                    <div className="flag-stat">
+                      <span className="stat-number">{serverHealth.featureFlags.disabledCount || 0}</span>
+                      <span className="stat-label">Disabled</span>
+                    </div>
+                    <div className="flag-stat">
+                      <span className="stat-number">{serverHealth.featureFlags.total || 0}</span>
+                      <span className="stat-label">Total</span>
                     </div>
                   </div>
-                  <div className="disabled-flags">
-                    <h5>Disabled Features</h5>
-                    <div className="flags-grid">
-                      {serverHealth.featureFlags.disabled?.length > 0 ? (
-                        serverHealth.featureFlags.disabled.map((flag, index) => (
-                          <div key={index} className="flag-item disabled">
-                            <FaTimesCircle />
-                            <span>{flag}</span>
+                  <div className="feature-flags-list">
+                    <div className="enabled-flags">
+                      <h5>Enabled Features</h5>
+                      <div className="flags-grid">
+                        {serverHealth.featureFlags.enabled?.length > 0 ? (
+                          serverHealth.featureFlags.enabled.map((flag, index) => (
+                            <div key={index} className="flag-item enabled">
+                              <FaCheckCircle />
+                              <span>{flag}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="empty-state">
+                            <p>No enabled features</p>
                           </div>
-                        ))
-                      ) : (
-                        <div className="empty-state">
-                          <p>No disabled features</p>
-                        </div>
-                      )}
+                        )}
+                      </div>
+                    </div>
+                    <div className="disabled-flags">
+                      <h5>Disabled Features</h5>
+                      <div className="flags-grid">
+                        {serverHealth.featureFlags.disabled?.length > 0 ? (
+                          serverHealth.featureFlags.disabled.map((flag, index) => (
+                            <div key={index} className="flag-item disabled">
+                              <FaTimesCircle />
+                              <span>{flag}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="empty-state">
+                            <p>No disabled features</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
               )}
 
               {/* Cron Jobs */}
