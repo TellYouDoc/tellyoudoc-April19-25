@@ -2,9 +2,9 @@ import axios from "axios";
 
 // Environment configuration
 // const DEV_URL = "https://staging.api.tellyoudoc.com/api/v1"; //   Using relative URL for dev to work with the proxy
-const DEV_URL = "http://172.16.14.99:3000/api/v1"; // Use relative URL to work with Vite proxy
+const DEV_URL = "http://172.16.14.108:3000/api/v1"; // Use relative URL to work with Vite proxy
 // const PROD_URL = "https://staging.api.tellyoudoc.com/api/v1";
-const PROD_URL = "http://172.16.14.99:3000/api/v1";
+const PROD_URL = "http://172.16.14.108:3000/api/v1";
 
 // Determine if we're in development mode based on the environment
 const isDevelopment = import.meta.env.MODE === "development";
@@ -76,9 +76,15 @@ api.interceptors.response.use(
         // Extract token from cookie
         const refreshToken = getCookie("RefreshToken");
 
+        // Determine user type to choose the correct refresh token endpoint
+        const userType = getCookie("UserType") || localStorage.getItem("UserType");
+        const refreshTokenEndpoint = userType === "admin"
+          ? "/auth/refresh-token"
+          : "/auth/refresh-token-doctor";
+
         // Use token to get a new access token
         const response = await axios.post(
-          `${BASE_URL}/auth/refresh-token-doctor`,
+          `${BASE_URL}${refreshTokenEndpoint}`,
           {
             RefreshToken: refreshToken,
           }
@@ -117,8 +123,21 @@ const authService = {
   verifyOTP: async (data) => {
     return api.post("/auth/doctor/verify-otp", data);
   },
-  refreshToken: async (refreshToken) => {
+  refreshTokenDoctor: async (refreshToken) => {
     return api.post("/auth/refresh-token-doctor", {
+      RefreshToken: refreshToken,
+    });
+  },
+  refreshTokenAdmin: async (refreshToken) => {
+    return api.post("/admin/auth/refresh-token", {
+      refreshToken
+    });
+  },
+  refreshToken: async (refreshToken, userType = "doctor") => {
+    const endpoint = userType === "admin"
+      ? "/auth/refresh-token"
+      : "/auth/refresh-token-doctor";
+    return api.post(endpoint, {
       RefreshToken: refreshToken,
     });
   },
@@ -430,6 +449,78 @@ const AdministratorService = {
   // Patient Feedback Management
   getPatientFeedbacks: (params = {}) =>
     api.get("/admin/feedback/patient", { params }),
+
+  // Send OTP for password change
+  sendOTP: () => api.post("/admin/auth/send-otp"),
+
+  // KYC Management APIs
+  // KYC Overview Dashboard
+  fetchKycOverview: () => api.get("/admin/kyc/overview"),
+
+  // Get Pending KYC Records
+  fetchPendingKyc: (page = 1, limit = 10) =>
+    api.get("/admin/kyc/pending", { params: { page, limit } }),
+
+  // Get All KYC Records
+  fetchAllKyc: (page = 1, limit = 10, status = '') => {
+    const params = { page, limit };
+    if (status) params.status = status;
+    return api.get("/admin/kyc/all", { params });
+  },
+
+  // Get Doctor KYC Details
+  fetchDoctorKyc: (doctorId) => api.get(`/admin/kyc/${doctorId}`),
+
+  // Approve KYC
+  approveKyc: (doctorId, adminNotes, adminId) =>
+    api.post(`/admin/kyc/${doctorId}/approve`, { adminNotes, adminId }),
+
+  // Reject KYC
+  rejectKyc: (doctorId, reason, adminNotes, adminId) =>
+    api.post(`/admin/kyc/${doctorId}/reject`, { reason, adminNotes, adminId }),
+
+  // Request Additional Information
+  requestAdditionalInfo: (doctorId, requiredFields, message, adminId) =>
+    api.post(`/admin/kyc/${doctorId}/request-additional-info`, {
+      requiredFields,
+      message,
+      adminId,
+    }),
+
+  // Retry Verification
+  retryVerification: (doctorId, adminId) =>
+    api.post(`/admin/kyc/${doctorId}/retry-verification`, { adminId }),
+
+  // Bulk Approve
+  bulkApprove: (doctorIds, adminNotes, adminId) =>
+    api.post("/admin/kyc/bulk/approve", { doctorIds, adminNotes, adminId }),
+
+  // KYC Monitoring APIs
+  // KYC Statistics
+  fetchKycStatistics: () => api.get("/admin/kyc/monitoring/statistics"),
+
+  // KYC Trends
+  fetchKycTrends: (period = '7d') =>
+    api.get("/admin/kyc/monitoring/trends", { params: { period } }),
+
+  // Performance Metrics
+  fetchPerformanceMetrics: () => api.get("/admin/kyc/monitoring/performance"),
+
+  // Error Analysis
+  fetchKycErrors: (limit = 50) =>
+    api.get("/admin/kyc/monitoring/errors", { params: { limit } }),
+
+  // System Health
+  fetchSystemHealth: () => api.get("/admin/kyc/monitoring/health"),
+
+  // Monitoring Report
+  fetchMonitoringReport: (startDate, endDate) =>
+    api.get("/admin/kyc/monitoring/report", {
+      params: { startDate, endDate },
+    }),
+
+  // Real-time Metrics
+  fetchRealTimeMetrics: () => api.get("/admin/kyc/monitoring/metrics"),
 };
 
 const healthService = {

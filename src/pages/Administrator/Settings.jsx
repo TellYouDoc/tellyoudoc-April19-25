@@ -18,6 +18,7 @@ import {
 } from "@ant-design/icons";
 import AdminLayout from "../../components/AdminLayout";
 import '../../styles/Administrator/Settings.css';
+import apiService from "../../services/api";
 
 const { TabPane } = Tabs;
 
@@ -59,17 +60,11 @@ const AdminSettings = () => {
         return;
       }
 
-      // TODO: Add API call to verify current password and send OTP
+      const response = await apiService.AdministratorService.sendOTP();
 
-      // Show success and move to OTP step
-      message.success('OTP sent to your email');
-      setCurrentStep(1);
-      setChangePasswordStatus({ type: '', message: '' });
+      console.log("Response: ", JSON.stringify(response.data, null, 2));
     } catch (error) {
-      setChangePasswordStatus({
-        type: 'error',
-        message: 'Failed to process password change request'
-      });
+      console.log("Error: ", JSON.stringify(error, null, 2));
     }
   };
 

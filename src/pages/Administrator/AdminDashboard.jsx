@@ -34,6 +34,8 @@ function AdminDashboard() {
   const [serverHealth, setServerHealth] = useState(null);
   const [healthLoading, setHealthLoading] = useState(true);
   const [healthError, setHealthError] = useState(null);
+  const [refreshTokenLoading, setRefreshTokenLoading] = useState(false);
+  const [refreshTokenResult, setRefreshTokenResult] = useState(null);
   const navigate = useNavigate();
 
   // Update current date and time every second
@@ -96,6 +98,50 @@ function AdminDashboard() {
       second: '2-digit'
     };
     return date.toLocaleDateString('en-US', options);
+  };
+
+  // Handle refresh token API call
+  const handleRefreshToken = async () => {
+    try {
+      setRefreshTokenLoading(true);
+      setRefreshTokenResult(null);
+
+      // Get refresh token from cookie
+      const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return null;
+      };
+
+      const refreshToken = getCookie("RefreshToken");
+
+      if (!refreshToken) {
+        setRefreshTokenResult({ success: false, message: "No refresh token found" });
+        return;
+      }
+
+      // Call the admin refresh token API
+      const response = await apiService.authService.refreshTokenAdmin(refreshToken);
+
+      if (response.data) {
+        const { AccessToken, newRefreshToken } = response.data;
+
+        // Store the new tokens in cookies
+        document.cookie = `AccessToken=${AccessToken}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=strict`;
+        document.cookie = `RefreshToken=${newRefreshToken}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=strict`;
+
+        setRefreshTokenResult({ success: true, message: "Token refreshed successfully" });
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      setRefreshTokenResult({
+        success: false,
+        message: error.response?.data?.message || "Failed to refresh token"
+      });
+    } finally {
+      setRefreshTokenLoading(false);
+    }
   };
 
   // Format uptime
@@ -242,10 +288,44 @@ function AdminDashboard() {
       <div className="admin-dashboard-content">
         <div className="admin-dashboard-header">
           <h3>Welcome to Admin Dashboard</h3>
-          <div className="dashboard-datetime">
-            <ClockCircleOutlined style={{ marginRight: '8px' }} />
-            {formatDateTime(currentDateTime)}
+          <div className="dashboard-header-controls">
+            <div className="dashboard-datetime">
+              <ClockCircleOutlined style={{ marginRight: '8px' }} />
+              {formatDateTime(currentDateTime)}
+            </div>
+            <button
+              className="refresh-token-btn"
+              onClick={handleRefreshToken}
+              disabled={refreshTokenLoading}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#1890ff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: refreshTokenLoading ? 'not-allowed' : 'pointer',
+                fontSize: '14px',
+                marginLeft: '16px'
+              }}
+            >
+              {refreshTokenLoading ? 'Refreshing...' : 'Refresh Token'}
+            </button>
           </div>
+          {refreshTokenResult && (
+            <div
+              style={{
+                marginTop: '8px',
+                padding: '8px 12px',
+                borderRadius: '4px',
+                backgroundColor: refreshTokenResult.success ? '#f6ffed' : '#fff2f0',
+                border: `1px solid ${refreshTokenResult.success ? '#b7eb8f' : '#ffccc7'}`,
+                color: refreshTokenResult.success ? '#52c41a' : '#ff4d4f',
+                fontSize: '14px'
+              }}
+            >
+              {refreshTokenResult.message}
+            </div>
+          )}
         </div>
 
         <div className="dashboard-cards">
